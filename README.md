@@ -80,7 +80,7 @@ The content for each lesson, and 'How Do I' article, is written in normal HTML f
 CSS markup for the content copy is inlined; use of Tailwind classes is encouraged.
 
 ### Other content
-Not all the code required for the site is held in this repository. The code for the following directories nereds to be copied over (manually) from the [Scrawl-canvas GitHub repository](https://github.com/KaliedaRik/Scrawl-canvas) each time a new release of the library is created, documentation is improved, or new demo tests added: `/demo, /docs, /min, /source`.
+Not all the code required for the site is held in this repository. The code for the following directories needs to be copied over (manually) from the [Scrawl-canvas GitHub repository](https://github.com/KaliedaRik/Scrawl-canvas) each time a new release of the library is created, documentation is improved, or new demo tests added: `/demo, /docs, /min, /source`.
 
 Download files are (manually) generated from the `/min` directory of the SC repository.
 
