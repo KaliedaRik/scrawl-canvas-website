@@ -1,0 +1,541 @@
+<style>
+  .code-block {
+    border-color: #e2e8f0;
+    background-color: #f7fafc;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+  }
+  .code-block code {
+    line-height: 1.25;
+    color: #4a5568;
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    font-size: 0.875rem;
+  }
+  .code-block .redcode {
+    color: #9b2c2c;
+  }
+  .code-block .heavycode {
+    font-weight: 700;
+    color: #9b2c2c;
+  }
+  .code-block .comment {
+    color: #4a5568;
+    font-size: 0.75rem;
+  }
+</style>
+
+<p>The scenes in all the previous lessons have been created using a single canvas. Scrawl-canvas goes beyond this; it allows us to handle scenes in multiple canvases on a web page &mdash; which is why it is important for us to namespace the objects we create for a scene.</p>
+
+<p>Scrawl-canvas also allows us to create single scenes using multiple canvases. There are a number of reasons why we might want to do this:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">To separate the scene into animated and static parts &mdash; for instance grouping all static background entitys together and rendering them just once, to make the animation more efficient.</li>
+  <li class="mb-2">To add pan, zoom or parallax effects to a scene.</li>
+  <li class="mb-2">To build and animate a hidden canvas, the results of which can then be used by other entitys in the scene.</li>
+</ul>
+
+<h3>Cel animations</h3>
+
+<p>The concept of <b>cel</b> animation dates back over 100 years. As explained in the <a href="https://en.wikipedia.org/wiki/Cel">Wikipedia article</a>, cels are transparent layers that can be placed over a background and animated separately from it.</p>
+
+<p>Everything drawn onto a Scrawl-canvas &lt;canvas> element is in fact drawn on an internal canvas, wrapped by a <code class="text-sm text-red-800">Cell object</code>, and then copied over to the visible canvas as the last step in the Scrawl-canvas <b>Display cycle</b>. We explored this functionality back in Lesson 1 (<i>"Getting started with Scrawl-canvas"</i>), which explains the differences between the display and base canvases, and touched on the Scrawl-canvas Display cycle.</p>
+
+<p>In this lesson we'll discover:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">How to break a scene into different parts, each drawn to its own internal canvas;</li>
+  <li class="mb-2">How to use a 'hidden' internal canvas as a Picture entity's image asset; and</li>
+  <li class="mb-2">How to tell Scrawl-canvas the order in which to process the internal canvases associated with a scene, and how to prevent a hidden canvas automatically displaying itself in the final scene.</li>
+</ul>
+
+<p>We will demonstrate this functionality by building a <a href="https://en.wikipedia.org/wiki/Kaleidoscope">kaleidoscope</a> clock animation.</p>
+
+<h2>Planning the scene</h2>
+
+<p>Like any other project, the majority of time involved in developing an animated canvas scene needs to be spent not on writing the code to implement it, but rather on planning and designing the scene in the first place.</p>
+
+<p>The more thought we can give to the animation &mdash; its purpose and target audience; where it lives on the page, and how it interacts with surrounding parts of the page; how it responds to user interactions; etc &mdash; the more effective the final animation will be.</p>
+
+<p>A key part of the planning process is determining the parts that make up the animation, and how much computing time and power we need to spend on building and displaying each of those parts. Remember that <b><i>our primary aim must always be to render the entire scene in less than 16 milliseconds!</i></b></p>
+
+<p>As can be seen in the Codepen displayed at the bottom of this page, our project can be divided into two separate parts, both animated:</p>
+
+<ol class="list-decimal list-outside ml-4 mb-4">
+	<li class="mb-2">A very simple <b>analogue clock face</b> with hour, minute and second hands, to display the current time to the user in "real time"</li>
+	<li class="mb-2">An <b>animated background</b> which, in this case, mimics the display of a kaleidoscope toy. This simulation will be made up of six mirrored segments showing a group of translucent Block entitys of different sizes, each with its own color, rotation radius and animation speed.</li>
+</ol>
+
+<h3>Planning the clock face</h3>
+
+<p>For this exercise we shall implement the simplest analogue clock face possible: three animated hands of various sizes (hour, minute, second) inside a circle. The movement of these hands will be smooth and continuous rather than "juddery" (moving second and minute hands discontinuously once every second and minute respectively).</p>
+
+<p>Such a simple design suggests that the clock face could be coded up as its own Javascript module &mdash; with an associated API &mdash; which could then be imported into any other project requiring an analogue clock face. We discussed modularizing Scrawl-canvas code in lesson 8 (<i>"Build a charting tool - code management"</i>), so we don't need to go that far in this lesson; instead we'll implement the clock face code as a separate function.</p>
+
+<p><img class="mx-auto" src="/assets/lesson-10/01.png" /></p>
+
+<p>When modularizing code, we need to consider how that code gets rendered onto the &lt;canvas> element. It will often make sense to decouple the display code as much as possible. We can do this by rendering entitys into their own <code class="text-sm text-red-800">Cell object</code>, which we can then export as a Scrawl-canvas artefact.</p>
+
+<p>Like any other artefact, Scrawl-canvas Cells can be positioned in all the ways we have discussed in previous lessons (absolute and relative coordinates, pivoting, etc). Additionally, we can rotate and scale the Cell, and animate it in various ways &mdash; including using tweens. We can also add filters to the Cell as well as using them on the Groups and Entitys assiciated with that Cell.</p>
+
+<h3>Planning the clock background</h3>
+
+<p>To create the kaleidoscope background, we need to get a little creative. Kaleidoscopes work by placing mirrors in the view so that the user sees part of the background alongside the repeating reflections of that background segment.</p>
+
+<p>For this exercise we shall simulate a kaleidoscope with a pair of mirrors that join at the centre with an angle of 60&deg; &mdash; this will result in a display of six segments with each section being the reflection of its adjoining section.</p>
+
+<p>This effect is quite simple to achieve in Scrawl-canvas by using six <code class="text-sm text-red-800">Picture entitys</code> showing the same image, with each Picture positioned, rotated and flipped to create the illusion. The image asset for these entitys will be a dedicated <code class="text-sm text-red-800">Cell object</code> which we can populate with some animated Block entitys.</p>
+
+<p><img class="mx-auto" src="/assets/lesson-10/02.png" /></p>
+
+<p>We can do this because Cells are unique in Scrawl-canvas: they can be used as an artefact in a &lt;canvas> element display; <i>they can also be used as an image asset by Picture entitys</i>.</p>
+
+<h2>Building the scene</h2>
+
+<p>As in most of the previous lessons, we'll build this scene in a single <code class="text-sm text-red-800">html</code> file. To keep things interesting, we'll also make the clock responsive:</p>
+
+<pre class="code-block"><code>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  &lt;meta charset='utf-8'>
+  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+
+  &lt;title>Kaleidoscope Clock&lt;/title>
+
+  &lt;style type="text/css">
+    canvas {
+      background-color: lemonchiffon;
+      border: 1px dashed red;
+      width: 100%;
+      height: 100%;
+    }
+    .canvas-host {
+      overflow: hidden;
+      resize: both;
+
+      border: 1px solid black;
+
+      width: 400px;
+      height: 400px;
+
+      min-width: 200px;
+      min-height: 200px;
+
+      max-width: 800px;
+      max-height: 800px;
+    }
+  &lt;/style>
+&lt;/head>
+
+&lt;body>
+
+  &lt;div class="canvas-host">
+    &lt;canvas id="mycanvas">&lt;/canvas>
+  &lt;/div>
+
+  <span class="redcode">&lt;script type="module">
+    import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+    <i class="comment">// Our code will go here</i>
+  &lt;/script></span>
+&lt;/body>
+&lt;/html>
+</code></pre>
+
+<p>The first part of our build is the clock face. As outlined above, we will code this as a function which returns an API object &mdash; using this approach will make it easier if, at some point in the future, we decide to refactor the code into its own module file.</p>
+
+<p>If you have been following the previous lessons then most of the following code will not surprise you:</p>
+
+<pre class="code-block"><code>[...]
+
+&lt;script type="module">
+  import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+  <span class="redcode"><b>const buildClockface = function (canvas, namespace)</b> {
+
+    let entity = scrawl.library.entity;
+
+    <b><i class="comment">// The clock face will go into its own Cell</i>
+    let myFace = canvas.buildCell({
+
+      name: `${namespace}-face`,
+
+      width: '100%',
+      height: '100%',
+    });</b>
+
+    <i class="comment">// The clock frame is a wheel, as is the center pin</i>
+    scrawl.makeWheel({
+
+      name: `${namespace}-clock-frame`,
+      <b>group: `${namespace}-face`,</b>
+
+      radius: '40%',
+
+      start: ['center', 'center'],
+      handle: ['center', 'center'],
+
+      lineWidth: 6,
+      strokeStyle: 'black',
+      method: 'draw',
+
+    }).clone({
+
+      name: `${namespace}-center-pin`,
+
+      radius: '2%',
+
+      lineWidth: 2,
+      fillStyle: 'darkred',
+      strokeStyle: 'gold',
+      method: 'fillThenDraw',
+
+      order: 1,
+
+      shadowOffsetX: 1,
+      shadowOffsetY: 1,
+      shadowColor: 'black',
+      shadowBlur: 3,
+    });
+
+    <i class="comment">// The hour, minute and second hands are all Line shapes</i>
+    scrawl.makeLine({
+
+      name: `${namespace}-hour-hand`,
+      <b>group: `${namespace}-face`,</b>
+
+      startX: 'center',
+      startY: 'center',
+      endX: 'center',
+      endY: '23%',
+
+      handleY: '-15%',
+
+      lineWidth: 10,
+      lineCap: 'round',
+      strokeStyle: 'darkblue',
+      method: 'draw',
+
+      shadowOffsetX: 3,
+      shadowOffsetY: 3,
+      shadowColor: 'black',
+      shadowBlur: 3,
+
+    }).clone({
+
+      name: `${namespace}-minute-hand`,
+
+      endY: '15%',
+      strokeStyle: 'blue',
+      lineWidth: 6,
+
+    }).clone({
+
+      name: `${namespace}-second-hand`,
+
+      endY: '12%',
+      lineWidth: 4,
+      strokeStyle: 'red',
+    });
+
+    <i class="comment">// Function to make the clock tick</i>
+    const updateClockHands = function () {
+
+      <i class="comment">// Get handles to our clock hand entitys</i>
+      const hourHand = entity[`${namespace}-hour-hand`],
+        minuteHand = entity[`${namespace}-minute-hand`],
+        secondHand = entity[`${namespace}-second-hand`];
+
+      <i class="comment">// Calculate the seconds since (local) midnight</i>
+      const secondsSinceMidnight = () => {
+
+        let now = new Date(),
+          then = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+
+        return (now.getTime() - then.getTime()) / 1000;
+      };
+
+      <i class="comment">// Return a function to update the displayed time</i>
+      return function () {
+
+        <i class="comment">// Many 'magic' numbers here, to convert current time into rotation degrees</i>
+        let time = secondsSinceMidnight(),
+          hour = ((time % 43200) / 12) * (360 / 3600),
+          minute = ((time % 3600)) * (360 / 3600),
+          second = ((time % 60)) * (360 / 60);
+
+        <i class="comment">// Update the clock hand entitys' roll attribute</i>
+        hourHand.set({ roll: hour });
+        minuteHand.set({ roll: minute });
+        secondHand.set({ roll: second });
+      }
+    }();
+
+    <i class="comment">// Return our mini 'API'</i>
+    return {
+      cell: myFace,
+      update: updateClockHands
+    }
+  };
+</span>
+&lt;/script>
+</code></pre>
+
+<h3>Add a new Cell to an existing Canvas wrapper</h3>
+
+<p>As can be seen in the above code, we add a new Cell to a canvas by invoking the canvas's <code class="text-sm text-red-800">buildCell()</code> function. The new Cell's dimensions can be specified absolutely (Number px values) or relatively using String '%' values, where those values are relative to the Canvas wrapper's dimensions.</p>
+
+<p>If we wanted, we could also define the new Cell's startX/startY and handleX/handleY attributes &mdash; alongside attributes like roll, scale, etc &mdash; to refine how the new Cell will display its contents in the display &lt;canvas> element. Like most artefact attributes these can be animated using tweens or other Scrawl-canvas animation methods.</p>
+
+<p><b>When building a new Cell, always give it a unique <code class="text-sm text-red-800">name</code>.</b> When Scrawl-canvas creates the Cell, it will also generate a new Group for that Cell; we can add entitys to the Cell by setting the entity's <code class="text-sm text-red-800">group</code> attribute to the Cell's name value.</p>
+
+<p>Let's initialize the scene and build the clock face now:</p>
+
+<pre class="code-block"><code>[...]
+
+&lt;script type="module">
+
+  [... imports]
+
+  const buildClockface = function (canvas, namespace) {
+  [...]
+  };
+
+  <span class="redcode"><i class="comment">// Scene setup</i>
+  let canvas = scrawl.library.canvas.mycanvas,
+    base = canvas.base,
+    namespace = 'kaleidoscope-clock';
+
+  <i class="comment">// Prepare the canvas</i>
+  canvas.set({
+    backgroundColor: 'honeydew',
+    checkForResize: true,
+    fit: 'cover',
+  });
+
+  <b><i class="comment">// Build the clock face and retrieve its API</i>
+  let clock = buildClockface(canvas, namespace);</b>
+
+  <i class="comment">// Create the Display cycle animation</i>
+  const myAnimation = scrawl.makeRender({
+
+    name: `${namespace}-animation`,
+    target: canvas,
+
+    <b>commence: clock.update,</b>
+  });</span>
+&lt;/script>
+</code></pre>
+
+<p>... If all has gone well, our scene will now display a working clock!</p>
+
+<h2>Cells and the Display Cycle</h2>
+
+<p>One of the key strengths of Scrawl-canvas is the ability it gives us to control every part of the Display cycle. This includes dynamic, real-time control over when, and in which order, to render entitys assigned to internal Cell &lt;canvas> elements.</p>
+
+<p>Our plan is to generate the kaleidoscope effect using six Picture entitys, which will use a 'hidden' internal Cell as their asset. Which means that &mdash; unlike our clock face Cell defined above &mdash; we don't want this new Cell to display itself in the &lt;canvas> element.</p>
+
+<p>By default, every Cell we add to a Canvas wrapper will automatically clear, compile and show itself in the scene as part of the Display cycle. Scrawl-canvas allows us to switch each of these actions on and off for each Cell through a set of Boolean flag attributes in the Cell object. These can be defined when we create the Cell, and modified afterwards using the Cell's <code class="text-sm text-red-800">.set()</code> function:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><code class="text-sm text-red-800">cleared</code> &mdash; when set to false, the Cell will not clear itself during the display cycle. This is especially useful for static parts of the scene which only need to be rendered once.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">compiled</code> &mdash; again, set this flag to false (after the Cell has compiled at least once) if the Cell is used for static parts of the scene.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">shown</code> &mdash; to prevent a Cell stamping itself into the final display, set this flag to false.</li>
+</ul>
+
+<p>We can also set the order in which Cells will compile and show during each Display Cycle tick. The values of the following attributes need to be positive integer Numbers. Like artefact <code class="text-sm text-red-800">order</code> attributes their default values are 0, which means they will compile and show according to the order in which they are defined in the code (though this is not guaranteed):</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><code class="text-sm text-red-800">compileOrder</code> &mdash; the compile order comes into play when the entitys in one Cell rely on the output from another Cell for their display (Picture entitys, or any entity using a Cell-based Pattern for its strokeStyle or fillStyle).</li>
+  <li class="mb-2"><code class="text-sm text-red-800">showOrder</code> &mdash; Cells with larger values will display over the top of those with smaller values.</li>
+</ul>
+
+<h3>Code for the background kaleidoscope simulation</h3>
+
+<pre class="code-block"><code>[...]
+
+&lt;script type="module">
+
+  [... imports, clockface, canvas setup]
+
+  <span class="redcode"><i class="comment">// Building the background - this goes in a separate Cell</i>
+  let myBackground = canvas.buildCell({
+
+    name: `${namespace}-background`,
+
+    width: '100%',
+    height: '100%',
+
+    <b><i class="comment">// We want this Cell to compile before the other Cells</i>
+    compileOrder: 0,
+
+    <i class="comment">// We do not want this Cell to stamp itself into the display</i>
+    shown: false,</b>
+  });
+
+  <i class="comment">// We use a wheel segment as a stencil</i>
+  scrawl.makeWheel({
+
+    name: `${namespace}-clock-stencil`,
+    group: `${namespace}-background`,
+
+    order: 0,
+
+    radius: '40%',
+    startAngle: -30,
+    endAngle: 30,
+    includeCenter: true,
+
+    start: ['center', 'center'],
+    handle: ['center', 'center'],
+
+    fillStyle: 'white',
+    method: 'fill',
+  });
+
+  <b><i class="comment">// Use a Color factory object to generate random colors</i>
+  <i class="comment">// - This allows us to set a restricted palette</i>
+  let myColorFactory = scrawl.makeColor({
+
+    name: `${namespace}-color-factory`,
+
+    rMax: 160,
+    gMax: 160,
+    bMax: 160,
+  });</b>
+
+  <i class="comment">// Add some blocks to create the animated background</i>
+  for (let i = 0; i < 50; i++) {
+
+    scrawl.makeBlock({
+
+      name: `${namespace}-decoration-block-${i}`,
+      group: `${namespace}-background`,
+
+      order: 1,
+
+      startX: `${10 + (Math.random() * 80)}%`,
+      startY: `${10 + (Math.random() * 80)}%`,
+
+      handleX: `${(Math.random() * 400) - 200}%`,
+      handleY: `${(Math.random() * 400) - 200}%`,
+
+      width: `${10 + (Math.random() * 15)}%`,
+      height: `${2 + (Math.random() * 10)}%`,
+
+      roll: Math.floor(`${Math.random() * 360}`),
+
+      <b><i class="comment">// Use our color factory to assign a random fill color to the Block</i>
+      fillStyle: myColorFactory.get('random'),</b>
+
+      <i class="comment">// We only want to see Block parts stamped over the top of our Wheel segment stencil</i>
+      globalCompositeOperation: 'source-atop',
+      globalAlpha: 0.3,
+
+      <i class="comment">// Automate the kaleidoscope animation using a <b>delta object</b></i>
+      delta: {
+        roll: ((Math.random() * 2) - 1) / 4,
+      },
+    });
+  }</span>
+
+  [... makeRender]
+&lt;/script>
+</code></pre>
+
+<p>One new thing of interest here is the <code class="text-sm text-red-800">delta</code> attribute. All Scrawl-canvas artefacts can take a delta object containing key/value pairs for any artefact attribute which accepts either an Number (absolute) or String (relative) value. These values get added to the artefacts's main attribute at the start of each Display cycle loop. This is known as <b>delta animation</b>.</p>
+
+<p>The last piece of code we need to implement is for the Picture entitys which will display our hidden Cell's contents. We can assign these entitys to the canvas wrapper's base Cell, just as we have been doing in previous lessons.</p>
+
+<pre class="code-block"><code>[...]
+
+&lt;script type="module">
+
+  [... imports, clockface, canvas setup, background]
+
+  <span class="redcode">scrawl.makePicture({
+
+    name: `${namespace}-segment-0`,
+    <b>group: canvas.base.name,</b>
+
+    width: '100%',
+    height: '100%',
+
+    copyWidth: '100%',
+    copyHeight: '100%',
+
+    start: ['center', 'center'],
+    handle: ['center', 'center'],
+
+    <b>asset: `${namespace}-background`,</b>
+
+  }).clone({
+
+    name: `${namespace}-segment-1`,
+    roll: 120,
+
+  }).clone({
+
+    name: `${namespace}-segment-2`,
+    roll: 240,
+
+  }).clone({
+
+    name: `${namespace}-segment-3`,
+    flipReverse: true,
+
+  }).clone({
+
+    name: `${namespace}-segment-4`,
+    roll: 120,
+
+  }).clone({
+
+    name: `${namespace}-segment-5`,
+    roll: 0,
+  });</span>
+
+  [... makeRender]
+&lt;/script>
+</code></pre>
+
+<p>The result is ... not quite what we want:</p>
+
+<p><img class="mx-auto" src="/assets/lesson-10/03.png" /></p>
+
+<p>So, what's going on here?</p>
+
+<p>The issue appears to be that only one of the Picture entitys is displaying our hidden Cell's content &mdash; which is an incorrect conclusion. In fact all of our Picture entitys are working as we have specified. However five of the entitys are displaying the Cell after it has been cleared, but before it has been compiled.</p>
+
+<p>Under the hood, Scrawl-canvas uses a set of Promise cascades to perform the clear, compile and show portions of the Display Cycle. Because of Javascript's single-threaded <i>run-to-completion</i> nature Promises will start and end in consecutive fashion ... but there is no guarantees about which other Promise will run after the current Promise (or Event code, or main thread code, etc) completes.</p>
+
+<p>The fix is simple &mdash; we set the base Cell to compile its Picture entitys <b>after</b> the background Cell has finished compiling its display:</p>
+
+<pre class="code-block"><code>[...]
+
+&lt;script type="module">
+
+  [... imports, clockface, canvas setup, background, Picture entitys]
+
+  <span class="redcode">canvas.base.set({
+    compileOrder: 1,
+  });</span>
+
+  [... makeRender]
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-10/04.png" /></p>
+
+<h2>Next steps</h2>
+
+<p>Scrawl-canvas Cells are very versatile; using them efficiently, we can create a wide range of more complex scenes and infographics. They also lend themselves well to more modular code.</p>
+
+<p>Try adapting the CodePen below to use different sorts of entitys. What happens when you use a picture entity as part of the background? Can you come up with a way for the user to drag an image file from their local device onto the clock, so that that image will be used as the clock's background?</p>
+
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas v8 - Kaleidoscope clock " src="https://codepen.io/kaliedarik/embed/vYLaOxK?height=600&theme-id=26779&default-tab=js,result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy" class="mb-4">
+  See the Pen <a href='https://codepen.io/kaliedarik/pen/vYLaOxK'>Scrawl-canvas v8 - Kaleidoscope clock</a> by Rik Roots
+  (<a href='https://codepen.io/kaliedarik'>@kaliedarik</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>

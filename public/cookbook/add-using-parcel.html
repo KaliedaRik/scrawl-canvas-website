@@ -1,0 +1,40 @@
+<h2>Issue</h2>
+<p>We need to add Scrawl-canvas functionality to a HTML5/CSS/JS project that uses the <a href="https://parceljs.org/">Parcel</a> web application bundler.</p>
+
+<h2>Solution</h2>
+
+<p>Include Scrawl-canvas in the project using <a href="https://yarnpkg.com/">Yarn</a> or <a href="https://www.npmjs.com/">NPM</a>, then import it into your Javascript code as normal:</p>
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm"><b>index.html</b>
+
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+    &lt;meta charset='utf-8'>
+    &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+
+    &lt;title>Your project name&lt;/title>
+&lt;/head>
+
+&lt;body>
+    &lt;canvas id="mycanvas">&lt;/canvas>
+
+    &lt;script src="./index.js">&lt;/script>
+&lt;/body>
+&lt;/html>
+
+<b>index.js</b>
+
+import scrawl from 'scrawl-canvas';
+
+// Your Javascript code can now include Scrawl-canvas code
+</code></pre>
+
+<h2>Discussion</h2>
+
+<p>Scrawl-canvas is entirely modular. However when including the Scrawl-canvas package into another project using NPM or Yarn, the library's <code class="text-sm text-red-800">package.json</code> manifest tells the project's toolchain to use the minified, single file version of the library.</p>
+
+<p>We use <a href="https://rollupjs.org/guide/en/">rollup.js</a> to generate that minified file and, as part of its functionality, rollup.js automatically handles (and future-proofs) module handling.</p>
+
+<p>The outcome of all this is that Scrawl-canvas should &mdash; in theory &mdash; play nicely with other code bundlers such as Parcel. It also means that the <code class="text-sm text-red-800">import scrawl from 'scrawl-canvas'</code> code <i>can be used in any <code class="text-sm text-red-800">&lt;script></code> tag &mdash; there should be no need to explicitly mark the tag as  <code class="text-sm text-red-800">type="module"</code></i>.</p>
+
+<p>Note that testing with bundlers has (to date) been limited. Your mileage may vary.</p>

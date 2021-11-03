@@ -1,0 +1,98 @@
+<h2>Issue</h2>
+
+<p>We need to adapt our animated scenes to match the user's <a href="https://www.smashingmagazine.com/2020/09/design-reduced-motion-sensitivities/">reduced motion</a> choice for their device.</p>
+
+<h2>Solution</h2>
+
+<p>Scrawl-canvas listens for the <code class="text-sm text-red-800">prefers-reduced-motion</code> CSS media query from the moment it runs, and includes function hooks that we can use to choke or stop animation functions if users do not want to see them on their device.</p>
+
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script type="module">
+
+  import scrawl from [... wherever ...];
+
+  const canvas = scrawl.library.canvas['example-canvas-id'];
+
+  <span class="italic text-xs text-gray-700">// This entity will rotate around its center while the canvas animation plays</span>
+  const text = scrawl.makePhrase({
+
+    name: 'example-phrase',
+
+    text: 'Lorem Ipsum etc',
+    font: '50px arial, sans-serif',
+
+    start: ['center', 'center'],
+    handle: ['center', 'center'],
+
+    delta: { roll: 1 },
+  });
+
+  <span class="italic text-xs text-gray-700">// Create the Display Cycle animation, assigning it to a variable
+  // - We need the Display Cycle to run at least once, to draw the initial scene</span>
+  <span class="text-red-800">const demoAnimation = scrawl.makeRender</span>({
+
+    name: "demo-animation",
+    target: canvas,
+
+    <span class="italic text-xs text-gray-700">// The afterCreated function runs once, after the first Display Cycle completes</span>
+    <span class="text-red-800">afterCreated: () => scrawl.reducedMotionActions(),</span>
+  });
+
+  <span class="italic text-xs text-gray-700">// Hook functions to start/stop the animation running</span>
+  <span class="text-red-800">scrawl.setReduceMotionAction(() => {
+
+      if (demoAnimation.isRunning()) demoAnimation.halt();
+  });
+
+  scrawl.setNoPreferenceMotionAction(() => {
+
+      if (!demoAnimation.isRunning()) demoAnimation.run();
+  });</span>
+&lt;/script></code></pre>
+
+<h2>Discussion</h2>
+
+<p class="font-bold italic">Limiting, or eliminating, annoying or unnecessary animations is an important part of making our websites more accessible to users!</p>
+
+<p>Many modern operating systems (Windows, MacOS, Android, iOS, etc) support a system-based user choice known as "Reduce motion" or "Remove animations" &mdash; when enabled, the system will do everything it can to prevent unnecessary animations starting, or reduce their speed. See this <a href="https://web.dev/prefers-reduced-motion/">web.dev article</a> for more information on the history and usefulness of this functionality.</p>
+
+<p>Most modern web browsers can detect whether the user has requested a reduced motion experience and, through a CSS media query, websites can also adapt their design to reduce or eliminate unnecessary animations.</p>
+
+<p>Scrawl-canvas uses the following hooks and functions to act on the user's preference, both when the page loads, and at any time after if the user updates their preference:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><code class="text-sm text-red-800">scrawl.setReduceMotionAction()</code> &mdash; invoke the required actions to slow down, or halt, a Scrawl-canvas animation.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">scrawl.setNoPreferenceMotionAction()</code> &mdash; invoke the required actions to (re)start a Scrawl-canvas animation.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">scrawl.reducedMotionActions()</code> &mdash; trigger Scrawl-canvas to check the user's reduced motion choice and invoke the appropriate hook function.</li>
+</ul>
+
+<h3>Alternative methods</h3>
+
+<p>The <a href="https://www.iab.com/">Interactive Advertising Bureau</a> recommends that animations should last no more than 15 seconds. The <a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/time-limits-pause.html">Web Content Accessibility Guidelines</a> go further: animated content should, ideally, include control buttons giving users the ability to pause and/or hide the animation.</p>
+
+<p>The following code will check, and act on, the user's reduced motion preference setting five seconds after the canvas scene animation starts playing. Adding a clickable "resume" entity to the canvas &mdash; or, better still, using a &lt;button> element immediately above or below the &lt;canvas> element &mdash; can be handled in a similar way.</p>
+
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script type="module">
+
+  [...];
+
+  <span class="italic text-xs text-gray-700">// Create the Display Cycle animation, assigning it to a variable</span>
+  <span class="text-red-800">const demoAnimation = scrawl.makeRender</span>({
+
+    name: "demo-animation",
+    target: canvas,
+  });
+
+  <span class="italic text-xs text-gray-700">// Hook functions to start/stop the animation running</span>
+  <span class="text-red-800">scrawl.setReduceMotionAction</span>(() => {
+
+      if (demoAnimation.isRunning()) demoAnimation.halt();
+  });
+
+  <span class="text-red-800">scrawl.setNoPreferenceMotionAction</span>(() => {
+
+      if (!demoAnimation.isRunning()) demoAnimation.run();
+  });
+
+  <span class="italic text-xs text-gray-700">// Perform the reduced motion check five seconds after the animation starts</span>
+  <span class="text-red-800">setTimeout(() => scrawl.reducedMotionActions(), 5000);</span>
+&lt;/script></code></pre>

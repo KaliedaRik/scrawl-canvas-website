@@ -1,0 +1,63 @@
+<h2>Issue</h2>
+
+<p>To make our canvas scene more accessible to people who prefer to access the internet using non-visual or assistive technologies, we need to supply it with relevant <a href="https://www.w3.org/WAI/standards-guidelines/aria/">ARIA attributes</a>.</p>
+
+<p>(More details about ARIA can be found on the <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA">MDN</a> and <a href="https://developers.google.com/web/fundamentals/accessibility/semantics-aria">Google Developers</a> websites).</p>
+
+<h2>Solution</h2>
+
+<p>Set the Scrawl-canvas <code class="text-sm text-red-800">Canvas object</code> wrapper's <code class="text-sm text-red-800">title</code>, <code class="text-sm text-red-800">label</code> and <code class="text-sm text-red-800">description</code> attributes to values which accurately describe the canvas scene or animation.</p>
+
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script type="module">
+
+  import scrawl from [... wherever ...];
+
+  let canvas = scrawl.library.canvas['canvas-id-value'];
+
+  <span class="text-red-800">canvas.set({
+
+    label: 'An animated canvas banner',
+
+    description: 'The banner includes the company name [NAME] and rotating logo over an animated star scene. Clicking on the logo will navigate the user back to the landing page.',
+
+    title: 'Company [NAME] welcome banner',
+  });</span>
+&lt;/script></code></pre>
+
+<h2>Discussion</h2>
+
+<p>Scrawl-canvas performs extensive preparation on every &lt;canvas> element it encounters. This includes generating a shadow-DOM between the element's opening and closing tags, and supplying ARIA-labelled &lt;div> elements to store <code class="text-sm text-red-800">label</code> and <code class="text-sm text-red-800">description</code> attribute text.</p>
+
+<p>The content of the ARIA attributes can be set on the &lt;canvas> element, as follows:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><b>label</b> - applied to an (offscreen) &lt;div> element, which is referenced by the &lt;canvas> element using the <code class="text-sm text-red-800">aria-labelledby</code> attribute.</li>
+  <li class="mb-2"><b>description</b> - applied to an (offscreen) &lt;div> element, which is referenced by the &lt;canvas> element using the <code class="text-sm text-red-800">aria-describedby</code> attribute.</li>
+  <li class="mb-2"><b>title</b> - applied to the &lt;canvas> element's <code class="text-sm text-red-800">title</code> attribute, which in some browsers will appear as a tooltip when the user hovers the mouse/pointer cursor over the canvas scene.</li>
+</ul>
+
+<h3>Alternative methods</h3>
+
+<p>Another approach is to supply details of the canvas display directly between its opening and closing tags. The content can be (almost) any valid HTML markup. In situations where the user's browser or device declines to display the canvas, this content will be displayed as an alternative.</p>
+
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;canvas id="mycanvas" title="Welcome banner">
+
+  &lt;p>
+    An animated canvas banner. The banner includes the company name [NAME] 
+    and rotating logo over an animated star scene. Clicking on the logo will 
+    navigate the user back to the landing page.
+  &lt;/p>
+
+&lt;/canvas></code></pre>
+
+<p>Scrawl-canvas will never overwrite pre-existing shadow-DOM content. However, taking this approach means that developers will need to add the ARIA markup manually.</p>
+
+<h2>Important!</h2>
+
+<p class="font-bold">Always review web pages for accessibility using real devices and (where possible) users who routinely access web pages using non-visual devices.</p>
+
+<p>Scrawl-canvas includes functionality to make adding ARIA content to &lt;canvas> elements easier. It does not solve the problem of making that content easy to understand and navigate.</p>
+
+<p>Remember: supplying too much information is as bad as supplying too little information! Always test the generated content before releasing the code to production.</p>
+
+<p class="italic text-red-800">Failing to take the needs of disabled users into account whe designing and deploying websites and apps is against the law in many juristictions. Non-compliance can lead to damages being awarded against the company that owns the site, and the developers/designers who built it.</p>

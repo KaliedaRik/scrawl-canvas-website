@@ -1,0 +1,1166 @@
+<style>
+  .code-block {
+    border-color: #e2e8f0;
+    background-color: #f7fafc;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+  }
+  .code-block code {
+    line-height: 1.25;
+    color: #4a5568;
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    font-size: 0.875rem;
+  }
+  .code-block .redcode {
+    color: #9b2c2c;
+  }
+  .code-block .heavycode {
+    font-weight: 700;
+    color: #9b2c2c;
+  }
+  .code-block .comment {
+    color: #4a5568;
+    font-size: 0.75rem;
+  }
+  iframe {
+    margin-bottom: 1em;
+  }
+</style>
+
+<p>A gradient is the gradual change from one color to another in a given direction, or set of directions. The world around us is packed with gradients. Reproducing those gradients in real-life, using paints and inks, has always been more difficult. <a href="https://www.youtube.com/watch?v=wxfdvRA8i9Q">Good artists make it look easy</a>; the results are worth the effort.</p>
+
+<p>Producing a gradient in graphical software should, in theory, be easy. The code interpolates between the colors along a given vector for a given distance to create the desired effect. Using this idea, the architects of the world-wide web created functionality in CSS to easily generate <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient()">linear gradients</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/radial-gradient()">radial gradients</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/conic-gradient()">conic gradients</a>, each in both normal and repeated forms.</p>
+
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: Creative coding 20210413-1" src="https://codepen.io/kaliedarik/embed/poRLBLp?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/kaliedarik/pen/poRLBLp">
+  Scrawl-canvas: Creative coding 20210413-1</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>Other image processing software packages such as <a href="https://helpx.adobe.com/photoshop/using/gradients.html">Adobe Photoshop</a> and <a href="https://gimp.linux.it/www/manual/2.10/html/en/gimp-tool-gradient.html">The Gimp</a> have gone further, allowing users to create effects such as reflected and diamond gradients (Photoshop), and shaped and spiral gradients (Gimp). Both allow the user to add dithering to the effect, to make the resulting mix of colors look more rough/naturalistic. One of the most exciting things that these programs offer is <a href="https://docs.gimp.org/2.10/en/plug-in-gradmap.html">gradient mapping</a> &mdash; colorising a grayscale image using a gradient mapped to each pixel's brightness.</p>
+
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: animate a gradient over a noise asset" src="https://codepen.io/kaliedarik/embed/BaRNXzV?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/kaliedarik/pen/BaRNXzV">
+  Scrawl-canvas: animate a gradient over a noise asset</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>The bad news for us is that, when it comes to implementing gradients in the 2D &lt;canvas> element, there is much to be desired. While the Canvas API does include <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient">functionality for linear, radial and conic gradients</a>, that functionality is implemented at a very low level; currently the conic gradient only works in the Firefox browser.</p>
+
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: Creative coding 20210823-01" src="https://codepen.io/kaliedarik/embed/RwgwpyG?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/kaliedarik/pen/RwgwpyG">
+  Scrawl-canvas: Creative coding 20210823-01</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>Scrawl-canvas attempts to overcome these issues as best as it can, as demonstrated by the CodePen demos sprinkled around this opening section of the lesson. Many gradient effects are achievable if you are prepared to think outside the box!</p>
+
+<h3>Coding up our first gradient</h3>
+
+<p>Let's start by using our new, accessible-friendly boilerplate that we developed in the last lesson:</p>
+
+<pre class="code-block"><code>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  &lt;meta charset='utf-8'>
+  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+
+  &lt;title>The World's a Stage&lt;/title>
+
+  &lt;link 
+    href="https://fonts.googleapis.com/icon?family=Material+Icons" 
+    rel="stylesheet" />
+
+  &lt;style type="text/css">
+    <i class="comment">body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+    .canvas-container {
+      overflow: hidden;
+      resize: both;
+      border: 1px solid black;
+      width: 600px;
+      height: 400px;
+      min-height: 200px;
+      min-width: 400px;
+      max-height: 600px;
+      max-width: 800px;
+      margin: 0 auto 1em;
+      position: relative;
+    }
+    .animation-controls {
+      position: absolute;
+      top: 0;
+      left: calc(50% - 51px);
+      width: 102px;
+      background-color: #ffffff8f;
+    }
+    .animation-controls button {
+      background-color: transparent;
+      border-width: 0;
+      padding: 0;
+      display: inline-block;
+    }
+    .animation-controls button:hover {
+      cursor: pointer;
+    }
+    .animation-controls span {
+      font-size: 48px;
+      opacity: 0.5;
+    }
+    .animation-controls span:hover {
+      opacity: 1;
+    }
+    img {
+      height: 0;
+    }</i>
+  &lt;/style>
+&lt;/head>
+
+&lt;body>
+
+  &lt;div class="canvas-container">
+    &lt;canvas id="mycanvas">&lt;/canvas>
+    &lt;div class="animation-controls">
+      &lt;button id="play" title="Play animation">
+        &lt;span class="material-icons">play_circle&lt;/span>
+      &lt;/button>
+      &lt;button id="pause" title="Pause animation">
+        &lt;span class="material-icons">pause_circle&lt;/span>
+      &lt;/button>
+    &lt;/div>
+  &lt;/div>
+
+  <i class="comment">&lt;!-- 
+    Load image assets by including them in the DOM 
+    Use any images you have locally - Mr Shakespeare won't mind
+  --></i>
+  &lt;img 
+    src="path/to/shakespeares-head.jpg" 
+    alt="William Shakespeare's portrait" 
+    id="bard" 
+    class="demo-images" />
+
+  &lt;img 
+    src="path/to/leaf-pattern.png" 
+    alt="Image used to create leaf pattern" 
+    id="leaves" 
+    class="demo-images" />
+
+  <span class="redcode">&lt;script type="module">
+    import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+    scrawl.importDomImage('.demo-images');
+
+    const canvas = scrawl.library.artefact.mycanvas,
+      namespace = 'lesson-twelve';
+
+    canvas.set({
+
+      fit: 'cover',
+      checkForResize: true,
+      ignoreCanvasCssDimensions: true,
+
+      label: 'An animation celebrating William Shakespeare.',
+      description: 'An image of Shakespeare sits in the middle of a sky filled with stars. The scene is reflected in rippling water',
+
+    }).setBase({
+
+      width: 800,
+      height: 600,
+    });
+
+    scrawl.makeBlock({
+      name: 'temporary-block',
+      start: ['center', 'center'],
+      handle: ['center', 'center'],
+      dimensions: ['20%', '20%'],
+      delta: {
+        roll: 1,
+      },
+    });
+
+    const myAnimation = scrawl.makeRender({
+      name: `${namespace}-animation`,
+      target: canvas,
+
+      afterCreated: () => scrawl.reducedMotionActions(),
+    });
+
+    const startAnimation = (e) => {
+      if (e === 'reduced-motion' || checkE(e)) {
+        myAnimation.run();
+      }
+    };
+
+    const stopAnimation = (e) => {
+      if (e === 'reduced-motion' || checkE(e)) {
+        myAnimation.halt();
+      }
+    };
+
+    scrawl.setReduceMotionAction(() => stopAnimation('reduced-motion'));
+
+    scrawl.setNoPreferenceMotionAction(() => startAnimation('reduced-motion'));
+
+    const checkE = (e) => {
+      if (e) {
+        if ('keydown' === e.type) {
+          if (32 === e.keycode) return true; // spacebar
+          if (13 === e.keycode) return true; // enter key
+        }
+        if ('click' === e.type) return true; // mouse click
+        if ('touchend' === e.type) return true; // mouse click
+      }
+      return false;
+    }
+
+    scrawl.addNativeListener(
+      ['click', 'keydown', 'touchend'], 
+      startAnimation, 
+      '#play'
+    );
+
+    scrawl.addNativeListener(
+      ['click', 'keydown', 'touchend'], 
+      stopAnimation, 
+      '#pause'
+    );
+  &lt;/script></span>
+&lt;/body>
+&lt;/html>
+</code></pre>
+
+<p>Gradients belong to a group of objects which Scrawl-canvas calls <i>styles</i>, because they can be applied to entity <code class="text-sm text-red-800">fillStyle</code> and <code class="text-sm text-red-800">strokeStyle</code> attributes just like CSS color strings.</p>
+
+<p>To create a style, we use a factory function:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><b>Linear gradients</b> use the <code class="text-sm text-red-800">scrawl.makeGradient()</code> factory function.</li>
+  <li class="mb-2"><b>Radial gradients</b> use the <code class="text-sm text-red-800">scrawl.makeRadialGradient()</code> factory function.</li>
+  <li class="mb-2"><b>Conic gradients</b> use the <code class="text-sm text-red-800">scrawl.makeConicGradient()</code> factory function. Conic gradients are not yet widely supported across browsers; when we use a conic gradient in a browser that doesn't support it the code will output a transparent color.</li>
+</ul>
+
+<p>Then to apply the gradient to an entity, we set the entity's <code class="text-sm text-red-800">fillStyle</code> and/or <code class="text-sm text-red-800">strokeStyle</code> attribute to either the name of our gradient, or to the gradient object itself:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [...setup]
+
+  <span class="redcode">const myGradient = scrawl.makeGradient({
+    name: `${namespace}-gradient`,
+
+    <i class="comment">// 1. Absolute and relative start/end coordinates</i>
+    startX: '0%',
+    startY: '0%',
+    endX: '0%',
+    endY: '100%',
+
+    <i class="comment">// 2. Set color values in the gradient</i>
+    colors: [
+      [0, 'black'],
+      [99, 'red'],
+      [199, 'black'],
+      [299, 'blue'],
+      [399, 'black'],
+      [499, 'gold'],
+      [599, 'black'],
+      [699, 'green'],
+      [799, 'black'],
+      [899, 'lavender'],
+      [999, 'black']
+    ],
+
+    <i class="comment">// 3. Palette start and end points</i>
+    paletteStart: 200,
+    paletteEnd: 800,
+
+    <i class="comment">// 4. Animate the palette start and end points (part 1)</i>
+    delta: {
+        paletteStart: -1,
+        paletteEnd: -1
+    },
+
+    cyclePalette: true,
+  });</span>
+
+  scrawl.makeBlock({
+    name: 'temporary-block-1',
+    start: ['25%', 'center'],
+    handle: ['center', 'center'],
+    dimensions: ['20%', '20%'],
+
+    <i class="comment">// 5. Effect of rotating (and flipping) entitys using a gradient style</i>
+    delta: {
+      roll: 1,
+    },
+
+    <i class="comment">// 6. Set the entity's fillStyle to the gradient</i>
+    <span class="redcode">fillStyle: `${namespace}-gradient`,</span>
+
+  ).clone({
+    name: 'temporary-block-2',
+    startX: '75%',
+
+    <i class="comment">// 7. Cell-locked and entity-locked gradients</i>
+    <span class="redcode">lockFillStyleToEntity: true,</span>
+  });
+
+  const myAnimation = scrawl.makeRender({
+    name: `${namespace}-animation`,
+    target: canvas,
+
+    afterCreated: () => scrawl.reducedMotionActions(),
+
+    <i class="comment">// 8. Animate the palette start and end points (part 2)</i>
+    <span class="redcode">commence: () => myGradient.updateByDelta(),</span>
+  });
+
+  [...animation]
+&lt;/script>
+</code></pre>
+
+<p>There's several things that we need to unpack about what's going on in the above code:</p>
+
+<ol class="list-decimal list-outside ml-8 mb-4">
+  <li class="mb-2"><b>Absolute and relative start/end coordinates</b> - because gradients are a change in color over a given vector, we need to supply the start and end coordinates of that vector. Just as for entity positioning, we can use absolute (Number) values or relative (% String) values for these coordinates. Values can be negative; relative values can be greater than <code class="text-sm text-red-800">'100%'</code>.</li>
+  <li class="mb-2"><b>Set color values in the gradient</b> - Scrawl-canvas gradients use a <code class="text-sm text-red-800">palette Array</code> in which to store color values. We assign colors by associating a given color string to a specific index in the Array. Index values are positive integer Numbers in the range 0 - 999. Any valid CSS color string can be used to define a color, including values such as <code class="text-sm text-red-800">'transparent'</code>.</li>
+  <li class="mb-2"><b>Palette start and end points</b> - we can choose to display only a part of the gradient by setting its <code class="text-sm text-red-800">paletteStart</code> and <code class="text-sm text-red-800">paletteEnd</code> attributes. To reverse the appearance of a gradient, we can set the <code class="text-sm text-red-800">paletteEnd</code> value to be lower than the <code class="text-sm text-red-800">paletteStart</code> value.</li>
+  <li class="mb-2">(and 8) <b>Animate the palette start and end points</b> - we can animate the gradient by shifting its <code class="text-sm text-red-800">paletteStart/paletteEnd</code> values over time; this can be achieved both by using delta animation, and by using tweens. The gradient's <code class="text-sm text-red-800">cyclePalette</code> attribute needs to be set to <code class="text-sm text-red-800">true</code>, and the colors at the start (index 0) and end (index 999) of the palette should be the same, to make the animation smooth. Unlike entitys, gradient delta updates need to be triggered manually, which is why we include <code class="text-sm text-red-800">commence: () => myGradient.updateByDelta()</code> in the animation factory function.</li>
+  <li class="mb-2"><b>Effect of rotating (and flipping) entitys using a gradient style</b> - be aware that Scrawl-canvas gradients flip and rotate with their entitys.</li>
+  <li class="mb-2"><b>Set the entity's fillStyle to the gradient</b> - the assignment is simple: just set the attribute to the gradient's name, or to the gradient object itself.</li>
+  <li class="mb-2"><b>Cell-locked and entity-locked gradients</b> - further to point #1 above, we can make the gradient spread itself across the entity's host Cell, or we can lock the gradient to the entity &mdash; in which case absolute start/end coordinates are measured (in pixels) from the entity's <b><i>rotation-reflection point</i></b>, while relative coordinates are measured relative to the entity's dimensions.</li>
+</ol>
+
+<p><img class="mx-auto" src="/assets/lesson-12/01.png" /></p>
+
+<h3>A tribute to William Shakespeare</h3>
+
+<p>Now that we know how to create and use gradients, we can make use of them in our tribute to Mr Shakespeare &mdash; the final code for which can be seen in this CodePen:</p>
+
+<iframe height="600" style="width: 100%;" scrolling="no" title="CPC Challenge September 2021 - Week 4" src="https://codepen.io/kaliedarik/embed/zYzXvqw?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/kaliedarik/pen/zYzXvqw">
+  CPC Challenge September 2021 - Week 4</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>The structure underlying this tribute scene is a little complicated. We need to compose the scene in several parts. The first part is the star-studded sky containing the portrait of Mr Shakespeare. This is reflected in rippling water - an effect we'll implement using a noise-based displacement filter.</p>
+
+<p>To handle this complexity, we'll build out each of the parts in their own Cells. We covered canvas-based Cells in some detail in Lesson 10 (the kaleidoscope clock).</p>
+
+<p>Our first task is to delete our temporary work, then create and display the gradients:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [...setup]
+
+  canvas.set({
+    [...]
+  }).setBase({
+    [...]
+    <span class="redcode">compileOrder: 2</span>
+  });
+
+<s>  const myGradient = scrawl.makeGradient({
+    name: `${namespace}-gradient`,
+    [...]
+  });
+
+  scrawl.makeBlock({
+    name: 'temporary-block-1',
+    [...]
+  ).clone({
+    name: 'temporary-block-2',
+    [...]
+  });</s>
+
+  <i class="comment">// Create the scene displayed in the top part of the demo</i>
+  <span class="redcode">canvas.buildCell({
+    
+    name: `${namespace}-land-scene`,
+    dimensions: ["100%", "65%"],
+    compileOrder: 1,
+  });
+
+  scrawl.makeGradient({
+
+    name: `${namespace}-sky-gradient`,
+    endY: "100%",
+
+    colors: [
+      [0, "darkblue"],
+      [999, "lightblue"],
+    ],
+  });
+
+  scrawl.makeBlock({
+
+    name: `${namespace}-sky-background`,
+    group: `${namespace}-land-scene`,
+    dimensions: ["100%", "100%"],
+    fillStyle: `${namespace}-sky-gradient`,
+  });
+
+  <i class="comment">// Create the reflection</i>
+  scrawl.makeGradient({
+
+    name: `${namespace}-reflection-gradient`,
+    endY: "100%",
+
+    colors: [
+      [0, "lightgray"],
+      [999, "black"],
+    ],
+  });
+
+  scrawl.makeBlock({
+
+    name: `${namespace}-reflection-background`,
+
+    startY: "65%",
+    dimensions: ["100%", "35%"],
+
+    fillStyle: `${namespace}-reflection-gradient`,
+    lockFillStyleToEntity: true,
+  });
+
+  scrawl.makePicture({
+
+    name: `${namespace}-reflection`,
+
+    dimensions: ["100%", "35%"],
+    copyDimensions: ["100%", "100%"],
+
+    startY: "100%",
+    flipUpend: true,
+
+    asset: `${namespace}-land-scene`,
+    globalAlpha: 0.5,
+  });</span>
+
+  const myAnimation = scrawl.makeRender({
+
+    name: `${namespace}-animation`,
+    target: canvas,
+
+    afterCreated: () => scrawl.reducedMotionActions(),
+<s>    commence: () => myGradient.updateByDelta(),</s>
+  });
+
+  const startAnimation = (e) => {
+    if (e === 'reduced-motion' || checkE(e)) {
+<s>      myAnimation.run();</s>
+    }
+  };
+
+  const stopAnimation = (e) => {
+    if (e === 'reduced-motion' || checkE(e)) {
+<s>      myAnimation.halt();</s>
+    }
+  };
+
+  [...animation]
+&lt;/script>
+</code></pre>
+
+<p>We've made the reflected sky a little darker than the original sky by placing the reflection, which is translucent, over the top of a gray gradient. The reflection itself has been flipped along its horizontal axis:</p>
+
+<p><img class="mx-auto" src="/assets/lesson-12/02.png" /></p>
+
+<p>To create Mr Shakespeare's portrait we first create a stencil shape, then paint the man's image over it using composition. We then paint our existing sky over the top of that result. This is exactly the same approach as the one we took in Lesson 7 when we were building our image magnifier effect:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [...setup]
+
+  <span class="redcode">scrawl.importDomImage(".demo-images");</span>
+
+  <i class="comment">// Create the scene displayed in the top part of the demo</i>
+  canvas.buildCell({
+    name: `${namespace}-land-scene`,
+    [...]
+  });
+
+  <span class="redcode">const stencil = scrawl.makeOval({
+
+    name: `${namespace}-stencil`,
+    group: `${namespace}-land-scene`,
+
+    radiusX: "30%",
+    radiusY: "80%",
+
+    start: ["center", "bottom"],
+    handle: ["center", "center"],
+  });
+
+  scrawl.makePicture({
+
+    name: `${namespace}-camera-picture`,
+    group: `${namespace}-land-scene`,
+    asset: "bard",
+
+    width: '80%',
+    height: '150%',
+    scale: 1.2,
+    start: ["center", "top"],
+    handle: ["center", "top"],
+
+    copyWidth: "100%",
+    copyHeight: "100%",
+
+    globalCompositeOperation: "source-atop",
+    method: "fill",
+  });</span>
+
+  scrawl.makeGradient({
+    name: `${namespace}-sky-gradient`,
+    [...]
+  });
+
+  scrawl.makeBlock({
+    name: `${namespace}-sky-background`,
+    [...]
+
+    <span class="redcode">globalCompositeOperation: "destination-over",</span>
+  });
+
+  [...reflection]
+
+  [...animation]
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-12/03.png" /></p>
+
+<p>Our next task is to give the portrait a frame, and to create a border between the world and its reflection. We'll do this by using an image of some leaves, applied to the frame and border as a Scrawl-canvas pattern.</p>
+
+<h3>Creating and using Pattern styles</h3>
+
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createPattern">Canvas patterns</a> take an image and tile it repeatedly across the canvas, both horizontally and vertically. Just like color strings and gradients, patterns can be set to act as the canvas engine's <code class="text-sm text-red-800">fillStyle</code> and/or <code class="text-sm text-red-800">strokeStyle</code> for whatever shape next gets drawn on the canvas.</p>
+
+<p>... Which all sounds a bit useful-yet-boring. Until we move beyond using static image files for our pattern assets.</p>
+
+<iframe height="600" style="width: 100%;" scrolling="no" title="Codecember - Day 18 (3)" src="https://codepen.io/kaliedarik/embed/OJRxMMG?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/kaliedarik/pen/OJRxMMG">
+  Codecember - Day 18 (3)</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>Patterns can use any asset that Picture entitys can use. This includes animated sprite sheets, video feeds and files, and even other &lt;canvas> element:</p>
+
+<iframe height="600" style="width: 100%;" scrolling="no" title="Codecember - Day 18 (1)" src="https://codepen.io/kaliedarik/embed/eYdGYLp?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/kaliedarik/pen/eYdGYLp">
+  Codecember - Day 18 (1)</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>To code up our pattern, we use the Scrawl-canvas <code class="text-sm text-red-800">makePattern()</code> factory function. We'll use our leafy pattern on three separate entitys - a frame around a portrait, and a couple of borders between the world and its reflection:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [...previous code]
+
+  const stencil = scrawl.makeOval({
+    [...]
+  });
+
+  [...other portrait-related code]
+
+  <span class="redcode">const leafPattern = scrawl.makePattern({
+
+    name: `${namespace}-leaf-bank`,
+
+    <i class="comment">// We set the pattern's asset in the same ways as we set a Picture entity's asset
+    // - specifically: asset, imageSource, spriteSource, or videoSource</i>
+    asset: "leaves",
+  });
+
+  stencil.clone({
+
+    name: `${namespace}-border`,
+
+    lineWidth: 16,
+
+    <i class="comment">// We can set the style to our pattern's name ...</i>
+    strokeStyle: `${namespace}-leaf-bank`,
+    method: "draw",
+  });
+
+  scrawl.makeBlock({
+
+    name: `${namespace}-bottom-border`,
+    group: `${namespace}-land-scene`,
+
+    start: [0, "97%"],
+    dimensions: ["100%", "3%"],
+
+    <i class="comment">// ... or we can set it to the pattern object itself</i>
+    fillStyle: leafPattern,
+    method: "fill",
+  });</span>
+
+  [...reflection]
+
+  scrawl.makeBlock({
+    name: `${namespace}-reflection-background`,
+    [...]
+
+  <span class="redcode">}).clone({
+
+    name: `${namespace}-between-border`,
+    dimensions: ["100%", "3%"],
+    fillStyle: `${namespace}-leaf-bank`,
+  });</span>
+
+  [...animation]
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-12/04.png" /></p>
+
+<h3>"Turn him into stars and form a constellation in his image"</h3>
+
+<p>The next thing we're going to build are the stars scattered across the sky. We're also going to animate them &mdash; rotate each star around its center.</p>
+
+<p>We could create, and animate, each star individually ... but that is a lot of effort. A much easier approach is to create a new cell which features a couple of animated stars, then use that as a pattern to tile the stars across the sky:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [...setup]
+
+  <span class="redcode">canvas.buildCell({
+
+    name: `${namespace}-cell-pattern`,
+    dimensions: [80, 80],
+    compileOrder: 0,
+    shown: false,
+  });
+
+  scrawl.makeStar({
+
+    name: `${namespace}-background-star-1`,
+    group: `${namespace}-cell-pattern`,
+
+    start: ["25%", "25%"],
+    handle: ["50%", "20%"],
+
+    radius1: "5%",
+    radius2: "20%",
+    points: 6,
+
+    fillStyle: "gold",
+
+    delta: {
+      roll: -0.4
+    },
+
+  }).clone({
+
+    name: `${namespace}-background-star-2`,
+    start: ["75%", "75%"]
+  });</span>
+
+  [...portrait-related code]
+
+  const stencil = scrawl.makeOval({
+    [...]
+  });
+
+  scrawl.makePicture({
+    name: `${namespace}-camera-picture`,
+    [...]
+  });
+
+  scrawl.makeGradient({
+    name: `${namespace}-sky-gradient`,
+    [...]
+  });
+
+  <i class="comment">// Composition order is important</i>
+  <span class="redcode">scrawl.makeBlock({
+
+    name: `${namespace}-stars-background`,
+    group: `${namespace}-land-scene`,
+    dimensions: ["100%", "100%"],
+    globalCompositeOperation: "destination-over",
+
+    <i class="comment">// We don't always need to create a Pattern object
+    // - in this case we can just set the fillStyle to the cell's name
+    // - piping the cell through a pattern object would give us extra functionality
+    //   - for instance, to let us deform it</i>
+    fillStyle: `${namespace}-cell-pattern`,
+  });</span>
+
+  scrawl.makeBlock({
+    name: `${namespace}-sky-background`,
+    [...]
+  });
+
+  [...reflection]
+
+  [...animation]
+
+  <i class="comment">// We need to add code to allow the users to start and stop the star rotation animation</i>
+  <span class="redcode">const cellPatternGroup = scrawl.library.group[`${namespace}-cell-pattern`];</span>
+
+  const startAnimation = (e) => {
+
+    if (e === "reduced-motion" || checkE(e)) {
+
+      <span class="redcode">cellPatternGroup.setArtefacts({ noDeltaUpdates: false });</span>
+    }
+  };
+
+  const stopAnimation = (e) => {
+
+    if (e === "reduced-motion" || checkE(e)) {
+
+      <span class="redcode">cellPatternGroup.setArtefacts({ noDeltaUpdates: true });</span>
+    }
+  };
+
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-12/05.png" /></p>
+
+<p>We're getting close to completing our tribute to William Shakespeare. There's only a few more things we need to code up:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Import a font from the cloud and use it for some text placed along the inner edge of our frame.</li>
+  <li class="mb-2">Animate that text around the frame.</li>
+  <li class="mb-2">Create the ripple effect that will animate across the reflection.</li>
+</ul>
+
+<h3>How to add a Google font to a &lt;canvas> scene</h3>
+
+<p>Adding a cloud-based <a href="https://fonts.google.com/">Google Font</a> is as simple as Google can make it for us:</p>
+
+<ol class="list-decimal list-outside ml-8 mb-4">
+  <li class="mb-2">Go to the <a href="https://fonts.google.com/">Google Fonts</a> website.</li>
+  <li class="mb-2">Select the font you want to use.</li>
+  <li class="mb-2">Copy the @import code that the website gives you &mdash; or the &lt;link> code ... whatever floats your boat.</li>
+  <li class="mb-2">Paste it into our file, in the &lt;style> section (or above it, for the &lt;link> code).</li>
+</ol>
+
+<pre class="code-block"><code>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  &lt;meta charset='utf-8'>
+  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+
+  &lt;title>The World's a Stage&lt;/title>
+
+  <span class="redcode">&lt;link 
+    href="https://fonts.googleapis.com/icon?family=Material+Icons" 
+    rel="stylesheet" /></span>
+
+  &lt;style type="text/css">
+    <span class="redcode">@import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas&display=swap');</span>
+
+    [...]
+  &lt;/style>
+&lt;/head>
+
+&lt;body>
+
+  &lt;!-- ... -->
+
+  &lt;script type="module">
+
+    [...setup]
+      
+    [...portrait]
+
+    <span class="redcode">const quote = scrawl.makePhrase({
+
+      name: `${namespace}-moving-text`,
+      group: `${namespace}-land-scene`,
+
+      text: "All the world’s a stage, and all the men and women merely players",
+
+      font: '46px "Mountains of Christmas"',
+
+      start: ['center', 'center'],
+      handle: ['center', 'center'],
+      fillStyle: 'white',
+    });</span>
+
+    [...reflection]
+
+    [...animation]
+
+  &lt;/script></span>
+&lt;/body>
+&lt;/html>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-12/06.png" /></p>
+
+<p>While we're talking fonts and gradients, Scrawl-canvas can apply gradients (and patterns) to fonts in the same way as it applies them to any other entity. And yes, text gradients can be animated:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+
+  [...]
+    
+  <span class="redcode">const mygradient = scrawl.makeGradient({
+
+    name: `${namespace}-text-gradient`,
+    endY: "100%",
+
+    paletteStart: 10,
+    paletteEnd: 990,
+
+    delta: {
+      paletteStart: -1,
+      paletteEnd: -1,
+    },
+
+    cyclePalette: true,
+
+    colors: [
+      [0, "white"],
+      [170, "red"],
+      [829, "gold"],
+      [999, "white"],
+    ],
+  });</span>
+
+  const quote = scrawl.makePhrase({
+
+    name: `${namespace}-moving-text`,
+    [...]
+
+<s>    fillStyle: 'white',</s>
+    <span class="redcode">fillStyle: `${namespace}-text-gradient`,
+    lockFillStyleToEntity: true,</span>
+  });
+
+  [...]
+
+  <span class="redcode">let isTextGradientAnimated = true;</span>
+
+  const myAnimation = scrawl.makeRender({
+
+    name: `${namespace}-animation`,
+    target: canvas,
+
+    afterCreated: () => scrawl.reducedMotionActions(),
+    <span class="redcode">commence: () => isTextGradientAnimated && mygradient.updateByDelta(),</span>
+  });
+
+  const cellPatternGroup = scrawl.library.group[`${namespace}-cell-pattern`];
+
+  const startAnimation = (e) => {
+
+    if (e === "reduced-motion" || checkE(e)) {
+
+      <span class="redcode">isTextGradientAnimated = true;</span>
+      cellPatternGroup.setArtefacts({ noDeltaUpdates: false });
+    }
+  };
+
+  const stopAnimation = (e) => {
+
+    if (e === "reduced-motion" || checkE(e)) {
+
+      <span class="redcode">isTextGradientAnimated = false;</span>
+      cellPatternGroup.setArtefacts({ noDeltaUpdates: true });
+    }
+  };
+&lt;/script></code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-12/07.png" /></p>
+
+<h3>How to animate our text along a Scrawl-canvas path</h3>
+
+<p>Moving something along a path is an awesome example of computer graphics animation. For a long time coding up such an animation was a complex task involving much in the way of trigonometry and hope. Moving text along a path, and making it look convincing, was a job left to the expert animators.</p>
+
+<p>Thankfully technology has improved massively over the past decade. Animation tricks such as text path motion is now within the reach of any competent coder &mdash; not only with the help of programs such as the <a href="https://greensock.com/motionpath">GSAP MotionPath plugin</a>, <a href="https://gfxhacks.com/animate-objects-along-paths-in-ae/">Adobe After Effects</a> or <a href="https://docs.blender.org/manual/en/latest/animation/constraints/relationship/follow_path.html">Blender</a>. SVG has had its <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateMotion">&lt;animateMotion> element</a> for a while now (not supported by Internet Explorer), while the experimental <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Motion_Path">CSS Motion Path module</a> can be used in many browsers (sadly not yet supported by Safari).</p>
+
+<p>Scrawl-canvas supports both moving any artefact along a path, and animating text along a path. It performs this magic using <b><i>shape-based entitys</i></b> and the <code class="text-sm text-red-800">lockTo</code> attribute.</p>
+
+<p>We've met the <code class="text-sm text-red-800">lockTo</code> attribute already, in lesson 7. <code class="text-sm text-red-800">lockTo</code> controls how an artefact/entity will position itself on the canvas. It accepts one of five different String values:</p></p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'start'</code> &mdash; this is the default value. Artefacts will position themselves &mdash; either <i>absolutely</i> or <i>relatively</i> &mdash; in line with the values given in their <code class="text-sm text-red-800">startX, startY, handleX, handleY</code> attributes.</li>
+  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'pivot'</code> &mdash; this is where we tell our artefact to position itself with reference to another artefact's start values.</li>
+  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'mimic'</code> &mdash; is a more nuanced form of the <code class="text-sm text-red-800">pivot</code> concept.</li>
+  <li class="mb-2"><b><code class="text-sm text-red-800 font-bold">'path'</code> &mdash; use a shape-based entity's path to determine our artefact's position on the canvas.</b></li>
+  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'mouse'</code> &mdash; make the artefact position itself with reference to the mouse cursor's position over the canvas.</li>
+</ul>
+
+<p>So ... what is a shape-based entity?</p>
+
+<p>The <b>Shape entity</b> is Scrawl-canvas's classic shape-based entity. It uses an <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d">SVG 'path commands' string</a> to define its shape.</p>
+
+<p>Path commands, however, are not easy to work with &mdash; most people use thrid party software such as <a href="https://www.adobe.com/uk/products/illustrator.html">Adobe Illustrator</a> or <a href="https://inkscape.org/">Inkscape</a> to generate these cryptic strings from easy-to-use graphical interfaces.</p>
+
+<p>Which is why Scrawl-canvas also provides some pre-defined shape-based entitys: <b>Bezier, Cog, Line, LineSpiral, Oval, Polygon, Polyline, Quadratic, Rectangle</b> (for those ever-popular rounded corners), <b>Spiral, Star, Tetragon.</b> Together with the <b>Shape</b> entity, these can all be used as paths along which we can animate other artefacts/entitys.</p>
+
+<p>We're already using an Oval entity in our tribute scene. Let's animate our text along that:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [...]
+
+  stencil.clone({
+
+    name: `${namespace}-border`,
+    [...]
+
+    <i class="comment">// Enable our Oval entity to act as a path ...</i>
+    <span class="redcode">useAsPath: true,
+    constantPathSpeed: true,</span>
+  });
+
+  [...]
+
+  const quote = scrawl.makePhrase({
+
+    name: `${namespace}-moving-text`,
+    [...]
+
+    <i class="comment">// ... and setup our phrase to move itself along the path</i>
+    <span class="redcode">path: `${namespace}-border`,
+    lockTo: 'path',
+    constantSpeedAlongPath: true,
+    addPathRotation: true,
+    delta: {
+      pathPosition: -0.001,
+    },</span>
+  });
+
+  [...]
+
+  const startAnimation = (e) => {
+
+    if (e === "reduced-motion" || checkE(e)) {
+
+      isTextGradientAnimated = true;
+      <span class="redcode">quote.set({ noDeltaUpdates: false });</span>
+      cellPatternGroup.setArtefacts({ noDeltaUpdates: false });
+    }
+  };
+
+  const stopAnimation = (e) => {
+
+    if (e === "reduced-motion" || checkE(e)) {
+
+      isTextGradientAnimated = false;
+      <span class="redcode">quote.set({ noDeltaUpdates: true });</span>
+      cellPatternGroup.setArtefacts({ noDeltaUpdates: true });
+    }
+  };
+&lt;/script>
+</code></pre>
+
+<p>The results of the above code are ... not quite what we were expecting:</p>
+
+<p><img class="mx-auto" src="/assets/lesson-12/08.png" /></p>
+
+<p>There's no errors in our code; the Phrase entity is animating itself along the Oval entity's path quite happily.</p>
+
+<p>The problem is that the Phrase is acting as a single block of rigid text as it moves along the path. Our aim is to have the phrase text animate along the path, with <b><i>each letter of the text following the path's course</i></b>.</p>
+
+<p>Because Phrase entitys have this dual requirement &mdash; to sometimes move along the path as a single block, while at other times move each letter of their text along the path &mdash; they have some additional attributes which we need to set up:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  const quote = scrawl.makePhrase({
+
+    name: `${namespace}-moving-text`,
+    group: `${namespace}-land-scene`,
+
+    text: "All the world’s a stage, and all the men and women merely players",
+
+    font: '46px "Mountains of Christmas"',
+
+    start: ['center', 'center'],
+<s>    handle: ['center', 'center'],</s>
+    fillStyle: `${namespace}-text-gradient`,
+    lockFillStyleToEntity: true,
+
+<s>    path: `${namespace}-border`,
+    lockTo: 'path',
+    constantSpeedAlongPath: true,
+    addPathRotation: true,
+    delta: {
+      pathPosition: -0.001,
+    },</s>
+
+    <span class="redcode">textPath: `${namespace}-border`,
+    handleY: -8,
+    constantSpeedAlongPath: true,
+    delta: {
+      textPathPosition: -0.001,
+    },
+
+    letterSpacing: 5,
+    lineHeight: 0.5,
+    justify: 'center',</span>
+  };
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-12/09.png" /></p>
+
+<h3>Noise + displacement = ripples across the reflection</h3>
+
+<p>The final effect we need to code up in this (over-long) lesson is some movement in our reflection. At the moment the reflection inverts and squashes the world above it, and adds a bit of extra gray gradient to help further differentiate it.</p>
+
+<p>The reflection is acting as a mirror. We want to add a more watery, rippling effect to it to help bring the scene to life. And the simplest way to do this is with a displacement filter.</p>
+
+<p><b>Displacement mapping</b> is a powerful tool which can be used for a variety of purposes such as to give a 2D image some depth, or to add some texture from one image into another image &mdash; as explained in this <a href="https://digital-photography-school.com/get-creative-displacement-maps-photoshop/">Digital Photography School article</a> (which uses Adobe Photoshop to create the effects), and this <a href="https://www.youtube.com/watch?v=JzJohgzY4S0">Vale Productions video</a> (using Adobe After Effects).</p>
+
+<p>Closer to the browser, we can create displacement effects using SVG filters - specifically the <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap">SVG &lt;feDisplacementMap> filter primative</a> &mdash; a scary-looking filter effect which is explored in much greater detail in this <a href="https://www.smashingmagazine.com/2021/09/deep-dive-wonderful-world-svg-displacement-filtering/">Smashing Magazine article</a>.</p>
+
+<p><b>Scrawl-canvas includes a displacement filter</b>, similar to the SVG filter. It takes in a displacement map image alongside some attributes defining how to apply the image to an entity (or group of entitys, or cell), and outputs a warped version of that entity (or group, or cell).</p>
+
+<p>The effect we are after is fairly gentle: we want to animate some distortions across the reflection. To achieve this we need to use a grayscale image made up of semi-random splodges of white-to-black gradiated areas. We can then create our moving ripples by feeding just a part of that image into our filter, moving this <i>window</i> across the image as time progresses.</p>
+
+<p><img class="mx-auto" src="/assets/lesson-12/10.png" /></p>
+
+<p>What we need is some <a href="https://en.wikipedia.org/wiki/Perlin_noise">Perlin noise</a>. <b>We can use Scrawl-canvas to generate this noise for us.</b> Once generated, we can feed a small window of that noise into our filter to create the displacement, and we can use Scrawl-canvas tweens to move the coordinates of our window around the noise image to simulate movement. Here's the final code installment:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [...]
+
+  <i class="comment">// Generate our Perlin noise</i>
+  <span class="redcode">scrawl.makeNoiseAsset({
+
+    name: `${namespace}-noise-generator`,
+    width: 600,
+    height: 600,
+    noiseEngine: "improved-perlin",
+  });
+
+  <i class="comment">// Activate our noise - this Picture entity is invisible</i>
+  scrawl.makePicture({
+
+    name: `${namespace}-noise-display`,
+    asset: `${namespace}-noise-generator`,
+    visibility: false,
+  });
+
+  <i class="comment">// Upload the noise image into the Scrawl-canvas filter system</i>
+  const noiseFilter = scrawl.makeFilter({
+
+    name: `${namespace}-noise`,
+    method: "image",
+    <i class="comment">// The asset here is the noise asset, not the picture entity</i>
+    asset: `${namespace}-noise-generator`,
+    width: 800,
+    height: 600,
+    copyX: "20%",
+    copyY: "20%",
+    copyWidth: "20%",
+    copyHeight: "20%",
+    lineOut: "map",
+  });
+
+  <i class="comment">// Build the displacement filter</i>
+  scrawl.makeFilter({
+
+    name: `${namespace}-displace`,
+    method: "displace",
+    lineMix: "map",
+    scaleX: 20,
+    scaleY: 20,
+  });</span>
+
+  <i class="comment">// Apply the noise and displacement filter to our reflection</i>
+  scrawl.makePicture({
+
+    name: `${namespace}-reflection`,
+    [...]
+
+    <span class="redcode">filters: [`${namespace}-noise`, `${namespace}-displace`],</span>
+  });
+
+  [...animation]
+
+  const startAnimation = (e) => {
+
+    if (e === "reduced-motion" || checkE(e)) {
+
+      isTextGradientAnimated = true;
+      quote.set({ noDeltaUpdates: false });
+      <span class="redcode">xTween.resume();
+      yTween.resume();</span>
+      cellPatternGroup.setArtefacts({ noDeltaUpdates: false });
+    }
+  };
+
+  const stopAnimation = (e) => {
+
+    if (e === "reduced-motion" || checkE(e)) {
+
+      isTextGradientAnimated = false;
+      quote.set({ noDeltaUpdates: true });
+      <span class="redcode">xTween.halt();
+      yTween.halt();</span>
+      cellPatternGroup.setArtefacts({ noDeltaUpdates: true });
+    }
+  };
+
+  [...]
+
+  <i class="comment">// Build our animation tweens</i>
+  <span class="redcode">const xTween = scrawl.makeTween({
+
+    name: `${namespace}-x-tween`,
+
+    targets: noiseFilter,
+    duration: 34600,
+    cycles: 0,
+    reverseOnCycleEnd: true,
+
+    definitions: [{
+      attribute: "copyX",
+      start: "10%",
+      end: "70%",
+      engine: "easeOutIn",
+    }],
+  }).run();
+
+  const yTween = scrawl.makeTween({
+
+    name: `${namespace}-y-tween`,
+
+    targets: noiseFilter,
+    duration: 27900,
+    cycles: 0,
+    reverseOnCycleEnd: true,
+
+    definitions: [{
+      attribute: "copyY",
+      start: "10%",
+      end: "70%",
+      engine: "easeOutIn",
+    }],
+  }).run();</span>
+
+&lt;/script>
+</code></pre>
+
+<h3>Over to you ...</h3>
+
+<p>We've covered a lot of ground in this lesson, and yet we've barely scratched the surface of the effects and animations we can create using gradients, patterns and noise. For more examples of what is possible, check out the <a href="https://codepen.io/collection/RzzMjw">Scrawl-canvas collection on CodePen</a>. For further details on how to build and use these tools look at the <a href="../demonstrations">Demos on this site</a> - in particular:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Canvas-003: Linear gradients</li>
+  <li class="mb-2">Canvas-004: Radial gradients</li>
+  <li class="mb-2">Canvas-049: Conic gradients (only in browsers that support this functionality)</li>
+  <li class="mb-2">Canvas-005: Cell-locked, and Entity-locked, gradients; animating gradients by delta, and by tween</li>
+  <li class="mb-2">Canvas-009: Pattern styles; Entity web link anchors; Dynamic accessibility</li>
+  <li class="mb-2">Canvas-029: Phrase entitys and gradients</li>
+  <li class="mb-2">Canvas-035: Pattern style functionality</li>
+  <li class="mb-2">Canvas-044: Building more complex patterns</li>
+  <li class="mb-2">Canvas-054: Animated contour lines; map a complex gradient to NoiseAsset output</li>
+  <li class="mb-2">Filters-017: Parameters for displace filter</li>
+  <li class="mb-2">Filters-019: Using a Noise asset with a displace filter</li>
+</ul>
+
+

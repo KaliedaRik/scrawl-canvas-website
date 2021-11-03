@@ -1,0 +1,130 @@
+<h2>Issue</h2>
+<p>We need to add Scrawl-canvas functionality to a vanilla HTML5/CSS/JS project.</p>
+
+<h2>Solution</h2>
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+    &lt;meta charset='utf-8'>
+    &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+
+    &lt;title>Hello world&lt;/title>
+&lt;/head>
+
+&lt;body>
+
+    <b class="text-red-700">&lt;canvas id="mycanvas">&lt;/canvas></b>
+
+    &lt;script type="module">
+
+    	<b class="text-red-700">import scrawl from 'https://unpkg.com/scrawl-canvas';
+    	let canvas = scrawl.library.canvas.mycanvas;</b>
+
+    	[...]
+
+    &lt;/script>
+
+&lt;/body>
+&lt;/html>
+</code></pre>
+
+<h2>Discussion</h2>
+
+<p>The simplest way to include the Scrawl-canvas package in a project is to fetch it from the <a href="https://unpkg.com/">unpkg.com</a> Content Distribution Network.</p>
+
+<p>The fetch is performed by the browser when we issue the <code class="text-sm text-red-800">import</code> statement inside a <code class="text-sm text-red-800">&lt;script type="module"></code> tag, in the html file where we'll be using the Scrawl-canvas functionality.</p>
+
+<h3>Specified vs unspecified versions of the package</h3>
+
+<p>The <b>unspecified</b> URL - <code class="text-sm text-red-800">https://unpkg.com/scrawl-canvas</code> - will always return the <b><i>latest version</i></b> of the library. This can be dangerous: if the canvas display code following the import statement relies on functionality that has been deprecated or removed from the latest version of Scrawl-canvas, then the web-page will mis-perform or break.</p>
+
+<p><b>It is much safer to import a specified version</b> of the Scrawl-canvas library - for instance: <code class="text-sm text-red-800">https://unpkg.com/scrawl-canvas@8.6.2</code> will always download version 8.6.2 of the library.</p>
+
+<h3>Alternative methods</h3>
+
+<p>If you prefer not to rely on the unpkg.com CDN, then you can download a zip file of the library, either from <a href="https://github.com/KaliedaRik/Scrawl-canvas">GitHub</a> or from the link in the footer of this site.</p>
+
+<p>Unzip the file into your chosen location in the project, then import the library using the following statement:</p>
+
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script type="module">
+
+    import scrawl from './relative-or-absolute/path/to/scrawl-canvas/min/scrawl.js';
+
+    [...]
+
+&lt;/script>
+</code></pre>
+
+<h3>Common questions</h3>
+
+<p><b>Do I need to process the import before I can use it?</b>
+	<br />No. Scrawl-canvas has no dependencies and does not require any pre-processing before it can be used.</p>
+
+<p><b>Must I include a canvas element in the html file for Scrawl-canvas to work with?</b>
+	<br />No. You can create a new canvas element and add it to the web page using the <code class="text-sm text-red-800">scrawl.addCanvas</code> factory function.</p>
+
+<h3>Example</h3>
+
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+    &lt;meta charset='utf-8'>
+    &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+
+    &lt;title>Hello world&lt;/title>
+&lt;/head>
+
+&lt;body>
+
+    &lt;canvas id="mycanvas">&lt;/canvas>
+
+    &lt;script type="module">
+
+    	import scrawl from 'https://unpkg.com/scrawl-canvas';
+
+    	let canvas = scrawl.library.canvas.mycanvas;
+
+        let namespace = canvas.name;
+
+        canvas.set({
+
+            width: 400,
+            height: 400,
+            isComponent: true,
+
+        }).setAsCurrentCanvas();
+
+        scrawl.makePhrase({
+
+            name: `${namespace}-label`,
+            text: 'Hello, world!',
+
+            width: '100%',
+            justify: 'center',
+
+            font: '4.5em bold Garamond, sans-serif',
+
+            startX: 'center',
+            startY: 'center',
+
+            handleX: 'center',
+            handleY: 'center',
+
+            fillStyle: 'lightblue',
+
+            lineWidth: 2,
+            strokeStyle: 'blue',
+
+            method: 'fillThenDraw',
+        });
+
+        scrawl.makeRender({
+
+            name: `${namespace}-animation`,
+            target: canvas,
+        });
+    &lt;/script>
+
+&lt;/body>
+&lt;/html>
+</code></pre>

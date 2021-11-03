@@ -1,0 +1,1067 @@
+<style>
+  .code-block {
+    border-color: #e2e8f0;
+    background-color: #f7fafc;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+  }
+  .code-block code {
+    line-height: 1.25;
+    color: #4a5568;
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    font-size: 0.875rem;
+  }
+  .code-block .redcode {
+    color: #9b2c2c;
+  }
+  .code-block .heavycode {
+    font-weight: 700;
+    color: #9b2c2c;
+  }
+  .code-block .comment {
+    color: #4a5568;
+    font-size: 0.75rem;
+  }
+</style>
+
+<p>In the previous lesson we discovered how to:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Break down a complex canvas display into more manageable parts, using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules">modules</a>.</li>
+  <li class="mb-2">Reuse our code by implementing an an <a href="https://en.wikipedia.org/wiki/Application_programming_interface">Application Programming Interface</a> for each of our modules.</li>
+  <li class="mb-2">Test our code in various ways.</li>
+</ul>
+
+<p>The one thing we did <b><i>not</i></b> do was build any actual graphs. We'll fix that in this lesson, creating both a <a href="https://www.smashingmagazine.com/2017/03/understanding-stacked-bar-charts/">stacked bar graph</a>, and a series of <a href="https://en.wikipedia.org/wiki/Line_chart">line graphs</a>, to fit into our chart frame.</p>
+
+<p><img class="mx-auto" src="/assets/lesson-09/01.png" /></p>
+
+<h2>The data</h2>
+
+<p>Rather than make up some pretend data for this exercise, we'll use real data: <a href="https://data.london.gov.uk/dataset/recorded_crime_rates">recorded crime figures from across London</a>, as reported by the Metropolitan Police.</p>
+
+<p>For many projects, we would get our graph data by performing a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch call</a> to an API on a remote server. The fetch would return the data in either <a href="https://en.wikipedia.org/wiki/JSON">JSON</a> or <a href="https://en.wikipedia.org/wiki/XML">XML</a> formats (<a href="https://en.wikipedia.org/wiki/YAML">YAML</a> is also popular).</p>
+
+<p>Unfortunately our data comes from a site that doesn't supply a convenient API, so we'll have to make our own JSON files. We don't need to use the entire dataset, just the time series data for a few selected areas. The data structure looks like this:</p>
+
+<pre class="code-block"><code>{
+  "area": "area-label",
+  "years": ["year-1-label", "year-2-label", ...],
+  "crimesByCategory": {
+    "category-1-label": [year-1-data, year-2-data, ...],
+    "category-2-label": [year-1-data, year-2-data, ...],
+    ...
+  }
+}
+
+<b>crimes-in-hackney.json</b>
+{"area":"Hackney","years":["1999-00","2000-01","2001-02","20
+02-03","2003-04","2004-05","2005-06","2006-07","2007-08","20
+08-09","2009-10","2010-11","2011-12","2012-13","2013-14","20
+14-15","2015-16","2016-17"],"crimesByCategory":{"Burglary":[
+4805,4298,4287,4807,4327,3897,3547,2687,2765,2752,2564,2523,
+2197,2554,2888,2517,2580,2289],"Criminal Damage":[5156,4828,
+4898,4717,4241,4086,3299,3142,3058,2403,2378,2204,2110,1811,
+1663,1955,2030,1643],"Drugs":[999,951,969,1256,1655,2105,212
+5,2466,4511,4674,3530,2532,2534,2017,1792,1224,1411,1006],"F
+raud or Forgery":[2920,2419,2356,1828,1709,1662,1015,786,896
+,842,931,813,809,690,20,28,28,15],"Other Notifiable Offences
+":[449,356,347,371,402,311,352,340,408,421,408,341,312,360,3
+96,450,474,449],"Robbery":[2437,2275,3009,2466,2441,1926,185
+6,1685,1313,1103,1094,1080,1222,1232,1015,993,1000,964],"Sex
+ual Offences":[377,371,370,370,415,454,463,385,375,420,461,4
+14,371,377,436,555,648,604],"Theft and Handling":[15209,1642
+4,16831,16642,16704,14762,14502,12521,11862,10634,10714,1216
+1,12948,13064,11769,10386,10564,10340],"Violence Against the
+ Person":[6655,6320,6702,6810,7141,7289,7471,7148,7053,6464,
+6641,5948,5399,5699,6052,7598,8474,7623]}}
+
+<b>crimes-in-heathrow.json</b>
+{"area":"Heathrow","years":["1999-00","2000-01","2001-02","2
+002-03","2003-04","2004-05","2005-06","2006-07","2007-08","2
+008-09","2009-10","2010-11","2011-12","2012-13","2013-14","2
+014-15","2015-16"],"crimesByCategory":{"Burglary":[102,51,78
+,67,44,58,35,30,21,19,9,17,7,4,16,12,17],"Criminal Damage":[
+202,187,151,118,120,102,130,117,65,63,62,61,76,67,74,81,70],
+"Drugs":[40,44,61,73,84,49,50,57,90,108,54,49,130,84,77,66,8
+3],"Fraud or Forgery":[879,673,627,784,787,677,882,504,319,3
+15,300,255,247,105,45,29,26],"Other Notifiable Offences":[95
+7,955,711,510,508,631,552,489,453,472,414,357,361,303,307,84
+2,1061],"Robbery":[6,6,16,10,8,7,7,9,4,1,4,4,4,4,2,5,2],"Sex
+ual Offences":[22,22,33,22,20,33,29,36,28,40,33,27,31,29,20,
+19,26],"Theft and Handling":[4154,4227,4350,4368,4149,4107,3
+714,3287,2736,2309,2039,1910,1946,1815,1661,1638,1500],"Viol
+ence Against the Person":[355,325,344,371,351,504,625,524,68
+6,490,368,270,277,287,282,436,292]}}
+
+<b>crimes-in-kingston.json</b>
+{"area":"Kingston","years":["1999-00","2000-01","2001-02","2
+002-03","2003-04","2004-05","2005-06","2006-07","2007-08","2
+008-09","2009-10","2010-11","2011-12","2012-13","2013-14","2
+014-15","2015-16","2016-17"],"crimesByCategory":{"Burglary":
+[1503,1349,1180,985,939,984,1188,1038,1069,1136,1177,1240,13
+23,1381,1111,1003,885,804],"Criminal Damage":[2650,2649,2602
+,2738,3093,2835,2785,2290,1780,1627,1376,1329,1175,1048,899,
+1030,1023,899],"Drugs":[561,505,378,377,350,364,425,552,676,
+640,555,542,647,426,703,779,882,592],"Fraud or Forgery":[148
+9,1313,1206,1059,1179,1140,753,445,368,428,463,478,567,306,9
+,11,17,10],"Other Notifiable Offences":[154,160,154,165,192,
+118,94,137,168,145,160,148,132,112,111,161,211,146],"Robbery
+":[175,245,318,305,292,257,337,302,285,273,265,237,249,217,1
+42,97,122,449],"Sexual Offences":[116,120,153,150,162,181,17
+6,152,150,113,149,178,166,163,150,227,238,292],"Theft and Ha
+ndling":[5579,5429,5153,5694,6655,6291,6143,5186,5205,4743,4
+605,4768,4761,4333,4110,3824,3667,3212],"Violence Against th
+e Person":[2422,2495,2667,2857,3447,3520,3240,3003,2575,2191
+,2262,2230,2212,2212,2053,2642,3110,2758]}}
+</code></pre>
+
+<h2>Coding the stacked bar module</h2>
+
+<p>... Let's be honest here.</p>
+
+<p>There's a reason why so many (often excellent) <a href="https://en.wikipedia.org/wiki/Comparison_of_JavaScript_charting_libraries">Javascript charting libraries</a> exist: coding up a graph is <i>tedious work!</i></p>
+
+<p>We have to calculate point positions and join them with lines, or we need to calculate rectangular widths and heights and then position those precisely on the canvas. We have to size and position the titles, the axes, the legends. We need to get the colors right ... much of this work is boilerplate, and little of it is fun.</p>
+
+<p>What can make the job a little easier is if we build a <b>general template</b> which will take in data in a specified format and produce a graph from it. The data could be about anything: <a href="https://www.ncdc.noaa.gov/cdo-web/webservices/v2">climate change</a>, or <a href="https://www.movebank.org/cms/movebank-content/about-movebank">animal populations</a>, or <a href="https://iexcloud.io/core-data-catalog/">financial updates</a>, or <a href="https://api.data.gov/">Government data</a>, or <a href="https://documenter.getpostman.com/view/10808728/SzS8rjbc?version=latest">chasing plagues</a> ... anything that can be interrogated and presented to the user in graphical format. As long as that data can be manipulated into a format acceptable to our template, it will produce a graph of it.</p>
+
+<p>So what will this output look like?</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">We want a stacked bar chart showing total numbers in each category, by year. If the data source supplies two years' worth of data for each category, we want to see a graph with two bars in it.</li>
+  <li class="mb-2">The number of data categories is not fixed. The data source could include one category, or ten. Each category will have its own portion of each bar. Each category will also get its own color, so we can see how that category's numbers grow and decline over the years.</li>
+  <li class="mb-2">For the axis labels: the X axis will show the first and last years covered by the data; the Y axis will go from zero to the largest annual total, rounded up to the nearest thousand.</li>
+  <li class="mb-2">We want the graph to be interactive: when the user hovers over (or taps on) a category segment in a bar it will be highlighted in some way, and the chart frame's subtitle will update with information about that category in that year.</li>
+</ul>
+
+<p>... It's a big wishlist! Still, nothing in this code &mdash; which we'll save in a file called <code class="text-sm text-red-800">simple-graph-stacked-bars.js</code> &mdash; is new to us:</p>
+
+<pre class="code-block"><code><i class="comment">/*
+Data format requirements - a Javascript object with structure:
+{
+  area:       'area-label',
+  yearLabels:   ['year-1-label', 'year-2-label', ...],
+  categoryLabels: ['category-1-label', 'category-2-label', ...],
+  yearData: {
+    'year-1-label': [category-1-data, category-2-data, ...],
+    'year-2-label': [category-1-data, category-2-data, ...],
+    ...
+  }
+}
+*/</i>
+
+<span class="redcode">import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+<i class="comment">// We need to adapt the chart frame with data specific to this graph</i>
+import * as frame from './simple-chart-frame.js';
+
+<i class="comment">// Calculate category totals in the largest year</i>
+<i class="comment">// - Rounded up to nearest thousand</i>
+<i class="comment">// - We use this value as the upper label on our Y axis</i>
+const extractHighestAnnualMaximum = (yearLabels, yearData) => {
+
+  let max = 0;
+
+  for (let i = 0; i < yearLabels.length; i++) {
+
+    let total = yearData[yearLabels[i]].reduce((a, v) => a + v, 0);
+    if (total > max) max = total;
+  }
+  return ((Math.floor(max / 1000)) * 1000) + 1000;
+};
+
+<i class="comment">// Variables shared across functions</i>
+let group;
+
+<i class="comment">// The exported 'build' function</i>
+const build = function (namespace, canvas, data) {
+
+  <i class="comment">// Local variables defined at the top of the build function</i>
+  let area = data.area,
+    yearLabels = data.yearLabels, 
+    categoryLabels = data.categoryLabels, 
+    yearData = data.yearData,
+
+    gap = 1,
+
+    <i class="comment">// Import and adapt some Magic numbers from the frame module</i>
+    graphWidth = frame.graphWidth,
+    graphHeight = frame.graphHeight,
+    graphBottom = frame.graphBottom,
+    graphLeft = frame.graphLeft + (gap / 2),
+
+    <i class="comment">// Graph baseline calculations</i>
+    maximumBarTotal = extractHighestAnnualMaximum(yearLabels, yearData),
+    numberOfYears = yearLabels.length,
+    barDistance = graphWidth / numberOfYears,
+    barWidth = `${barDistance - gap}%`,
+    singleCrimeHeight = graphHeight / maximumBarTotal;
+
+  <i class="comment">// Create group</i>
+  group = scrawl.makeGroup({
+
+    name: `${namespace}-bargroup`,
+    host: canvas.base.name,
+    order: 2,
+    visibility: false,
+  });
+
+  <i class="comment">// Build bars</i>
+  yearLabels.forEach((year, yearIndex) => {
+
+    let xPosition = (barDistance * yearIndex) + graphLeft,
+      localHeight = 0;
+
+    categoryLabels.forEach((category, categoryIndex) => {
+
+      let categoryItem = yearData[year][categoryIndex],
+        crimeHeight = categoryItem * singleCrimeHeight,
+        localSaturation = 30 + ((50 / categoryLabels.length) * categoryIndex),
+        localColor = categoryIndex % 2;
+
+      localHeight += crimeHeight;
+
+      scrawl.makeBlock({
+
+        name: `${namespace}-${year}-${category}`,
+        group: group,
+
+        width: barWidth,
+        height: `${crimeHeight}%`,
+
+        startX: `${xPosition}%`,
+        startY: `${graphBottom - localHeight}%`,
+
+        lineWidth: 6,
+        strokeStyle: 'yellow',
+
+        fillStyle: `hsla(${localColor ? 243 : 0}, 100%, ${localSaturation}%, 1)`,
+        method: 'fill',
+
+        onEnter: function () {
+
+          group.setArtefacts({
+            method: 'fill',
+            order: 0,
+          });
+
+          this.set({
+            method: 'fillThenDraw',
+            order: 1,
+          });
+
+          <i class="comment">// Because an entity can belong to multiple Group objects</i>
+          <i class="comment">// - It won't know which Group will need to be resorted</i>
+          <i class="comment">// - So we directly invoke a resort on our Group object here</i>
+          group.batchResort = true;
+
+          <i class="comment">// We can display our data numbers in a different color using a <b>section class</b></i>
+          <i class="comment">// - We defined the class, as part of the subtitle Phrase, in the previous lesson</i>
+          frame.updateSubtitle(`${category} in ${year}: <b>§RED§</b>${categoryItem.toLocaleString()}`);
+        },
+      });
+    });
+  });
+
+  <i class="comment">// Personalize the chart frame to meet this graph's requirements</i>
+  frame.updateSubtitle('No data selected');
+  frame.updateXLeft(yearLabels[0]);
+  frame.updateXRight(yearLabels[numberOfYears - 1]);
+  frame.updateYTop(maximumBarTotal.toLocaleString());
+
+  show();
+};
+
+<i class="comment">// Other exported functions</i>
+const kill = () => group.kill(true);
+const hide = () => group.visibility = false;
+const show = () => group.visibility = true;
+
+export {
+  build,
+  kill,
+
+  hide,
+  show,
+}</span>
+</code></pre>
+
+<h3>Plumbing our graph into our chart</h3>
+
+<p>We have our data sources (the json files), and we have our frame and graph modules which, together, make up our chart. Now we need to bring them together.</p>
+
+<p>For this task we can code up a new module &mdash; <code class="text-sm text-red-800">london-crime-stacked-bars.js</code> &mdash; which acts as a <b>junction</b>. It performs the following tasks:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Fetch data from our (specific) remote API, which is an asynchronous task best handled with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promises</a>.</li>
+  <li class="mb-2">Change the format of the data returned by the fetch call into the structure expected by our graph module.</li>
+  <li class="mb-2">Build the graph.</li>
+  <li class="mb-2">Update the frame with any additional data not returned by the fetch call.</li>
+  <li class="mb-2">Export functions which can be used by our controller module (<code class="text-sm text-red-800">london-crime-graphic.js</code>).</li>
+</ul>
+
+<pre class="code-block"><code><span class="redcode">import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+<i class="comment">// We need to adapt the graph frame with data specific to this graph</i>
+import * as frame from './simple-chart-frame.js';
+
+<i class="comment">// The graph we are adapting our data for</i>
+import * as graph from './simple-graph-stacked-bars.js'
+
+<i class="comment">// The asynchronous data fetch</i>
+const getRawData = (file) => {
+
+  return new Promise ((resolve, reject) => {
+
+    fetch (new Request(file))
+    .then (response => {
+
+      if (!response.ok) throw new Error(`Network Error ${response.status}: ${response.statusText}`);
+      return response.json();
+    })
+    .then (rawData => resolve(rawData))
+    .catch (e => reject(e));
+  });
+}
+
+<i class="comment">// Rearrange data</i>
+<i class="comment">// - From 'by-category' - as supplied in the raw data</i>
+<i class="comment">// - To 'by-year' - required for this graph's display</i>
+const extractDataByYear = (yearLabels, categoryLabels, categoryData) => {
+
+  let d = {};
+
+  for (let i = 0; i < yearLabels.length; i++) {
+
+    d[yearLabels[i]] = [];
+  }
+
+  for (let i = 0; i < categoryLabels.length; i++) {
+
+    let cData = categoryData[categoryLabels[i]];
+
+    for (let j = 0; j < yearLabels.length; j++) {
+
+      d[yearLabels[j]].push(cData[j]);
+    }
+  }
+  return d;
+};
+
+<i class="comment">// The exported 'build' function</i>
+const build = function (namespace, canvas, dataSource) {
+
+  getRawData (dataSource)
+  .then (rawData => {
+
+    <i class="comment">// Reconstruct data into formats required by this graph type</i>
+    let area = rawData.area,
+      yearLabels = rawData.years,
+      categoryData = rawData.crimesByCategory,
+      categoryLabels = Object.keys(categoryData),
+      yearData = extractDataByYear(yearLabels, categoryLabels, categoryData);
+
+    let data = {
+      area,
+      yearLabels,
+      categoryLabels,
+      yearData,
+    };
+
+    <i class="comment">// Build the graph</i>
+    graph.build(namespace, canvas, data);
+
+    <i class="comment">// Update the frame with additional data</i>
+    frame.updateTitle(`${data.area} Crime Statistics - Overview`);
+    frame.updateBackground(data.area);
+  })
+  .catch (error => console.log(error.message));
+};
+
+<i class="comment">// Other exported functions</i>
+<i class="comment">// - Piping these through from graph module exported functions</i>
+const kill = graph.kill;
+const hide = graph.hide;
+const show = graph.show;
+
+export {
+  build,
+  kill,
+
+  hide,
+  show,
+}</span>
+</code></pre>
+
+<h3>Plumbing our chart into our web page</h3>
+
+<p>Our web page (<code class="text-sm text-red-800">index.html</code>) currently shows an empty chart frame. We added that chart to the web page's &lt;canvas> element in our controller module, <code class="text-sm text-red-800">london-crime-graphic.js</code>.</p>
+
+<p>Both of these files need to be updated:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Add some control elements to our web page so the user can change between data sets and graph views.</li>
+  <li class="mb-2">Manage user interactions with these new control elements.</li>
+</ul>
+
+<p>Below is the updated code for <code class="text-sm text-red-800">index.html</code>. Note that in the <i>Crime Category</i> selector we set each &lt;option> element's value to the category names that (we know) we will be receiving in our fetched data. Remember that we set our &lt;img> element's id values to these same values.</p>
+
+<p>This sort of consistent naming can save us a world of heartbreak when it comes to bug-fixing, maintaining and updating our code in the months and years to follow.</p>
+
+<pre class="code-block"><code>&lt;body>
+
+  [...]
+
+  <span class="redcode">&lt;div id="display-controls">
+    &lt;p>Select area: 
+      &lt;select class="control-item" id="areas">
+        &lt;option value="Hackney">Hackney&lt;/option>
+        &lt;option value="Kingston">Kingston upon Thames&lt;/option>
+        &lt;option value="Heathrow">Heathrow Airport&lt;/option>
+      &lt;/select>
+    &lt;/p>
+
+    &lt;p>Graph type: 
+      &lt;select class="control-item" id="graph-types">
+        &lt;option value="bars">Stacked bar graph - all data&lt;/option>
+        &lt;option value="lines">Line graphs by crime category&lt;/option>
+      &lt;/select>
+    &lt;/p>
+
+    &lt;p>Crime category: 
+      &lt;select class="control-item" id="crime-categories">
+        &lt;option value="Burglary">Burglary&lt;/option>
+        &lt;option value="Criminal Damage">Criminal Damage&lt;/option>
+        &lt;option value="Drugs">Drugs&lt;/option>
+        &lt;option value="Fraud or Forgery">Fraud or Forgery&lt;/option>
+        &lt;option value="Other Notifiable Offences">Other Notifiable Offences&lt;/option>
+        &lt;option value="Robbery">Robbery&lt;/option>
+        &lt;option value="Sexual Offences">Sexual Offences&lt;/option>
+        &lt;option value="Theft and Handling">Theft and Handling&lt;/option>
+        &lt;option value="Violence Against the Person">Violence Against the Person&lt;/option>
+      &lt;/select>
+    &lt;/p>
+  &lt;/div></span>
+
+  [...]
+&lt;/body>
+</code></pre>
+
+<p>... And the updated code for <code class="text-sm text-red-800">london-crime-graphic.js</code>:</p>
+
+<pre class="code-block"><code>import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+let canvas = scrawl.library.canvas.mycanvas,
+  namespace = 'London-crimes';
+
+import * as frame from './simple-chart-frame.js';
+<span class="redcode">import * as barGraph from './london-crime-stacked-bars.js';</span>
+
+[... canvas capture]
+
+[... report function]
+
+[... RenderAnimation]
+
+<i class="comment">// Add an event listener to cascade user interactions with the canvas to our entitys</i>
+<span class="redcode">scrawl.addListener(
+  'move', 
+  () => canvas.cascadeEventAction('move'), 
+  canvas.domElement 
+);
+
+<i class="comment">// Give our web page some state, so we can keep track of recent user choices</i>
+let currentGraphType = 'bar',
+  currentArea = 'Hackney',
+  currentCategory = 'Burglary';
+
+<i class="comment">// We'll disable this selector when a stacked bar chart is displaying</i>
+let crimeCategoryInput = document.querySelector('#crime-categories');
+
+<i class="comment">// We'll manage user interactions with our new controls in a single event listener</i>
+scrawl.addNativeListener(['input', 'change'], function (e) {
+
+  if (e && e.target) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    let target = e.target.id,
+      value = e.target.value;
+
+    switch (target) {
+
+      case 'areas' :
+
+        if (value !== currentArea) {
+
+          currentArea = value;
+
+          if (currentGraphType === 'bar') {
+
+            barGraph.kill();
+
+            barGraph.build(
+              `${namespace}-bars`, 
+              canvas, 
+              `crimes-in-${currentArea.toLowerCase()}.json`
+            );
+          }
+        }
+        break;
+
+      case 'graph-types' :
+        break;
+
+      case 'crime-categories' :
+        break;
+    }
+  }
+}, '.control-item');
+
+<i class="comment">// Setup initial canvas display</i>
+frame.build(`${namespace}-frame`, canvas, 'Hackney');
+barGraph.build(`${namespace}-bars`, canvas, 'crimes-in-hackney.json');
+
+crimeCategoryInput.value = 'Burglary';
+crimeCategoryInput.setAttribute('disabled', '');</span>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-09/02.png" /></p>
+
+<h2>Line charts: viewing the data in more detail</h2>
+
+<p>Stacked bar charts are useful for viewing a dataset as a sort of overview: the user can see overarching trends &mdash; in this case, overall crime seems to be trending downwards (though not in all areas).</p>
+
+<p>As a means to investigate the data in any detail, however, our stacked bar chart is barely useful. What we need to see is how each different type of crime in each area is performing over time. Line graphs are a better fit for this sort of visualisation.</p>
+
+<p>Also, if we're going to be separating out crimes by type, we can give each graph its own y-axis values. While theft is clearly the most popular crime in Hackney, the stacked bar chart representation makes it difficult for us to tell if its getting more or less popular. And trying to determine trends in sexual offences (given their smaller number of reports) is impossible on a graph with a y-axis range of 0-40,000.</p>
+
+<p>As before, we'll scope out the requirements for the line graph display before we write its code:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">We want a line chart showing data for a specified category in a specified area, over time. If the data source supplies two years' worth of data for the category in the given area, we want to see a graph with two data point values (DPV) and a line connecting them.</li>
+  <li class="mb-2">For all graphs, the line color will be fixed. The DPVs will be displayed as circles at the junction of each line; DPV circle color will also be fixed.</li>
+  <li class="mb-2">For the axis labels: the X axis will show the first and last years covered by the data; the Y axis will go from the minimum to maximum DPVs in the series, rounded up/down to the nearest appropriate range value. Range steps will generally be one fifth of the difference between minimum and maximum DPVs (limited to: 1, 2, 5, 10, 20, 50, etc).</li>
+  <li class="mb-2">We want the graph to be interactive: when the user hovers over (or taps on) a DPV circle it will be highlighted in some way, and the chart frame's subtitle will update with information about that DPV.</li>
+</ul>
+
+<p>We'll also use the same code structure as before:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><code class="text-sm text-red-800">simple-graph-lines.js</code> will be the module file where we define our entitys to be used in the graph, alongside associated functions (<code class="text-sm text-red-800">build, show, hide, kill</code>).</li>
+  <li class="mb-2">The <code class="text-sm text-red-800">london-crime-lines.js</code> module will be the bridge between our data source and our chart; it will replicate the functions defined in the lines graph module.</li>
+  <li class="mb-2">We will add code to our <code class="text-sm text-red-800">london-crime-graphic.js</code> control module to switch between chart views.</li>
+</ul>
+
+<p>... And one last point to consider. The stacked bar graph performs a <code class="text-sm text-red-800">fetch</code> call each time the graph view changes. We do not need to do this for our line chart, except when the user switches to the line chart view, or changes the London area being viewed. Instead we can capture the data returned from the server and then perform an update of the view (in a new <code class="text-sm text-red-800">update</code> function) whenever the user switches between crime categories.</p>
+
+<p>It will be a nice touch, too, if the background image reflects the crime category being viewed by the user.</p>
+
+<h3>Coding the line graph module <code class="text-red-800">simple-graph-lines.js</code></h3>
+
+<pre class="code-block"><code><span class="redcode"><i class="comment">/*
+Data supplied to graph module as Javascript object with structure:
+{
+  yearLabels: ['year-1-label', 'year-2-label', ...],
+  data:     [year-1-data, year-2-data, ...],
+}
+*/</i>
+
+import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+<i class="comment">// We need to adapt the chart frame with data specific to this graph</i>
+import * as frame from './simple-chart-frame.js';
+
+<i class="comment">// Get the Magic Numbers from the chart frame</i>
+let graphWidth = frame.graphWidth,
+  graphHeight = frame.graphHeight,
+  graphBottom = frame.graphBottom,
+  graphLeft = frame.graphLeft;
+
+<i class="comment">// Define the group variables</i>
+let positionGroup,
+  lineGroup,
+  pinGroup;
+
+<i class="comment">// The exported <b>build</b> function</i>
+const build = function (namespace, canvas, dataSet) {
+
+  <i class="comment">// Only build the Groups and entitys if they don't already exist</i>
+  if (!positionGroup) {
+
+    let yearLabels = dataSet.yearLabels,
+      xStep = graphWidth / yearLabels.length;
+
+    <i class="comment">// The <b>positions</b> Group</i>
+    <i class="comment">// - A set of Block entitys used as pivots by the other entitys</i>
+    positionGroup = scrawl.makeGroup({
+
+      name: `${namespace}-position-group`,
+      host: canvas.base.name,
+      order: 1,
+      visibility: false,
+    });
+
+    <i class="comment">// The <b>lines</b> Group</i>
+    <i class="comment">// - A set of line Shape entitys </i>
+    <i class="comment">// - Use position entitys for their start and end coordinate pivots</i>
+    lineGroup = scrawl.makeGroup({
+
+      name: `${namespace}-line-group`,
+      host: canvas.base.name,
+      order: 2,
+      visibility: false,
+    });
+
+    <i class="comment">// The <b>pins</b> Group</i>
+    <i class="comment">// - A set of Wheel entitys to mark the position of each data point</i>
+    <i class="comment">// - Use position entitys as their pivots</i>
+    <i class="comment">// - Interactive </i>
+    pinGroup = scrawl.makeGroup({
+
+      name: `${namespace}-pin-group`,
+      host: canvas.base.name,
+      order: 3,
+      visibility: false,
+    });
+
+    <i class="comment">// Build the entitys</i>
+    yearLabels.forEach((label, index) => {
+
+      <i class="comment">// Hidden position Blocks</i>
+      scrawl.makeBlock({
+
+        name: `${namespace}-${index}-position`,
+        group: positionGroup,
+
+        width: 0,
+        height: 0,
+        method: 'none',
+
+        startX: `${graphLeft + (xStep * index) + (xStep / 2)}%`,
+        startY: `${graphBottom}%`,
+      });
+
+      if (index) {
+
+        <i class="comment">// Line Shapes</i>
+        scrawl.makeLine({
+
+          name: `${namespace}-${index}-line`,
+          group: lineGroup,
+
+          pivot: `${namespace}-${index - 1}-position`,
+          lockTo: 'pivot',
+
+          endPivot: `${namespace}-${index}-position`,
+          endLockTo: 'pivot',
+
+          useStartAsControlPoint: true,
+
+          strokeStyle: 'blue',
+          lineWidth: 2,
+
+          method: 'draw',
+        });
+      }
+
+      <i class="comment">// Visible pin Wheels</i>
+      scrawl.makeWheel({
+
+        name: `${namespace}-${index}-pin`,
+        group: pinGroup,
+
+        radius: 8,
+
+        handleX: 'center',
+        handleY: 'center',
+
+        pivot: `${namespace}-${index}-position`,
+        lockTo: 'pivot',
+
+        fillStyle: 'aliceblue',
+        strokeStyle: 'blue',
+        lineWidth: 4,
+
+        method: 'drawThenFill',
+      });
+    });
+
+    <i class="comment">// All further calculation happens in the 'update' function</i>
+    update(namespace, dataSet);
+
+    <i class="comment">// Display the graph entitys</i>
+    show();
+  }
+};
+
+<i class="comment">// Determine the range batch</i>
+<i class="comment">// - To make sure the graph covers as much vertical space as possible</i>
+const calculateBatchValue = (val) => {
+
+  if (val > 50000) return 10000;
+  if (val > 25000) return 5000;
+  if (val > 10000) return 2000;
+  if (val > 5000) return 1000;
+  if (val > 2500) return 500;
+  if (val > 1000) return 200;
+  if (val > 500) return 100;
+  if (val > 250) return 50;
+  if (val > 100) return 20;
+  if (val > 50) return 10;
+  if (val > 25) return 5;
+  if (val > 10) return 2;
+  return 1;
+}
+
+<i class="comment">// the exported <b>update</b> function</i>
+const update = (namespace, dataSet) => {
+
+  <i class="comment">// Only update if we have entitys to update</i>
+  if (positionGroup) {
+
+    <i class="comment">// Initial positioning calculations</i>
+    let yearLabels = dataSet.yearLabels,
+      data = dataSet.data,
+      max = Math.max(...data),
+      min = Math.min(...data),
+      batch = calculateBatchValue(max - min);
+
+    max = ((Math.floor(max / batch)) * batch) + batch;
+    min = (Math.floor(min / batch)) * batch;
+
+    let categoryValue = graphHeight / (max - min),
+      yDepth = graphBottom - graphHeight;
+
+    <i class="comment">// Grab a handle to the 'entity' section in the Scrawl-canvas library</i>
+    let entity = scrawl.library.entity;
+
+    <i class="comment">// Reset any highlighted pin Wheel</i>
+    pinGroup.setArtefacts({
+      scale: 1,
+      fillStyle: 'aliceblue',
+    });
+
+    <i class="comment">// Final calculations and updates</i>
+    yearLabels.forEach((label, index) => {
+
+      let pointDepth = (data[index] - min) * categoryValue,
+        yVal = yDepth + (graphHeight - pointDepth),
+        tempName = `${namespace}-${index}`;
+
+      entity[`${tempName}-position`].set({
+        startY: `${yVal}%`,
+      });
+
+      entity[`${tempName}-pin`].set({
+
+        onEnter: function () {
+
+          pinGroup.setArtefacts({
+            scale: 1,
+            fillStyle: 'aliceblue',
+          });
+
+          frame.updateSubtitle(`${label}: §RED§${data[index].toLocaleString()}`);
+
+          this.set({
+            scale: 1.5,
+            fillStyle: 'red',
+          });
+        },
+      });
+    });
+
+    <i class="comment">// Update the chart frame</i>
+    frame.updateSubtitle('No data selected');
+    frame.updateYTop(max.toLocaleString());
+    frame.updateYBottom(min.toLocaleString());
+    frame.updateXLeft(yearLabels[0]);
+    frame.updateXRight(yearLabels[yearLabels.length - 1]);
+  }
+};
+
+<i class="comment">// Exported <b>kill</b> function</i>
+const kill = () => {
+
+  if (positionGroup) {
+
+    positionGroup.kill(true);
+    lineGroup.kill(true);
+    pinGroup.kill(true);
+
+    positionGroup = false;
+    lineGroup = false;
+    pinGroup = false;
+  }
+};
+
+<i class="comment">// Exported <b>hide</b> function</i>
+const hide = () => {
+
+  if (positionGroup) {
+
+    positionGroup.visibility = false;
+    lineGroup.visibility = false;
+    pinGroup.visibility = false;
+  }
+};
+
+<i class="comment">// Exported <b>show</b> function</i>
+const show = () => {
+
+  if (positionGroup) {
+
+    positionGroup.visibility = true;
+    lineGroup.visibility = true;
+    pinGroup.visibility = true;
+  }
+};
+
+export {
+  build,
+  update,
+  kill,
+  hide,
+  show,
+}</span>
+</code></pre>
+
+<h3>Coding the junction module <code class="text-red-800">london-crime-lines.js</code></h3>
+
+<pre class="code-block"><code><span class="redcode"><i class="comment">/*
+Data fetched from server as JSON String with structure:
+{
+  "area": "area-label",
+  "years": ["year-1-label", "year-2-label", ...],
+  "crimesByCategory": {
+    "category-1-label": [year-1-data, year-2-data, ...],
+    "category-2-label": [year-1-data, year-2-data, ...],
+    ...
+  }
+}
+
+Data supplied to graph module as Javascript object with structure:
+{
+  yearLabels: ['year-1-label', 'year-2-label', ...],
+  data:     [year-1-data, year-2-data, ...],
+}
+*/</i>
+
+import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+<i class="comment">// We need to adapt the chart frame with data specific to this graph</i>
+import * as frame from './simple-chart-frame.js';
+
+<i class="comment">// The graph we are adapting our data for</i>
+import * as graph from './simple-graph-lines.js'
+
+<i class="comment">// The asynchronous data fetch</i>
+const getRawData = (file) => {
+
+  return new Promise ((resolve, reject) => {
+
+    fetch (new Request(file))
+    .then (response => {
+
+      if (!response.ok) throw new Error(`Network Error ${response.status}: ${response.statusText}`);
+      return response.json();
+    })
+    .then (rawData => resolve(rawData))
+    .catch (e => reject(e));
+  });
+};
+
+<i class="comment">// Add some module state</i>
+let currentData = false,
+  isBuilt = false;
+
+<i class="comment">// Extract relevant data for the graph being requested</i>
+const getData = (category) => {
+
+  return {
+    yearLabels: currentData.years,
+    data: currentData.crimesByCategory[category]
+  };
+};
+
+<i class="comment">// The exported <b>build</b> function</i>
+const build = function (namespace, canvas, data, category) {
+
+  <i class="comment">// Only build if we need to fetch data</i>
+  if (!isBuilt) {
+
+    getRawData (data)
+    .then (rawData => {
+
+      currentData = rawData;
+
+      graph.build(namespace, canvas, getData(category));
+      isBuilt = true;
+
+      update(namespace, canvas, category);
+    })
+    .catch(e => console.log(e.message));;
+  }
+}
+
+<i class="comment">// The exported <b>update</b> function</i>
+const update = (namespace, canvas, category) => {
+
+  <i class="comment">// Only update if we already have data available</i>
+  if (currentData) {
+
+    let myData = getData(category);
+
+    if (!isBuilt) {
+
+      graph.build(namespace, canvas, myData);
+      isBuilt = true;
+    }
+    else graph.update(namespace, myData);
+
+    frame.updateTitle(`${currentData.area} Crimes: ${category}`);
+    frame.updateBackground(category);
+  }
+};
+
+<i class="comment">// The exported <b>kill</b> function</i>
+const kill = () => {
+
+  graph.kill();
+  currentData = false;
+  isBuilt = false;
+};
+
+<i class="comment">// Other exported functions are piped through from the line graph module</i>
+const hide = graph.hide;
+const show = graph.show;
+
+export {
+  build,
+  update,
+  hide,
+  show,
+  kill,
+}</span>
+</code></pre>
+
+<h3>Update our listener in <code class="text-red-800">london-crime-graphic.js</code></h3>
+
+<pre class="code-block"><code>[...]
+
+<span class="redcode">import * as lineGraph from './london-crime-lines.js';</span>
+
+[...]
+
+switch (target) {
+
+  case 'areas' :
+
+    if (value !== currentArea) {
+
+      currentArea = value;
+
+      if (currentGraphType === 'bars') {
+
+        barGraph.kill();
+
+        barGraph.build(
+          `${namespace}-bars`, 
+          canvas, 
+          `crimes-in-${currentArea.toLowerCase()}.json`
+        );
+      }
+      <span class="redcode">else if (currentGraphType === 'lines') {
+
+        lineGraph.kill();
+
+        lineGraph.build(
+          `${namespace}-lines`, 
+          canvas, 
+          `crimes-in-${currentArea.toLowerCase()}.json`, 
+          currentCategory
+        );
+      }</span>
+    }
+    break;
+
+  case 'graph-types' :
+
+    <span class="redcode">if (value !== currentGraphType) {
+
+      currentGraphType = value;
+
+      if (currentGraphType === 'bars') {
+
+        lineGraph.kill();
+
+        barGraph.build(
+          `${namespace}-bars`, 
+          canvas, 
+          `crimes-in-${currentArea.toLowerCase()}.json`
+        );
+
+        crimeCategoryInput.setAttribute('disabled', '');
+      }
+      else if (currentGraphType === 'lines') {
+
+        barGraph.kill();
+
+        lineGraph.build(
+          `${namespace}-lines`, 
+          canvas, 
+          `crimes-in-${currentArea.toLowerCase()}.json`, 
+          currentCategory
+        );
+
+        crimeCategoryInput.removeAttribute('disabled');
+      }
+    }</span>
+    break;
+
+  case 'crime-categories' :
+
+    <span class="redcode">if (currentGraphType === 'lines' && value !== currentCategory) {
+
+      currentCategory = value;
+
+      lineGraph.update(
+        `${namespace}-lines`, 
+        canvas, 
+        currentCategory
+      );
+    }</span>
+    break;
+}
+
+[...]
+</code></pre>
+
+<p>Now when the user switches to the "Line graph" view they will be presented with a chart exploring burglaries in Hackney:</p>
+
+<p><img class="mx-auto" src="/assets/lesson-09/03.png" /></p>
+
+<p>... And when the user updates the area to "Heathrow Airport" they see this:</p>
+
+<p><img class="mx-auto" src="/assets/lesson-09/04.png" /></p>
+
+<h2>Over to you ...</h2>
+
+<p>The main purpose of these past two lessons was <b>not</b> to teach you how to build charts using Scrawl-canvas. The key takeaway should be that <b><i>Scrawl-canvas is an entirely modular Javascript library</i></b>.</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">By breaking up our &lt;canvas> display code into modules, we can start to decouple our code from the immediate display.</li>
+  <li class="mb-2">Once the code is decoupled, we can start to think of that module as a <a href="https://en.wikipedia.org/wiki/Component-based_software_engineering">software component</a> &mdash; we can use our simple line and stacked bar code in different web pages and projects.</li>
+  <li class="mb-2">When we modularize and componentize our code, we need to pay attention to <b>library hygiene</b>: if we don't need an entity, a Group or other Scrawl-canvas object ... kill it!</li>
+  <li class="mb-2">Finally, building display controls doesn't need to be done in the &lt;canvas> &mdash; don't forget that the canvas exists in a web page, which comes with many DOM elements better suited to building controls: <span class="italic font-bold">always use the best tools available to meet your particular data visualization needs!</span></li>
+</ul>
+
+<p>A final question: while our graph modules are heading towards becoming components, they are not there yet. They are still tightly coupled to a specific chart frame. How would you go about decoupling graph modules from chart frame modules?</p>
+
+<p>... Once you find an answer to that question, you are on the way to building your own <a href="https://en.wikipedia.org/wiki/Comparison_of_JavaScript_charting_libraries">Javascript charting library</a>!</p>

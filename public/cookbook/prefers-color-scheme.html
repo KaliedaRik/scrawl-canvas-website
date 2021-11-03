@@ -1,0 +1,114 @@
+<h2>Issue</h2>
+
+<p>We need to adapt our canvas scene to match the surrounding website design, which itself changes according to whether the user has selected a "light" or "dark" mode for their device.</p>
+
+<h2>Solution</h2>
+
+<p>Scrawl-canvas listens for the <code class="text-sm text-red-800">prefers-color-scheme</code> CSS media query from the moment it runs, and includes function hooks that we can use to update a scene's color scheme (and anything else) to match the user's choice.</p>
+
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script type="module">
+
+  import scrawl from [... wherever ...];
+
+  const canvas = scrawl.library.canvas['example-canvas-id'];
+
+  const text = scrawl.makePhrase({
+
+    name: 'example-phrase',
+
+    text: 'Lorem Ipsum etc',
+    font: '50px arial, sans-serif',
+
+    start: ['center', 'center'],
+    handle: ['center', 'center'],
+  });
+
+  <span class="italic text-xs text-gray-700">// In this instance we'll hard-code color values into magic variables</span>
+  const background_dark = '#404040',
+        text_dark = '#c0ffc0',
+        background_light = '#f0f0f0',
+        text_light = '#408f40';
+
+
+  <span class="italic text-xs text-gray-700">// prefers-color-scheme actions</span>
+  <span class="text-red-800">scrawl.setColorSchemeDarkAction</span>(() => {
+
+      canvas.set({ backgroundColor: background_dark});
+      text.set({ fillStyle: text_dark});
+  });
+
+  <span class="text-red-800">scrawl.setColorSchemeLightAction</span>(() => {
+      
+      canvas.set({ backgroundColor: background_light});
+      text.set({ fillStyle: text_light});
+  });
+
+  <span class="italic text-xs text-gray-700">// Invoke prefers-color-scheme actions test</span>
+  <span class="text-red-800">scrawl.colorSchemeActions();</span>
+
+&lt;/script></code></pre>
+
+<h2>Discussion</h2>
+
+<p>Many modern operating systems (Windows, MacOS, Android, iOS, etc) support a system-based user choice known as "dark mode" or "dark theme" &mdash; when the user switches to dark mode, the system will display lighter text on a darker background across many of its apps and windows. See this <a href="https://web.dev/prefers-color-scheme/">web.dev article</a> for more information on the history and usefulness of this functionality.</p>
+
+<p>Most modern web browsers can detect whether the user has activated dark mode and, through a CSS media query, websites can also adapt their design (in particular, color schemes) to match the user's preferences.</p>
+
+<p>Scrawl-canvas uses the following hooks and functions to act on user color scheme preferences, both when the page loads, and at any time after if the user changes their preference:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><code class="text-sm text-red-800">scrawl.setColorSchemeLightAction()</code> &mdash; argument is a function where we can set various Scrawl-canvas artefact and wrapper objects to the required colors for the "light" (that is, default) theme.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">scrawl.setColorSchemeDarkAction()</code> &mdash; again, the argument is a function where we can update objects to match colors for the "dark" theme.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">scrawl.colorSchemeActions()</code> &mdash; trigger Scrawl-canvas to check the user's color scheme choice and invoke the appropriate hook function.</li>
+</ul>
+
+<h3>Alternative methods</h3>
+
+<p>The code above uses "magic variables" to store color strings for the light and dark themes. This is not optimal. A much better approach would be to define these values in CSS variables, which we can then retrieve and implement using Javascript:</p>
+
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;!DOCTYPE html>
+&lt;html>
+  &lt;head>
+    &lt;style>
+      <span class="italic text-xs text-gray-700">/* define our theme colors in CSS */</span>
+      <span class="text-red-800">:root {
+        --background-dark: #404040;
+        --text-dark: #c0ffc0;
+
+        --background-light: #f0f0f0;
+        --text-light: #408f40;
+      }</span>
+    &lt;/style>
+  &lt;/head>
+
+  &lt;body>
+
+    <span class="italic text-xs text-gray-700">[... other content]</span>
+
+    &lt;script type="module">
+
+      [...]
+
+      <span class="text-red-800">const rootStyles = getComputedStyle(document.documentElement);</span>
+
+      scrawl.setColorSchemeDarkAction</span>(() => {
+
+          canvas.set({ backgroundColor: <span class="text-red-800">rootStyles.getPropertyValue('--background-dark')</span> });
+          text.set({ fillStyle: <span class="text-red-800">rootStyles.getPropertyValue('--text-dark')</span> });
+      });
+
+      scrawl.setColorSchemeLightAction</span>(() => {
+          
+          canvas.set({ backgroundColor: <span class="text-red-800">rootStyles.getPropertyValue('--background-light')</span> });
+          text.set({ fillStyle: <span class="text-red-800">rootStyles.getPropertyValue('--text-light')</span> });
+      });
+
+      [...]
+    &lt;/script>
+
+    <span class="italic text-xs text-gray-700">[... other content]</span>
+
+  &lt;/body>
+
+&lt;/html></code></pre>
+

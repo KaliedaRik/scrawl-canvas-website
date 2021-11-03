@@ -1,0 +1,185 @@
+<script>
+    import { getContext, onMount, onDestroy } from 'svelte';
+
+    const scrawl = getContext('scrawl');
+
+    // scrawl.setIgnorePixelRatio(false);
+
+    let canvas, animation, gradient, observer,
+        group = scrawl.library.group;
+
+    export let namespace;
+    export let fit;
+
+    onMount(() => {
+
+        canvas = scrawl.getCanvas(`#${namespace}`);
+
+        canvas.set({
+            backgroundColor: 'honeydew',
+            fit: fit,
+            checkForResize: true,
+            ignoreCanvasCssDimensions: true,
+        });
+
+        canvas.setBase({
+            width: 600,
+            height: 300,
+        });
+
+        gradient = scrawl.makeRadialGradient({
+
+            name: `${namespace}-gradient`,
+
+            startX: '30%',
+            startY: '30%',
+            endX: '50%',
+            endY: '50%',
+
+            endRadius: '50%',
+
+            paletteStart: 200,
+            paletteEnd: 800,
+
+            delta: {
+                paletteStart: -1,
+                paletteEnd: -1
+            },
+
+            cyclePalette: true,
+        })
+        .updateColor(0, 'black')
+        .updateColor(99, 'red')
+        .updateColor(199, 'black')
+        .updateColor(299, 'blue')
+        .updateColor(399, 'black')
+        .updateColor(499, 'gold')
+        .updateColor(599, 'black')
+        .updateColor(699, 'green')
+        .updateColor(799, 'black')
+        .updateColor(899, 'lavender')
+        .updateColor(999, 'black');
+
+        scrawl.makeBlock({
+
+            name: `${namespace}-box`,
+
+            width: "90%",
+            height: "80%",
+
+            startX: 'center',
+            startY: 'center',
+
+            handleX: 'center',
+            handleY: 'center',
+
+            fillStyle: 'linen',
+            strokeStyle: 'moccasin',
+            lineWidth: 25,
+            lineJoin: 'round',
+
+            method: 'fillThenDraw',
+        });
+
+        let ball = scrawl.makeWheel({
+
+            name: `${namespace}-ball`,
+
+            startX: 'center',
+            startY: 'center',
+
+            handleX: 'center',
+            handleY: 'center',
+
+            radius: 80,
+
+            fillStyle: `${namespace}-gradient`,
+            lockFillStyleToEntity: true,
+
+            lineWidth: 6,
+            strokeStyle: 'coral',
+
+            globalAlpha: 0.4,
+
+            delta: {
+                roll: -0.2,
+            },
+
+            method: 'fillAndDraw',
+        });
+
+        scrawl.makePhrase({
+
+            name: `${namespace}-phrase`,
+
+            text: `Fit: ${fit}`,
+
+            width: "80%",
+            justify: 'center',
+
+            startX: 'center',
+            startY: '60%',
+
+            handleX: 'center',
+            handleY: 'center',
+
+            font: '4rem Garamond, sans-serif',
+        });
+
+        let mouseCheck = function () {
+
+            let active = false;
+
+            return function () {
+
+                if (canvas.here.active !== active) {
+
+                    active = canvas.here.active;
+
+                    ball.set({
+                        lockTo: (active) ? 'mouse' : 'start'
+                    });
+                }
+                gradient.updateByDelta();
+            };
+        }();
+
+
+        animation = scrawl.makeRender({
+
+            name: `${namespace}-render`,
+            target: canvas,
+            commence: mouseCheck,
+        });
+
+        observer = scrawl.makeAnimationObserver(animation, canvas);
+    });
+
+    onDestroy(() => {
+
+        observer();
+        animation.kill();
+        group[canvas.base.name].kill(true);
+        gradient.kill();
+        canvas.kill();
+    });
+</script>
+
+<style>
+    canvas {
+        @apply rounded-lg bg-black;
+        width: 100%;
+        height: 100%;
+        max-height: 200px;
+        border: 1px solid red;
+    }
+
+    div {
+        margin: 0;
+    }
+
+</style>
+
+<div>
+    <canvas id={namespace}></canvas>
+</div>

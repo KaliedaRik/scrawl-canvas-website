@@ -1,0 +1,534 @@
+<style>
+  .code-block {
+    border-color: #e2e8f0;
+    background-color: #f7fafc;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+  }
+  .code-block code {
+    line-height: 1.25;
+    color: #4a5568;
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    font-size: 0.875rem;
+  }
+  .code-block .redcode {
+    color: #9b2c2c;
+  }
+  .code-block .heavycode {
+    font-weight: 700;
+    color: #9b2c2c;
+  }
+  .code-block .comment {
+    color: #4a5568;
+    font-size: 0.75rem;
+  }
+</style>
+
+<p>In the previous two lessons we have:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Imported a video asset into Scrawl-canvas.</li>
+  <li class="mb-2">Used that video as the source for a Picture entity.</li>
+  <li class="mb-2">Added some video control buttons to the canvas.</li>
+  <li class="mb-2">Added functionality to those buttons to allow the user to play/pause the video, and mute/unmute the video's audio output.</li>
+  <li class="mb-2">Added a playback bar to track video playback progress.</li>
+</ul>
+
+<p>And then we:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Created a second Picture entity using the same video as its asset.</li>
+  <li class="mb-2">Created <b>red</b> and <b>chroma</b> filter objects.</li>
+  <li class="mb-2">Applied the filters to our new entity.</li>
+  <li class="mb-2">Added hover functionality to the entity.</li>
+  <li class="mb-2">Added an anchor link to the entity.</li>
+</ul>
+
+<p><img class="mx-auto" src="/assets/lesson-06/01.png" /></p>
+
+<p>In this lesson, we will:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Build on that code to add hover functionality, and links, for the geese who appear in the video.</li>
+  <li class="mb-2">To do that, we need to learn about Scrawl-canvas <b>Ticker</b>, <b>Tween</b> and <b>Action</b> animation objects.</li>
+</ul>
+
+<h3>Why do we need to add Tickers and Tweens to our project?</h3>
+
+<p>In the last lesson we created a Picture entity to capture the current locations of all the swans in the video. When a user hovers over a swan, all the swans turn pink. Clicking on a swan opens a Wikipedia page about ... swans.</p>
+
+<p>While this user interaction works, it fails in one major way: not all the birds in the video are swans. Two geese also appear in the video (in front of the swans), and a seagull and a duck can be seen in the background. For our project, we want to reach a point where clicking on a bird will open a Wikipedia page relating to that bird.</p>
+
+<p>Unfortunately for us, the non-swan birds do not stay in one region of the video; they paddle about. To create hit zones for these birds we need to track their movements over time so that the hit zones remain located over the birds at any given point in the video playback.</p>
+
+<p>Tween animations are perfect for this kind of work.</p>
+
+<h2>Animation timelines</h2>
+
+<p>Timelines help us define a sequence of object states and changes which, together, build an animation. If you have ever used Flash, <a href="https://greensock.com/">GreenSock (GSAP)</a>, Adobe's <a href="https://www.adobe.com/uk/products/animate.html">Animate</a>, <a href="https://www.blender.org/">Blender</a>, <a href="https://popmotion.io/pure/">Popmotion</a>, CreateJS's <a href="https://www.createjs.com/tweenjs">TweenJS</a>, the <a href="https://photonstorm.github.io/phaser3-docs/index.html">Phaser game engine</a> &mdash; and many others &mdash; you will have probably met the concept of timelines.</p>
+
+<p>Unfortunately for such a useful concept, there's no general agreement about what a timeline should-and-should-not do, and how it should go about doing whatever it is that it has to do.</p>
+
+<p>The general idea is that a timeline runs for a given length of time and, as it runs, it triggers objects to change their state, or start moving from one state to another. These triggers happen at specific points along the timeline, usually specified as a number of seconds after the timeline started running.</p>
+
+<p>Many implementations extend this concept to allow the developer or user to control how the timeline plays: start/stop, halt/resume, jump forwards/backwards along the timeline, run in reverse ... you get the idea.</p>
+
+<p>The actual changing of an object's state is usually handled by a <a href="https://en.wikipedia.org/wiki/Inbetweening">tween</a> &mdash; a piece of code that progressively changes an object's attributes from a start value to an end value over a given amount of time.</p>
+
+<h3>The Scrawl-canvas Ticker object</h3>
+
+<p>Scrawl-canvas comes with its own tween animation functionality. We can define a <b>Tween</b> object to transform one or more artefacts over a given amount of time using the <code class="text-sm text-red-800">scrawl.makeTween</code> factory function, then trigger it to run at any time by invoking its <code class="text-sm text-red-800">run()</code> function.</p>
+
+<p>Behind the scenes, Scrawl-canvas tweens use an object called a <b>Ticker</b> to act as their timeline. We don't need to define the Ticker to make the Tween work &mdash; if we don't assign the Tween to a Ticker when we define it, it will go away and create its own Ticker.</p>
+
+<p>For this project, we'll explicitly define a Ticker object using the <code class="text-sm text-red-800">scrawl.makeTicker</code> factory function, and then assign Tweens to it &mdash; this is the sensible approach when we need to manage more than a handful of tweens in a canvas animation:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  [... video Picture entity]
+
+  [... initialization event listener]
+
+  [... define Phrase entitys]
+
+  [... define Filters]
+
+  [... filtered Picture entity]
+
+  <span class="text-red-800">scrawl.makeTicker({
+
+    name: `${namespace}-ticker`,
+
+    <i class="comment">// We set the duration to match the video's playing time</i>
+    duration: '22.55s',
+
+    <i class="comment">// Set the cycles attribute to 0 to make the Ticker run forever</i>
+    cycles: 0,
+  });</span>
+
+  [... user interaction event listeners]
+
+  [... video progress bar]
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<h3>The Single Source of Truth</h3>
+
+<p>We can start our Ticker at any time by invoking its <code class="text-sm text-red-800">run()</code> function.</p>
+
+<p>But there's an issue with running the Ticker in this project: it already has a timeline.</p>
+
+<p>Our video is, effectively, another animation running in our canvas. It comes with its own version of a timeline &mdash; which we are already using to animate the red progress bar at the top of the canvas display.</p>
+
+<p>If we run our Ticker, we will have two timelines running in the project. And, because the video playback is under the control of the user (through their interactions with the play/pause button), we run the risk of our two timelines falling out of synchronization.</p>
+
+<p>... We need a <b><i>Single Source of Truth</i></b> to determine the canvas animation's progression. Video playback is the most at risk of being delayed (networking issues) or interfered with (user interaction), so it makes sense to use the video's timeline as that Single Source of Truth.</p>
+
+<p>This is an easy fix:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+
+  [...]
+
+  <span class="text-red-800"><b>let myticker = </b>scrawl.makeTicker({
+
+    [...]
+  });</span>
+
+  [... user interaction event listeners]
+
+  [... video progress bar]
+  let videoTimeBar = function () {
+
+    [...]
+
+    return function () {
+
+      [...]
+
+      if (videoDuration) {
+
+        [...]
+
+        <span class="text-red-800 font-bold">myticker.seekTo(currentVideoTime * 1000, true);</span>
+      }
+    };
+  }();
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<h2>Hitting the geese</h2>
+
+<p>At the moment our geese exist as pixels in an image: there's no Scrawl-canvas object to represent them to the world.</p>
+
+<p>What we need are objects that go over the pixel geese, but don't obscure the display &mdash; except when the user interacts with them.</p>
+
+<p>It makes sense to use Block entitys for our geese-based hit zones:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+
+  [...]
+
+  [... Ticker definition]
+
+  <span class="text-red-800">let mygoose = scrawl.makeBlock({
+
+    name: `${namespace}-goose1-hitzone`,
+    order: 1,
+
+    width: '15%',
+    height: '15%',
+
+    handleX: 'center',
+    handleY: 'center',
+
+    lineWidth: 2,
+    strokeStyle: 'yellow',
+
+    startX: '27%',
+    startY: '73%',
+
+    method: 'draw',
+  });</span>
+
+  [... user interaction event listeners]
+
+  [...]
+
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-06/02.png" /></p>
+
+<p>Playing the video for a short while demonstrates the work we need to do. Our new Block needs to move as the goose moves, so the goose always appears inside it:</p>
+
+<p><img class="mx-auto" src="/assets/lesson-06/03.png" /></p>
+
+<p>To fix this issue, we need to guesstimate where our yellow box should be positioned as the video progresses. We don't need many of these <a href="https://en.wikipedia.org/wiki/Key_frame">key frames</a> &mdash; especially for this goose, which seems to be moving forward in a fairly regular way. It also disappears from the video just after the 6 second mark.</p>
+
+<p>Also, we only want to see the yellow box when the user hovers their mouse cursor over the goose. And we need to add our anchor link to the Block.</p>
+
+<p>The results of our investigations look like this:</p>
+
+<pre class="code-block"><code>let mygoose = scrawl.makeBlock({
+
+  [...]
+
+  <i class="comment">// Our gathered positions data at 0, 3 and 6 seconds</i>
+  // 0.00s
+  // startX: '27%',
+  // startY: '73%',
+
+  // 3.00s
+  // startX: '12%',
+  // startY: '66%',
+
+  // 6.00s
+  startX: '-3%',
+  startY: '68%',
+
+  <i class="comment">// The 'none' method performs all the calculations, then skips the final stamp action</i>
+  <i class="comment">// - This makes the entity invisible but keeps it "collidable", for user interactions</i>
+  <span class="text-red-800">method: 'none',
+
+  onEnter: function () {
+
+    canvas.set({ css: { cursor: 'pointer' }});
+    this.set({ method: 'draw' });
+  },
+
+  onLeave: function () {
+
+    canvas.set({ css: { cursor: 'auto' }});
+    this.set({ method: 'none' });
+  },
+
+  onUp: function () { this.clickAnchor() },
+
+  anchor: {
+    name: 'wikipedia-goose-link',
+    href: 'https://en.wikipedia.org/wiki/Goose',
+    description: 'Link to the Wikipedia article on geese',
+
+    focusAction: true,
+    blurAction: true,
+  },
+});</span>
+</code></pre>
+
+<h3>Adding our Tweens</h3>
+
+<p>From our investigations, we know that the Block entity needs to be positioned at <code class="text-sm text-red-800">startX: '27%', startY: '73%'</code> for the first video frame. These values change to <code class="text-sm text-red-800">12%</code> and <code class="text-sm text-red-800">66%</code> respectively 3 seconds into the video playback.</p>
+
+<p>Scrawl-canvas Tween objects are defined like this:</p>
+
+<pre class="code-block"><code>[... define goose1 Block]
+
+<span class="text-red-800">scrawl.makeTween({
+
+  name: `${namespace}-goose1-tween1`,
+
+  <i class="comment">// Assign the Tween to a Ticker object</i>
+  ticker: `${namespace}-ticker`,
+
+  <i class="comment">// Tell the Tween which objects it needs to apply updates to</i>
+  targets: [`${namespace}-goose1-hitzone`],
+
+  <i class="comment">// Tween start time</i>
+  time: 0,
+
+  <i class="comment">// How long the Tween has to complete the updates</i>
+  duration: '3s',
+
+  <i class="comment">// Define the updates that need to be made to the target objects</i>
+  definitions: [
+    {
+      attribute: 'startX',
+      start: '27%',
+      end: '12%',
+    },
+    {
+      attribute: 'startY',
+      start: '73%',
+      end: '66%',
+    },
+  ],
+});</span>
+</code></pre>
+
+<p>... That's all we need to do. The Tween will now run when the video first plays, and whenever the video playback loops back to the start. The effect is to move the Block between its start and end coordinates over the course of the first 3 seconds of video playback. Our goose is well-behaved and (mostly) stays entirely inside the box during that time.</p>
+
+<p>To add our second Tween, we clone it from the first one:</p>
+
+<pre class="code-block"><code>scrawl.makeTween({
+
+  [...]
+
+})<span class="text-red-800">.clone({
+
+  name: `${namespace}-goose1-tween2`,
+  time: '3s',
+
+  definitions: [
+    {
+      attribute: 'startX',
+      start: '12%',
+      end: '-3%',
+    },
+    {
+      attribute: 'startY',
+      start: '66%',
+      end: '68%',
+    },
+  ],
+});</span>
+</code></pre>
+
+<h3>Build a local tween factory</h3>
+
+<p>As can be seen, generating Scrawl-canvas Tween objects can involve a lot of repetitive code. While this goose only requires a couple of Tweens to track its movement, other birds may require dozens of Tweens (if we want to keep the birds entirely within their boxes).</p>
+
+<p>So it makes sense to refactor our code now. We can generate the Tweens in a local tween factory function &mdash; like this:</p>
+
+<pre class="code-block"><code><span class="text-red-800"><b>let myLocalTweenFactory = function (name, ticker, target, data)</b> {
+
+  for (let i = 0, iz = data.length; i < iz; i++) {
+
+    let [start, duration, x0, y0, x1, y1] = data[i];
+
+    scrawl.makeTween({
+
+      name: `${name}-${i}`,
+
+      ticker: ticker,
+
+      targets: [target],
+
+      time: start,
+      duration: duration,
+
+      definitions: [
+        {
+          attribute: 'startX',
+          start: x0,
+          end: x1,
+        },
+        {
+          attribute: 'startY',
+          start: y0,
+          end: y1,
+        },
+      ],
+    });
+  }
+};</span>
+
+let mygoose = scrawl.makeBlock({
+
+  [...]
+
+  <i class="comment">// Our gathered positions data at 0, 3 and 6 seconds</i>
+  // 0.00s
+  // startX: '27%',
+  // startY: '73%',
+
+  // 3.00s
+  // startX: '12%',
+  // startY: '66%',
+
+  // 6.00s
+  // startX: '-3%',
+  // startY: '68%',
+
+  [...]
+});
+
+<span class="text-red-800"><b>myLocalTweenFactory (
+  `${namespace}-goose1-tween`, 
+  `${namespace}-ticker`, 
+  `${namespace}-goose1-hitzone`, 
+  [
+    [0,  '3s', '27%', '73%', '12%', '66%'],
+    ['3s', '3s', '12%', '66%', '-3%', '68%']
+  ]
+);</b></span>
+</code></pre>
+
+<h2>Scrawl-canvas Action objects</h2>
+
+<p>Six seconds into the video playback our first goose disappears &mdash; exit stage left. This leaves us with a problem because we now have a Block entity box with no goose to put in it.</p>
+
+<p>While the Block entity remains in the canvas display (even invisibly) users can still interact with it, and click it to open the Wikipedia page on geese.</p> 
+
+<p>We need to get rid of this entity. We also need to resurrect it when the video loops and replays from the start.</p>
+
+<p>Scrawl-canvas <b>Action objects</b> are objects which we can add to a Ticker object. They include an <code class="text-sm text-red-800">action</code> attribute which takes a function. The function gets invoked when the Ticker timeline reaches the point in time when we need that function to run.</p>
+
+<p>We create Action objects using the Scrawl-canvas <code class="text-sm text-red-800">makeAction</code> factory function. Actions share many of the same attributes as Tween objects:</p>
+
+<pre class="code-block"><code>[... define goose1 Block]
+
+[... define goose1 Tweens]
+
+<span class="text-red-800">scrawl.makeAction({
+
+  name: `${namespace}-goose1-action-show`,
+
+  ticker: `${namespace}-ticker`,
+
+  time: 0,
+
+  targets: [`${namespace}-goose1-hitzone`],
+
+  action: function () { 
+
+    this.targets[0].set({
+
+      visibility: true,
+    });
+  },
+
+}).clone({
+
+  name: `${namespace}-goose1-action-hide`,
+  time: '6s',
+
+  action: function () { 
+
+    this.targets[0].set({
+
+      visibility: false,
+    });
+  },
+});</span>
+</code></pre>
+
+<p>... Problem solved!</p>
+
+<h2>Wrapping up</h2>
+
+<p>We have three more birds to deal with: the second goose, and a seagull and a duck swimming behind the swans. The work required for these birds is pretty much the same as the work we've done for the first goose.</p>
+
+<p>The code for the second goose looks like this:</p>
+
+<pre class="code-block"><code>[... define goose1 Block]
+
+[... define goose1 Tweens]
+
+[... define goose1 Actions]
+
+<span class="text-red-800">mygoose.clone({
+
+  name: `${namespace}-goose2-hitzone`,
+
+  width: '22%',
+  height: '16%',
+
+  <i class="comment">// 0.00
+  // startX: '89%',
+  // startY: '89%',
+
+  // 4.00
+  // startX: '77%',
+  // startY: '80%',
+
+  // 8.00
+  // startX: '65%',
+  // startY: '80%',
+
+  // 10.50
+  // startX: '63%',
+  // startY: '74%',
+
+  // 16.50
+  // startX: '43%',
+  // startY: '68%',
+
+  // 19.50
+  // startX: '33%',
+  // startY: '66%',
+
+  // 22.50
+  // startX: '31%',
+  // startY: '64%',
+
+  // We've already got an Anchor to the Wikipedia article on geese
+  // - so we'll use that one instead of creating another anchor for this entity</i>
+  onUp: function () {
+
+    mygoose.clickAnchor();
+  },
+
+  anchor: null,
+});
+
+myLocalTweenFactory (
+  `${namespace}-goose2-tween`, 
+  `${namespace}-ticker`, 
+  `${namespace}-goose2-hitzone`, 
+  [
+    [0,     '4s',   '89%', '89%', '77%', '80%'],
+    ['4s',  '4s',   '77%', '80%', '65%', '80%'],
+    ['8s',  '2.5s', '65%', '80%', '63%', '74%'],
+    ['10.5s', '6s',   '63%', '74%', '43%', '68%'],
+    ['16.5s', '3s',   '43%', '68%', '33%', '66%'],
+    ['19.5s', '3s',   '33%', '66%', '31%', '64%']
+  ]
+);</span>
+</code></pre>
+
+<h3>Over to you ...</h3>
+
+<p>See if you can complete the project. Are there refinements you could make to it? Perhaps some better video controls? Or maybe a more inventive use of filters?</p>
+
+<p>Artefact event functions are useful for a range of functionalities &mdash; for instance: tracking a user's interactions with a canvas display, and progress through a canvas animation. How would you go about adding some tracking code to our project?</p>
+
+<p>For more information on any of the issues covered in the past three lessons, check out the Documentation (Docs) and Demonstration (Demos) pages on this site.</p>

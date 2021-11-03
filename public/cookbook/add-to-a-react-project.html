@@ -1,0 +1,192 @@
+<h2>Issue</h2>
+<p>We need to add Scrawl-canvas functionality to a <a href="https://reactjs.org/">React-based</a> project.</p>
+
+<h2>Solution</h2>
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm"><span class="italic text-xs text-gray-700">... Create a new React project:</span>
+
+$> npx create-react-app react-scrawl-test
+$> cd react-scrawl-test
+
+<span class="italic text-xs text-gray-700">... Add Scrawl-canvas using NPM or Yarn:</span>
+
+$> <span class="text-red-800">npm install scrawl-canvas</span>
+
+<span class="italic text-xs text-gray-700">... Then in any component which defines a Scrawl-canvas canvas:</span>
+
+import React, { useEffect } from 'react';
+
+<span class="text-red-800">import scrawl from 'scrawl-canvas';</span>
+
+function ComponentName (props) {
+
+    <span class="text-red-800">useEffect(() => {
+
+        let namespace = props.namespace;
+
+        let canvas = scrawl.getCanvas(`#${namespace}`);
+
+        <i>[other setup code here]</i>
+
+        return function cleanup() {
+
+            <i>[other takedown code here]</i>
+
+            canvas.kill();
+        };
+    }, []);</span>
+
+    return (
+        &lt;canvas id={props.namespace}>&lt;/canvas>
+    );
+}
+
+export default ComponentName;
+</code></pre>
+
+<h2>Discussion</h2>
+
+<p>Scrawl-canvas plays well with <a href="https://webpack.js.org/">Webpack</a>, which <a href="https://create-react-app.dev/">create-react-app</a> uses out of the box.</p>
+
+<p>Once installed in the project (using NPM or Yarn), Scrawl-canvas can be added to any component using the <code class="text-sm text-red-800">import scrawl from 'scrawl-canvas';</code> statement. Scrawl-canvas will initialize itself the first time this statement is encountered; thereafter the statement will return the scrawl object.</p>
+
+<p>The <b>scrawl object</b> should be treated as 'global', thus artefacts and assets created for a particular canvas display should be namespaced to minimize potential naming conflicts and to make debugging the code a bit easier.</p>
+
+<p>Inside the component, use the <code class="text-sm text-red-800">useEffect</code> <a href="https://reactjs.org/docs/hooks-effect.html">React hook</a> to build the canvas display. This hook returns a function which will be run immediately before the component unmounts; code to clean up the scrawl object should be placed here.</p>
+
+<h3>Common questions</h3>
+
+<p><b>My React project doesn't use Webpack - can I still use Scrawl-canvas?</b>
+	<br />Scrawl-canvas has been tested against the Webpack and <a href="https://rollupjs.org/guide/en/">Rollup</a> bundlers. Use with other bundlers (<a href="https://github.com/google/closure-compiler/wiki">Google Closure</a>, <a href="https://parceljs.org/">Parcel</a>, <a href="http://browserify.org/">Browserify</a>, <a href="https://fuse-box.org/">FuseBox</a>, etc) is a country still waiting to be explored.</p>
+
+<h3>Example</h3>
+
+<p>App.js</p>
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">import React from 'react';
+
+import TestCanvas from './TestCanvas';
+
+const gridStyle = {
+    display: 'grid',
+
+    gridTemplateColumns: '1fr 1fr',
+    gridColumnGap: '1rem',
+
+    gridTemplateRows: 'auto',
+    gridRowGap: '1rem',
+
+    justifyItems: 'stretch',
+    alignItems: 'stretch',
+
+    padding: '0.5rem',
+
+    border: '1px solid black',
+
+    backgroundColor: 'lemonchiffon',
+    overflow: 'hidden',
+    resize: 'horizontal',
+
+    width: '60%',
+    height: '440px',
+    minWidth: '300px',
+
+    margin: '1rem',
+}
+
+function App() {
+
+    return (
+        &lt;div className="App">
+
+            &lt;div style={gridStyle}>
+                &lt;TestCanvas namespace="mycanvas-1" fit="cover" />
+                &lt;TestCanvas namespace="mycanvas-2" fit="contain" />
+                &lt;TestCanvas namespace="mycanvas-3" fit="fill" />
+                &lt;TestCanvas namespace="mycanvas-4" fit="none" />
+            &lt;/div>
+
+        &lt;/div>
+    );
+}
+
+export default App;
+</code></pre>
+
+<p>TestCanvas.js</p>
+<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">import React, { useEffect } from 'react';
+
+import scrawl from 'scrawl-canvas';
+
+const canvasStyle = {
+    borderRadius: '0.5rem',
+    backgroundColor: 'black',
+    width: '100%',
+    height: '100%',
+    maxHeight: '200px',
+    border: '1px solid red',
+};
+
+function TestCanvas (props) {
+
+    useEffect(() => {
+
+        let canvas, animation,
+            group = scrawl.library.group;
+
+        let namespace = props.namespace,
+            fit = props.fit || 'none';
+
+        canvas = scrawl.getCanvas(`#${namespace}`);
+
+        canvas.set({
+            backgroundColor: 'honeydew',
+            fit: fit,
+            checkForResize: true,
+        });
+
+        canvas.setBase({
+            width: 600,
+            height: 300,
+        });
+
+        scrawl.makePhrase({
+
+            name: `${namespace}-phrase`,
+
+            text: `Fit: ${fit}`,
+
+            width: "80%",
+            justify: 'center',
+
+            startX: 'center',
+            startY: '60%',
+
+            handleX: 'center',
+            handleY: 'center',
+
+            font: '7em Garamond, sans-serif',
+        });
+
+        animation = scrawl.makeRender({
+
+            name: `${namespace}-render`,
+            target: canvas,
+        });
+
+        return function cleanup() {
+
+            animation.kill();
+            group[canvas.base.name].kill(true);
+            canvas.kill();
+        };
+    }, []);
+
+    return (
+        &lt;div>
+            &lt;canvas id={props.namespace} style={canvasStyle}>&lt;/canvas>
+        &lt;/div>
+    );
+}
+
+// Exports
+export default TestCanvas;
+</code></pre>

@@ -1,0 +1,308 @@
+<style>
+  .code-block {
+    border-color: #e2e8f0;
+    background-color: #f7fafc;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+  }
+  .code-block code {
+    line-height: 1.25;
+    color: #4a5568;
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    font-size: 0.875rem;
+  }
+  .code-block .redcode {
+    color: #9b2c2c;
+  }
+  .code-block .heavycode {
+    font-weight: 700;
+    color: #9b2c2c;
+  }
+  .code-block .comment {
+    color: #4a5568;
+    font-size: 0.75rem;
+  }
+</style>
+
+<p>In the previous lesson we have:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Imported a video asset into Scrawl-canvas.</li>
+  <li class="mb-2">Used that video as the source for a Picture entity.</li>
+  <li class="mb-2">Added some video control buttons to the canvas.</li>
+  <li class="mb-2">Added functionality to those buttons to allow the user to play/pause the video, and mute/unmute the video's audio output.</li>
+  <li class="mb-2">Added a playback bar to track video playback progress.</li>
+</ul>
+
+<p><img class="mx-auto" src="/assets/lesson-05/01.png" /></p>
+
+<p>In this lesson, we will:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Build on that code to manipulate the video output, using filters; and</li>
+  <li class="mb-2">Add an accessible link to the &lt;canvas> element which will open an external web page in the browser.</li>
+</ul>
+
+<h2>Scrawl-canvas filters</h2>
+
+<p>An asset, like our video, can be used as the source for more than one Picture entity. And we don't need to show the entire video in each Picture.</p>
+
+<p>Let's add a second Picture entity to our code, to demonstrate this:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  [... video Picture entity]
+
+  [... initialization event listener]
+
+  [... define Phrase entitys]
+
+  <span class="redcode">scrawl.makePicture({
+
+    name: `${namespace}-swan-image`,
+
+    <i class="comment">// We can reference the video asset by its name-String</i>
+    asset: 'swans',
+
+    startX: '20%',
+    startY: '20%',
+    width: '30%',
+    height: '30%',
+
+    copyStartX: '50%',
+    copyStartY: '30%',
+    copyWidth: '50%',
+    copyHeight: '50%',
+
+    lineWidth: 5,
+    strokeStyle: 'yellow',
+    method: 'fillThenDraw',
+  });</span>
+
+  [... user interaction event listeners]
+
+  [... video progress bar]
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-05/02.png" /></p>
+
+<p>The reason why we need a second Picture entity in this project is because we want to add filters to the video. Filters, however, can impose a heavy computational load to our canvas display &mdash; remember that our overarching aim when coding a canvas display/animation is to <b><i>keep all canvas-related computation to less than 15 milliseconds</i></b>. If we can do this, then the canvas will animate at 60 frames-per-second.</p>
+
+<p>The simplest way to reduce filters computation time is to only apply the filters to those parts of the canvas display that need to be filtered.</p>
+
+<p>Our stated aim for this project is to "turn the swans pink". During the entire video playback, the swans behave themselves by staying away from the top and bottom parts of the video. Thus we only need to filter those parts of the canvas where the swans swim:</p>
+
+<pre class="code-block"><code>scrawl.makePicture({
+
+  name: `${namespace}-swan-image`,
+
+  asset: 'swans',
+
+  <span class="redcode">width: '100%',
+  height: '55%',
+
+  startY: '25%',
+
+  copyWidth: '100%',
+  copyHeight: '55%',
+
+  copyStartY: '25%',</span>
+
+  lineWidth: 5,
+  strokeStyle: 'yellow',
+  method: 'fillThenDraw',
+});
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-05/03.png" /></p>
+
+<p>One interesting way to turn our swans red is to apply a <b>red</b> filter to our new Picture entity, and then display a translucent version of it over the original picture entity &mdash; allowing the white of the swans to turn the red filter pink.</p>
+
+<p>Scrawl-canvas comes with a number of in-built filters. We use them by creating a <b>Filter object</b> using the Scrawl-canvas <code class="text-sm text-red-800">makeFilter</code> factory function, then adding that filter to an entity's <code class="text-sm text-red-800">filters</code> array:</p>
+
+<pre class="code-block"><code><span class="redcode">scrawl.makeFilter({
+
+  name: `${namespace}-filter-red`,
+  method: 'red',
+});</span>
+
+scrawl.makePicture({
+
+  name: `${namespace}-swan-image`,
+
+  asset: 'swans',
+
+  width: '100%',
+  height: '55%',
+
+  startY: '25%',
+
+  copyWidth: '100%',
+  copyHeight: '55%',
+
+  copyStartY: '30%',
+
+  <span class="redcode">filters: [`${namespace}-filter-red`],
+
+  globalAlpha: 0.15,</span>
+});
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-05/04.png" /></p>
+
+<p>Well ... the swans are certainly a bit pinker. But so is the river.</p>
+
+<p>To fix this, we need to find a way to remove the river from our new Picture's display. Scrawl-canvas has a filter that can do this: the <b>chroma filter</b>.</p>
+
+<p>This filter performs a <a href="https://en.wikipedia.org/wiki/Chroma_key">chroma key effect</a>, testing pixels in the image to see if they match a specific color, or range of colors; if yes, then that pixel is set to a transparent value, which allows any background image to show through our image.</p>
+
+<p class="italic text-sm">(Note: the Scrawl-canvas chroma filter is a fairly simplistic interpretation of the chroma key algorithm. For a more accurate effect (for instance, fewer spill areas) developers can write their own filter and use that instead or &mdash; even better &mdash; use a dedicated 3rd party compositing library which can export a <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream">MediaStream</a>, which Scrawl-canvas can then import and use.)</p>
+
+<pre class="code-block"><code>scrawl.makeFilter({
+
+  name: `${namespace}-filter-red`,
+  method: 'red',
+
+})<span class="redcode">.clone({
+
+  name: `${namespace}-filter-chroma`,
+  method: 'chroma',
+  ranges: [[0, 0, 0, 190, 190, 190]],</span>
+});
+
+scrawl.makePicture({
+
+  name: `${namespace}-swan-image`,
+
+  asset: 'swans',
+
+  width: '100%',
+  height: '55%',
+
+  startY: '25%',
+
+  copyWidth: '100%',
+  copyHeight: '55%',
+
+  copyStartY: '30%',
+
+  <i class="comment">// An entity can have more than one filter applied to it</i>
+  <i class="comment">// - Filters are applied in the order given in the filters array</i>
+  <span class="redcode">filters: [`${namespace}-filter-chroma`, `${namespace}-filter-red`],</span>
+
+  globalAlpha: 0.15,
+});
+</code></pre>
+
+<p>The raw output of our new Picture entity:</p>
+
+<p><img class="mx-auto" src="/assets/lesson-05/05.png" /></p>
+
+<p>Combining our two Pictures in the canvas display:</p>
+
+<p><img class="mx-auto" src="/assets/lesson-05/06.png" /></p>
+
+<h2>Scrawl-canvas artefact anchors</h2>
+
+<p>We have a requirement in our project to allow the user to click on a swan in our canvas display to open the Wikipedia page on Swans. So ... how can we achieve this?</p>
+
+<p>HTML has included the <b>image map</b> &lt;map> and &lt;area> elements since the early days (HTML3). These can be used to define shaped areas across an &lt;img> element which, when clicked, act as links which cause the browser to navigate to a new page.</p>
+
+<p>Nowadays these elements are rarely used. They do not perform well in a responsive environment &mdash; though plugins and libraries exist to help make image maps more responsive. Instead, modern SVG, CSS and HTML offer <a href="https://css-tricks.com/the-many-ways-to-link-up-shapes-and-images-with-html-and-css/">a range of solutions for applying non-rectangular clickable areas to any element</a>.</p>
+
+<p>Even so, the HTML + CSS solutions don't work well for animated canvases. SVG <i>is</i> a viable tool for this work &mdash; but it means replicating and animating swan shapes in an SVG element overlying the canvas.</p>
+
+<p>Scrawl-canvas overcomes these issues by allowing every artefact object to include an <code class="text-sm text-red-800">anchor attribute</code>. The attribute references an <b>Anchor object</b>, which in turn wraps an &lt;a> anchor element which Scrawl-canvas adds to the DOM. We can control, update and emit click events on this element through the artefact object.</p>
+
+<p>Implementing the anchor is as simple as defining it in our code. Let's do this now for our new Picture entity:</p>
+
+<pre class="code-block"><code>scrawl.makePicture({
+
+  [...]
+
+  <i class="comment">// Add enter/leave functions to tell users that they're hovering over a link</i>
+  <span class="redcode">onEnter: function () {
+
+    this.set({
+      globalAlpha: 0.3,
+    });
+
+    canvas.set({
+      css: {
+        cursor: 'pointer',
+      }
+    });
+  },
+
+  onLeave: function () {
+
+    this.set({
+      globalAlpha: 0.15,
+    });
+
+    canvas.set({
+      css: {
+        cursor: 'auto',
+      }
+    });
+  },
+
+  <b><i class="comment">// Use the onUp function to trigger a DOM click event</i>
+  <i class="comment">// - event will originate from the &lt;a> element, not our &lt;canvas> element</i>
+  onUp: function () {
+
+    this.clickAnchor();
+  },
+
+  <i class="comment">// Define our anchor</i>
+  <i class="comment">// - name: used as the &lt;a> element's id attribute value</i>
+  <i class="comment">// - href: the web page we are linking to</i>
+  <i class="comment">// - description: text placed between &lt;a> element's opening/closing tags</i>
+  anchor: {
+    name: 'wikipedia-swan-link',
+    href: 'https://en.wikipedia.org/wiki/Swan',
+    description: 'Link to the Wikipedia article on swans',
+
+    focusAction: true,
+    blurAction: true,
+  },</b></span>
+});
+</code></pre>
+
+<p>With this code in place, we now have a clickable <b>hit zone</b> on our &lt;canvas> element. When the user hovers over the new Picture entity, the swans will blush a deeper pink; clicking takes us to the Wikipedia page.</p>
+
+<p><img class="mx-auto" src="/assets/lesson-05/07.png" /></p>
+
+<p>We're almost there ... or are we?</p>
+
+<p>There's two problems with our current implementation:</p>
+
+<ol class="list-decimal list-outside ml-4 mb-4">
+  <li class="mb-2">Clicking on the river also opens the linked web page.</li>
+  <li class="mb-2">Clicking on one of the geese (or the seagull) opens the Wikipedia article on swans. Geese (and seagulls) are not swans.</li>
+</ol>
+
+<p>The first issue is easy to fix. Picture entitys will, by default, use their rectangular area as their hit zone. But we can set a flag when we're defining the entity to change this behaviour, so that hits will only be registered when the user clicks on a non-transparent part of the Picture's image:</p>
+ 
+<pre class="code-block"><code>scrawl.makePicture({
+
+  [...]
+
+  <span class="redcode">checkHitIgnoreTransparency: true,</span>
+});
+</code></pre>
+
+<h2>Next steps</h2>
+
+<p>We still need to fix the geese (and seagull) issue, so that when the user clicks on the bird we open the wikipedia article relevant to that bird (geese, or seagulls).</p>
+
+<p>Unlike the well-behaved swans, the geese and seagulls in the video shift around the screen quite a bit. To make hit zones for them, we need to track their movements and shift the hit zones around to match their positions at any given moment during video playback.</p>
+
+<p>And to achieve that, we're going to have to use Scrawl-canvas <b>Tickers</b> and <b>Tween animations</b>.</p>

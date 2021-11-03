@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+
+	<title>Scrawl-canvas</title>
+
+    <!-- general page metadata -->
+    <meta name="author" content="rik.roots@rikworks.co.uk">
+    <meta name="description" content="Scrawl-canvas v8 - a Javascript library to generate HTML5 canvas element displays and animations.">
+
+    <!-- Facebook metadata -->
+    <meta property="fb:app_id" content="" />
+    <meta property="og:url" content="http://scrawl-v8.rikweb.org.uk" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Scrawl-canvas" />
+    <meta property="og:description" content="Scrawl-canvas v8 - a Javascript library to generate HTML5 canvas element displays and animations." />
+    <meta property="og:image" content="http://scrawl-v8.rikweb.org.uk/assets/promotion-image.png" />
+
+    <!-- Twitter metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Scrawl-canvas">
+    <meta name="twitter:description" content="Scrawl-canvas v8 - a Javascript library to generate HTML5 canvas element displays and animations.">
+    <meta name="twitter:image" content="http://scrawl-v8.rikweb.org.uk/assets/promotion-image.png">
+    <meta name="twitter:image:alt" content="Image advertising the Scrawl-canvas Javascript library website">
+
+	<link rel='icon' type='image/png' href='/favicon.png'>
+	<link rel='stylesheet' href='/global.css'>
+	<link rel='stylesheet' href='/build/bundle.css'>
+
+	<script defer src='./build/bundle.js'></script>
+</head>
+
+<body>
+    <noscript>
+
+        <style type="text/css">
+            @import 'nojs.css';
+        </style>
+
+        <nav class="svelte-pw89gy">
+            <p>Please note: this site uses the Scrawl-canvas Javascript library to demonstrate responsive and interactive HTML5 &lt;canvas&gt; elements. As you are viewing the site with Javascript disabled, much of the page's functionality - including internal links - has also been disabled.</p>
+            <img id="/assets/scrawl-logo-light.png" alt="Scrawl-canvas logo" src="/assets/scrawl-logo-light.png" srcset="/assets/scrawl-logo-light-400.png 400w, /assets/scrawl-logo-light-800.png 800w, /assets/scrawl-logo-light-1200.png 1200w, /assets/scrawl-logo-light-1600.png 1600w, /assets/scrawl-logo-light-2000.png 2000w, /assets/scrawl-logo-light-2400.png 2400w, /assets/scrawl-logo-light-2800.png 2800w, /assets/scrawl-logo-light-3200.png 3200w, /assets/scrawl-logo-light-3600.png 3600w, /assets/scrawl-logo-light-4000.png 4000w" class="svelte-pw89gy"> 
+
+            <div class="svelte-14ceeqp">
+                <span>Tour</span>
+                <span>Learn</span>
+                <span>How Do I?</span>
+                <span>Docs</span>
+                <span>Demos</span>
+                <a rel="external" href="https://github.com/KaliedaRik/Scrawl-canvas" class="svelte-14ceeqp">GitHub</a>
+            </div>
+        </nav>
+
+        <main class="svelte-14si1qy">
+
+            <img class="svelte-1d9ixfl" src="assets/sc-static-site-helloworld.png" alt="hello world canvas - snapshot of the canvas displaying the banner animation">
+
+            <section class="svelte-14si1qy">
+
+                <h1>Scrawl-canvas - make the canvas work for you</h1>
+
+                <p>Scrawl-canvas is a Javascript library for working with the HTML5 &lt;canvas&gt; element. The library:</p>
+
+                <ul>
+                    <li class="svelte-14si1qy">Adds functionality to make &lt;canvas&gt; elements <b class="svelte-14si1qy">responsive</b>, adapting their size according to their surrounding environment.</li>
+
+                    <li class="svelte-14si1qy">Makes the canvas both <b class="svelte-14si1qy">accessible</b>, and <b class="svelte-14si1qy">interactive</b> - including the ability to easily track user interactions with different parts of the canvas.</li>
+
+                    <li class="svelte-14si1qy">Defines a set of factory functions to <b class="svelte-14si1qy">create a wide range of graphic artefacts and effects</b> which can be drawn on a canvas.</li>
+
+                    <li class="svelte-14si1qy">Includes an adaptable - yet easy to use - protocol to <b class="svelte-14si1qy">position, display and animate artefacts and effects</b> across the canvas.</li>
+
+                    <li class="svelte-14si1qy"><b class="svelte-14si1qy">Builds, controls and animates many canvases</b> - it automatically discovers existing &lt;canvas&gt; elements in a web page, and can add and remove &lt;canvas&gt; elements dynamically, in real time.</li>
+                </ul>
+            </section>
+
+            <section class="svelte-14si1qy">
+
+                <h2>Why does the world need Scrawl-canvas?</h2>
+
+                <div class="text-grid svelte-14si1qy">
+
+                    <div>
+                        <h4 class="svelte-14si1qy">Working with the native Canvas API is hard work</h4>
+
+                        <p>Particularly when the desired result is more complex than a couple of coloured boxes in a static display.</p>
+
+                        <ul>
+                            <li class="svelte-14si1qy">Working directly with the canvas-related APIs leads to writing significant amounts of JS boilerplate code.</li>
+
+                            <li class="svelte-14si1qy">&lt;canvas&gt; elements can be resized and styled using CSS, but changing the CSS size does not affect the element's drawing dimensions - leading to sub-optimal graphic displays.</li>
+
+                            <li class="svelte-14si1qy">Events work on the canvas, not on the artefacts within the canvas - we cannot use artefacts as links or hot-spots (click/tap events), we cannot give them the equivalent of a CSS hover state (focus/blur events), we cannot drag-and-drop them around the display (move events).</li>
+
+                            <li class="svelte-14si1qy">Tracking a user's interaction with the various parts of a canvas display is particularly difficult.</li>
+
+                            <li class="svelte-14si1qy">We cannot save and share artefacts and effects; each canvas display is tightly coupled to the code that defines the display.</li>
+
+                            <li class="svelte-14si1qy"><b class="svelte-14si1qy">Of most concern</b>, canvases are entirely graphical - visual - by nature; they come with <b class="svelte-14si1qy">significant accessibility issues</b>. Given the ever-stricter requirements for websites to be accessible to all users, this makes using a canvas to present important information a dangerous proposition.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="svelte-14si1qy">But the benefits of using canvases for graphical displays and animations are also great</h4>
+
+                        <p>Canvases are part of the DOM (unlike Flash); they are natively wired for events and user interactions; they use immediate mode redering (which makes them very quick); and the canvas-related APIs are designed to be used with Javascript.</p>
+
+                        <p>There are a number of other Javascript canvas libraries available, each with their strengths and weaknesses. Some have been designed to make the production of charts and other data visualisations easier. Some focus on game development, others on making videos interactive.</p>
+
+                        <p>Libraries which attempt to emulate Flash-Actionscript animations have been developed, as have libraries whose aim is to combine 2D, 3D and even SVG graphics into a usable whole. Speed is a key goal for some of the best libraries, while ease-of-use is an objective for many others.</p>
+
+                        <h4 class="svelte-14si1qy">Scrawl-canvas overcomes the big barriers</h4>
+
+                        <p>Scrawl-canvas aims to be fast, and developer-friendly. It also aims to be broadly focussed, suitable for building infographics, games, interactive videos - whatever we can imagine for a 2D graphical presentation.</p>
+
+                        <p><b class="svelte-14si1qy">But the main purpose of Scrawl-canvas is to make the &lt;canvas&gt; element - and the parts that make up its displays and animations - <span class="main-message svelte-14si1qy">Responsive, Interactive, Linkable, Trackable, and Accessible!</span></b></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="svelte-14si1qy">
+
+                <h2>Responsive canvas elements</h2>
+
+                <p>The <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">HTML5 &lt;canvas&gt; element</a> was not designed to be responsive. When we add a canvas to a web page, we give it fixed width and height values, which define its drawing (bitmap) dimensions.</p>
+
+                <p>To make the web page <a href="https://en.wikipedia.org/wiki/Responsive_web_design">responsive</a>, so that it can look good across a range of browser sizes and device screens, we need to define a range of sizes using <b class="svelte-14si1qy">relative proportions</b> - such as CSS percentage values.</p>
+
+                <p>This approach fails for the &lt;canvas&gt; element because browsers will stretch its drawing area to match the CSS-defined dimensions, which often leads to an ugly, distorted result.</p>
+
+                <p>Scrawl-canvas allows us to define the canvas dimensions in CSS, then displays the canvas output in that area in a variety of ways using a <b class="svelte-14si1qy">fit attribute</b> (which parodies the CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit">object-fit</a> property):</p>
+            </section>
+
+            <img class="svelte-14si1qy" src="assets/sc-static-site-fit-canvases.png" alt="responsive canvases - snapshot of four canvases, each showing the effects of a different 'fit' attribute">
+
+            <section class="svelte-14si1qy">
+
+                <p>Fitting the canvas into a space in the web page is one thing. Positioning the artefacts and effects that make up the canvas's display is another. The <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">HTML5 Canvas API</a> includes many functions for creating graphical elements; all of them use absolute pixel values to define, size and position them on the canvas.</p> 
+
+                <p>Scrawl-canvas simplifies the Canvas API, supplying a range of <b class="svelte-14si1qy">factory functions</b> to create 'artefacts', 'styles' and other objects - including animations and tweens - which can be used together to create a canvas display.</p> 
+
+                <p>Once created, we can position these objects on the canvas in a number of ways:</p> 
+
+                <ul>
+                    <li class="svelte-14si1qy"><b class="svelte-14si1qy">Absolute positioning</b> - using the canvas like a coordinates grid (which is how the Canvas API positions objects).</li> <li class="svelte-14si1qy"><b class="svelte-14si1qy">Relative positioning</b> - place objects on the canvas using relative percentage values; if the canvas size changes, the objects stay in the same place relative to the canvas.</li> 
+
+                    <li class="svelte-14si1qy"><b class="svelte-14si1qy">Reference positioning</b> - use an artefact as a reference against which other artefacts can position themselves; when we update the reference artefact's position, the other artefacts update their position values automatically.</li>
+                </ul> 
+
+                <p>The canvas below uses all these techniques to create its display. The result is entirely responsive - try resizing the browser window to see how the scene looks at smaller and larger viewport sizes!</p>
+            </section> 
+
+            <section class="svelte-14si1qy">
+
+                <h2>Accessible and interactive canvas elements</h2> 
+
+                <p>The &lt;canvas&gt; element really comes into its own when we add user-interaction features to it:</p> 
+
+                <ul>
+                    <li class="svelte-14si1qy">Hotspots - defined areas within the display which users can hover over or click/tap to reveal additional information, trigger a tween animation, cause changes in other parts of the web page ... or even navigate to a different web page.</li> 
+
+                    <li class="svelte-14si1qy">Mouse/touch cursor tracking - attach a graphical artefact to the mouse cursor, or drag-and-drop artefacts around the canvas (or even between different canvases).</li>
+                </ul> 
+
+                <p>Building this functionality for a normal, static canvas display is difficult enough. To build it for a responsive canvas display may seem impossible, given modern time and resource constraints.</p>
+            </section> 
+
+            <img class="svelte-1a8az88" src="assets/sc-static-site-navigation-canvas.png" alt="Accessible canvas - snapshot of a kitchen scene with accessible links to related Wikipedia articles">
+
+            <section class="svelte-14si1qy">
+                <p>Scrawl-canvas makes building such features easier!</p> 
+
+                <p>More importantly, Scrawl-canvas does a lot of heavy lifting to make those features <b class="svelte-14si1qy">accessible</b> to users who cannot - for whatever reason - view the canvas display. Links can be made accessible via the keyboard; graphical text is (by default) copied into the DOM so it can be accessed by screen readers. Every Scrawl-canvas canvas comes with <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA">ARIA attributes</a>.</p> 
+
+                <h4 class="svelte-14si1qy">Tracking user journeys</h4> 
+
+                <p>Once we've built the canvas, we can add third-party tracker functionality to help record user journeys through its display, record click convertions - whatever the client needs to monitor the effectiveness of their site or campaign.</p>
+            </section> 
+
+            <section class="svelte-14si1qy">
+
+                <h2>Go wild with your web pages: do amazing stuff!</h2> 
+
+                <img class="svelte-1b95umw" src="assets/sc-static-site-twisted-logo.png" alt="small canvas showing an animated 'Scrawl-canvas v8' logo">
+
+                <p>Scrawl-canvas is not the solution to all graphical representation problems: for many website designs other canvas and/or SVG libraries may provide a better route to meeting the client's requirements.</p> 
+
+                <p>But if a site design calls for a responsive, accessible and interactive &lt;canvas&gt; display, Scrawl-canvas should be able to deliver the goods.</p> 
+
+                <h4 class="svelte-14si1qy">Resources</h4> 
+
+                <p><b class="svelte-14si1qy">Documentation</b> is supplied as inline comments in the code base, and can be viewed as web pages from the <a href="/documentation">Docs</a> link. Most module files include links to test examples which demonstrate the code functionality.</p> 
+
+                <p>Code examples can be found in the <a href="/demonstrations">Demos</a> section of this site. All the demos have links to view the code.</p> 
+
+                <p>The <a href="/learn">Learning</a> and <a href="/how-do-i">"How do I?"</a> cookbook articles on this site are currently under development. If people have suggestions for articles please let me know via GitHub.</p> 
+
+                <p>The code repository can be found and downloaded from <a href="https://github.com/KaliedaRik/Scrawl-canvas">GitHub</a>. It has been released under an MIT Licence and is free-to-use in both personal and commercial projects. Use at your own risk!</p>
+            </section>
+        </main> 
+
+        <footer class="svelte-qck41g">
+
+            <p class="svelte-1h9n7sm">Scrawl-canvas version 8.3.0 - released 2 Dec 2020. Please raise issues in Github</p> 
+
+            <nav class="svelte-1h9n7sm">
+
+                <div>
+                    <span>Tour</span> 
+                    <span>Learn</span> 
+                    <span>How Do I?</span> 
+                    <span>Docs</span> 
+                    <span>Demos</span>
+                </div> 
+                <div>
+                    <a rel="external" href="https://github.com/KaliedaRik/Scrawl-canvas" class="svelte-1h9n7sm">GitHub Repo</a> 
+                    <a rel="external" href="https://github.com/KaliedaRik/Scrawl-canvas/issues" class="svelte-1h9n7sm">Issues &amp; Bugs</a> 
+                    <a download="" href="/downloads/scrawl-canvas_8-3-0.zip" class="svelte-1h9n7sm">Download v8.3.0</a>
+                </div> 
+
+                <div>
+                    <span>Privacy + Cookies:<br />No personal data can be exchanged or collected if this site is viewed with Javascript disabled.</span>
+                </div>
+            </nav> 
+
+            <p class="svelte-qck41g">©2020 Rik Roots. Site built and maintained by RikWorks.<br>
+            Tech: <a href="https://svelte.dev/" class="svelte-qck41g">Svelte</a> scaffold, <a href="https://visionmedia.github.io/page.js/" class="svelte-qck41g">Page.js</a> routing, <a href="https://tailwindcss.com/" class="svelte-qck41g">Tailwind</a> css</p>
+        </footer>
+    </noscript>
+</body>
+</html>

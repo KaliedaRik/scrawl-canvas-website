@@ -1,0 +1,699 @@
+<style>
+  .code-block {
+    border-color: #e2e8f0;
+    background-color: #f7fafc;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+  }
+  .code-block code {
+    line-height: 1.25;
+    color: #4a5568;
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    font-size: 0.875rem;
+  }
+  .code-block .redcode {
+    color: #9b2c2c;
+  }
+  .code-block .heavycode {
+    font-weight: 700;
+    color: #9b2c2c;
+  }
+  .code-block .comment {
+    color: #4a5568;
+    font-size: 0.75rem;
+  }
+</style>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Tower_of_Hanoi">Tower of Hanoi</a> is a simple game where we have to move different sized discs between 3 pegs, with an aim to demolish the tower from one peg and rebuild it on a different peg. The rules of the game are very simple:</p>
+
+<ol class="list-decimal list-outside ml-8 mb-4">
+	<li class="mb-2">Only one disk can be moved at a time.</li>
+	<li class="mb-2">Each move consists of taking the upper disk from one of the stacks and placing it on top of another stack or on an empty peg.</li>
+	<li class="mb-2">No larger disk may be placed on top of a smaller disk.</li>
+</ol>
+
+<figure class="mx-auto mb-4">
+  <img src="/assets/lesson-03/Tower_of_Hanoi.jpeg" alt="Tower of Hanoi">
+  <figcaption class="text-sm text-gray-600 italic">A wooden "Tower of Hanoi" game (image downloaded from <a href="https://commons.wikimedia.org/wiki/File:Tower_of_Hanoi.jpeg">Wikimedia commons</a>).</figcaption>
+</figure>
+
+<p>To build this game in our canvas, we will need to:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Define 3 peg entitys, and place them on the canvas</li>
+  <li class="mb-2">Define 3 (or more) disc entitys, each of a different size, and pile them on one of the pegs in their correct order.</li>
+  <li class="mb-2">Define functionality to allow us to drag a disc from one peg to another.</li>
+  <li class="mb-2">Make sure the discs correctly stack in the order in which they're placed on a peg.</li>
+  <li class="mb-2">Add in the game functionality which will check the legality of each move.</li>
+</ul>
+
+<p>As before, we'll start with a basic web page. Note that we're using a fixed canvas for this build (you can make it responsive if you prefer) and defining its dimensions in the &lt;canvas> element rather than in Javascript:</p>
+
+<pre class="code-block"><code>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  &lt;meta charset='utf-8'>
+  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+
+  &lt;title>Tower of Hanoi&lt;/title>
+
+  &lt;style type="text/css">
+    canvas {
+      border: 2px solid black;
+    }
+  &lt;/style>
+&lt;/head>
+
+&lt;body>
+  &lt;canvas id="mycanvas" <code class="text-red-800">width="600" height="200"</code>>&lt;/canvas>
+
+  &lt;script type="module">
+    import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.2';
+
+    let canvas = scrawl.library.canvas.mycanvas,
+      namespace = 'tower-of-hanoi';
+
+    canvas.set({
+      backgroundColor: 'honeydew',
+    }).setAsCurrentCanvas();
+
+    scrawl.makeRender({
+      name: `${namespace}-animation`,
+      target: canvas,
+    });
+  &lt;/script>
+<&lt;body>
+&lt;/html>
+</code></pre>
+
+<h2>Define the artefacts</h2>
+
+<p>We'll start with three pegs, and three discs. For the final result we can use Picture entitys (to make the game look slightly more interesting) but for now we'll prototype using Block and Wheel entitys.</p>
+
+<p>We met Block entitys in Lesson 1. <b>Wheel entitys</b> are &mdash; effectively &mdash; circles, or parts of circles. The main difference between the two (apart from their shape) is that Wheel entitys use a <code class="text-sm text-red-800">radius</code> attribute to define their dimensions. The radius can be set to an absolute Number value representing px length, or a String% value which is a relative length with 100% being the <b><i>width</i></b> of its host Cell (which in this case is the &lt;canvas> element).</p>
+
+<p>Let's make a start:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  scrawl.makeBlock({
+
+    name: `${namespace}-peg-1`,
+
+    width: '30%',
+    height: '90%',
+
+    startX: '17%',
+    startY: 'center',
+
+    handleX: 'center',
+    handleY: 'center',
+
+    fillStyle: 'rgb(220, 220, 220)',
+    strokeStyle: 'red',
+    lineWidth: 5,
+
+    method: 'drawThenFill',
+
+  }).clone({
+
+    name: `${namespace}-peg-2`,
+    startX: '50%',
+    strokeStyle: 'blue',
+
+  }).clone({
+
+    name: `${namespace}-peg-3`,
+    startX: '83%',
+    strokeStyle: 'orange',
+  });
+
+  <span class="redcode">scrawl.makeWheel({
+
+    name: `${namespace}-disc-1`,
+
+    radius: '12%',
+
+    startX: '17%',
+    startY: 'center',
+
+    handleX: 'center',
+    handleY: 'center',
+
+    fillStyle: 'pink',
+    strokeStyle: 'red',
+    lineWidth: 6,
+
+    method: 'drawThenFill',
+
+  }).clone({
+
+    name: `${namespace}-disc-2`,
+    radius: '10%',
+    fillStyle: 'lightblue',
+    strokeStyle: 'blue',
+
+  }).clone({
+
+    name: `${namespace}-disc-3`,
+    radius: '8%',
+    fillStyle: 'yellow',
+    strokeStyle: 'orange',
+  });</span>
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-03/01.png" /></p>
+
+<h3>Meet the <code class="text-red-800">clone()</code> function</h3>
+
+<p>Nobody enjoys having to repeat themselves &mdash; particularly when it comes to coding. So, rather than define each Block and each Wheel entity separately, what we can do is define the first of each fully, then clone them to make the other Blocks and Wheels.</p>
+
+<p>Most Scrawl-canvas objects can be cloned.</p>
+
+<p>The clone function accepts a single Javascript Object as its argument. Any attributes we include in this object will overwrite the previous object's value for that attribute with the new value we supply.</p>
+
+<p>The result of the clone function is a new Block or Wheel. These can, in turn, be cloned.</p>
+
+<h2>User interaction: drag-and-drop</h2>
+
+<p>User interaction with the &lt;canvas> element would be a difficult proposition if we were coding our game using just the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API">native Canvas API</a>.</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">First we would need to add several event listeners to the canvas, to detect mouse down, move and up events (and their touch event equivalents).</li>
+  <li class="mb-2">Then we would need to calculate the mouse/touch cursor position over the canvas &mdash; not easy if the canvas is responsive.</li>
+  <li class="mb-2">Finally we would need to calculate which graphical shape under the cursor is the one the user wants to drag, and recalculate its position on the canvas as the user dragged, then dropped, it.</li>
+</ul>
+
+<p>Scrawl-canvas automates almost all of this work away from the code using its <code class="text-sm text-red-800">makeDragZone</code> factory function:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  [... define artefacts]
+
+  <b class="text-red-800">scrawl.makeDragZone({
+
+    zone: canvas,
+  });</b>
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-03/02.png" /></p>
+
+<p>The results are good: we can now drag our Block and Wheel entitys around the &lt;canvas> element.</p>
+
+<p>But this is not good enough for our needs. In particular:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Dragging an entity outside of the canvas leads to unexpected results &mdash; for one, the entity remains attached to the mouse cursor even after the mouse button is released.</li>
+  <li class="mb-2">Also, after a second mouse click, the entity displays on top of all the other entitys.</li>
+  <li class="mb-2">Finally, we don't want to drag all the entitys; we only need to drag the Wheel entitys, ignoring any attempt to drag the Block entitys.</li>
+</ul>
+
+<p>We can fix all of these issues by:</p>
+
+<ol class="list-decimal list-outside ml-8 mb-4">
+  <li class="mb-2">Better definition of our makeDragZone invocation, and understanding how Scrawl-canvas groups events together.</li>
+  <li class="mb-2">Artefact order.</li>
+  <li class="mb-2">Scrawl-canvas Group objects.</li>
+</ol>
+
+<h3>Mouse, Touch and Pointer events</h3>
+
+<p>Most of the web page (DOM) events that Scrawl-canvas has to worry about are related to <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent">mouse button clicks and mouse movements</a> into, over and out of &lt;canvas> elements. This is fine for users visiting a site on a regular desktop browser, but doesn't deal with users using touch-enabled devices where a different set of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Touch_events">touch events</a> need to be captured and acted on. And to add to the confusion we have a set of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events">pointer events</a>, which attempt to solve the problem for us but have not (yet) been widely adopted by developers and others.</p>
+
+<p>Scrawl-canvas only needs to worry about 5 user interactions, and does work behind the scenes to gather all these different event types into groups for each interaction type:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><b>enter</b> &mdash; for <code class="text-sm text-red-800">mouseenter, touchenter, pointerenter</code> events</li>
+  <li class="mb-2"><b>move</b> &mdash; for <code class="text-sm text-red-800">mousemove, touchmove, touchfollow, pointermove</code> events</li>
+  <li class="mb-2"><b>down</b> &mdash; for <code class="text-sm text-red-800">mousedown, touchstart, pointerdown</code> events</li>
+  <li class="mb-2"><b>up</b> &mdash; for <code class="text-sm text-red-800">mouseup, touchend, pointerup</code> events (which can also be interpreted as user click events)</li>
+  <li class="mb-2"><b>leave</b> &mdash; for <code class="text-sm text-red-800">mouseleave, touchleave, pointerleave</code> events</li>
+</ul>
+
+<h3><code class="text-red-800">makeDragZone</code> argument attributes</h3>
+
+<p>When we invoke the <code class="text-sm text-red-800">makeDragZone</code> factory function we need to supply it with an argument object containing a <code class="text-sm text-red-800">zone</code> attribute. The zone value can be either the String name of our canvas wrapper, or the wrapper object itself.</p>
+
+<p>The argument object can also include other attributes. The attributes that we are interested in, to help us code  our Tower of Hanoi game, are:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><code class="text-sm text-red-800">startOn</code> &mdash; one of 'move', 'up', 'down', 'enter' or 'leave', or an Array of a selection of those Strings. Defaults to 'down'.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">endOn</code> &mdash; one of 'move', 'up', 'down', 'enter' or 'leave', or an Array of a selection of those Strings. Defaults to 'up'.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">exposeCurrentArtefact</code> &mdash; a Boolean value (defaulting to false). When set, invoking the function returned by <code class="text-sm text-red-800">makeDragZone</code> will return the entity object currently being dragged &mdash; we'll make use of this functionality later.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">collisionGroup</code> &mdash; again, this will come in useful later, when we fix the issue of dragging Wheels, but ignoring Blocks.</li>
+</ul>
+
+<p>Let's fix our immediate issue of what happens when we drag an entity outside of the canvas:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  [... define artefacts]
+
+  scrawl.makeDragZone({
+
+    zone: canvas,
+    <b class="text-red-800">endOn: ['up', 'leave'],</b>
+  });
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<p>Now when we attempt to drag a Block or Wheel entity out of the &lt;canvas> element, it gets dropped. This also solves the problem of entitys unexpectedly changing their <b>display order</b>, drawing themselves on top of the other entitys when they need to be drawn beneath them.</p>
+
+<p>... But <i>what if we want to deliberately change the order</i> in which entitys stamp themselves onto the canvas?</p>
+
+<h3>The artefact <code class="text-red-800">order</code> attribute</h3>
+
+<p>Every Scrawl-canvas artefact (remember that all entitys are also artefacts) can take an <code class="text-sm text-red-800">order</code> attribute &mdash; a positive integer Number which defines when the artefact is stamped onto their host Cell. Artefacts with higher order values are stamped later in the Display cycle, meaning that they appear on top of artefacts with lower order values.</p>
+
+<p>By default, all artefacts (and entitys) are given an order value of <code class="text-sm text-red-800">0</code>. Artefacts with the <i>same</i> order value are stamped in the order in which they were defined in the Javascript code. However <i>this is not guaranteed!</i></p>
+
+<p>If we want to guarantee that an entity will always be displayed on top of other entitys, we need to give it an order value that will ensure that. And if we want to change that order value we can do so at any time using a normal <code class="text-sm text-red-800">set()</code> invocation.</p>
+
+<p>Having an explicit order value for our discs will come in very useful later &mdash; particularly when deciding if we can move a disc from one peg to another (because larger discs cannot be stacked on top of smaller discs). So let's fix this issue now:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  [... define Block entitys]
+
+  scrawl.makeWheel({
+
+    name: `${namespace}-disc-1`,
+
+    <b class="text-red-800">order: 1,</b>
+
+    radius: '12%',
+
+    startX: '17%',
+    startY: 'center',
+
+    handleX: 'center',
+    handleY: 'center',
+
+    fillStyle: 'pink',
+    strokeStyle: 'red',
+    lineWidth: 6,
+
+    method: 'drawThenFill',
+
+  }).clone({
+
+    name: `${namespace}-disc-2`,
+    <b class="text-red-800">order: 2,</b>
+    radius: '10%',
+    fillStyle: 'lightblue',
+    strokeStyle: 'blue',
+
+  }).clone({
+
+    name: `${namespace}-disc-3`,
+    <b class="text-red-800">order: 3,</b>
+    radius: '8%',
+    fillStyle: 'yellow',
+    strokeStyle: 'orange',
+  });
+
+  [... drag zone]
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<h3>The Scrawl-canvas <code class="text-red-800">Group</code> object</h3>
+
+<p>A lot of Scrawl-canvas's functionality is mediated through Group objects. The good news is that Scrawl-canvas does all this in the background, meaning that we don't need to worry about Groups too much.</p>
+
+<p>However they do come in useful for situations where we want to perform operations &mdash; like our drag-and-drop &mdash; on a subset of artefacts (dragging Wheels, but not Blocks).</p>
+
+<p>We can create a new Group object at any time using the Scrawl-canvas <code class="text-sm text-red-800">makeGroup</code> factory function. Then we can add artefacts to it by invoking its <code class="text-sm text-red-800">addArtefacts</code> function:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  [... define entitys]
+
+  <b class="text-red-800">scrawl.makeGroup({
+
+    name: `${namespace}-discs`,
+
+  }).addArtefacts(
+    `${namespace}-disc-1`, 
+    `${namespace}-disc-2`, 
+    `${namespace}-disc-3`);</b>
+
+  scrawl.makeDragZone({
+
+    zone: canvas,
+    endOn: ['up', 'leave'],
+    <b class="text-red-800">collisionGroup: `${namespace}-discs`,</b>
+  });
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-03/03.png" /></p>
+
+<p>With these updates added to our code, we've reached the point where we can drag our Wheel entity discs around (but not out of) the &lt;canvas> element, and that the smaller discs will always be drawn over the top of larger discs, while our Block entity pegs will stay fixed in place.</p>
+
+<p>In the Tower of Hanoi game discs are moved from one peg to another. When not being moved they sit on their peg. This is not happening in our emulation of the game: when the user drops a disc, it stays where it is dropped.</p>
+
+<p>So our next job is to make the Wheel discs center themselves in the middle of the Block peg they've been dropped on. We can do this using <b>pivot positioning</b> (also known as <i>positioning by reference</i>).</p>
+
+<h2>Reference positioning using pivots</h2>
+
+<p>In Lesson 1 we learned how to place a Block entity on a &lt;canvas> element using either <b>absolute</b> positioning (giving the entity's <code class="text-sm text-red-800">start</code> attributes Number values), or alternatively using <b>relative</b> positioning &mdash; which is the approach we've used in the code above.</p>
+
+<p>Scrawl-canvas offers us a third alternative for placing artefacts on a &lt;canvas> element: we can position an artefact <b>by reference</b> to another artefact.</p>
+
+<p>Let's do this now:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  scrawl.makeBlock({
+
+    name: `${namespace}-peg-1`,
+
+    width: '30%',
+    height: '90%',
+
+    <b class="text-red-800">startX: '17%',
+    startY: 'center',
+
+    handleX: 'center',
+    handleY: 'center',</b>
+
+    fillStyle: 'rgb(220, 220, 220)',
+    strokeStyle: 'red',
+    lineWidth: 5,
+
+    method: 'drawThenFill',
+
+  }).clone({
+
+    [...]
+  });
+
+  scrawl.makeWheel({
+
+    name: `${namespace}-disc-1`,
+
+    order: 1,
+
+    radius: '12%',
+
+    handleX: 'center',
+    handleY: 'center',
+
+    <b class="text-red-800">pivot: `${namespace}-peg-1`,
+    lockTo: 'pivot',</b>
+
+    fillStyle: 'pink',
+    strokeStyle: 'red',
+    lineWidth: 6,
+
+    method: 'drawThenFill',
+
+  }).clone({
+
+    [...]
+  });
+
+  [... drag zone]
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<p>... So, what's happening here?</p>
+
+<p>We've made no changes to the Block entitys &mdash; as can be seen, we're positioning them (relatively) using String% and 'center' values.</p>
+
+<p>But the Wheel entitys have changed. Instead of giving them a <code class="text-sm text-red-800">start</code> coordinate, we instead supply the first entity with <code class="text-sm text-red-800">pivot</code> and <code class="text-sm text-red-800">lockTo</code> attributes:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2"><code class="text-sm text-red-800">pivot</code> &mdash; takes the name String of another artefact, or the artefact object itself.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">lockTo</code> &mdash; takes a String argument. This is where we actually tell our Wheel to use the first Block entity's <b>start coordinates</b> as its own start values.</li>
+</ul>
+
+<p>The practical effect of these changes are that we can still pick up and drag our Wheel entitys, as before. But when we release the mouse button the Wheel returns to its initial position, pivoted to the first Block.</p>
+
+<p>Additionally, if we were to reposition our Block pin, the Wheel discs would automatically update to match that change.</p>
+
+<p>Pivoting artefacts to other artefacts is a powerful way of grouping artefacts together, both for positioning and animation, without needing to place them all in the same group or container (as is done in a number of other Javascript-based canvas libraries).</p>
+
+<p>And by updating our Wheel discs' pivot values when we drop them over a different Block pin, we can move a big step forward towards completing the code for our Tower of Hanoi game.</p>
+
+<h2>Display cycle hooks</h2>
+
+<p>To change a Wheel disc's pivot pin, we need to know which Block entity our mouse (or touch) cursor was over when we released the mouse button (or ended the touch action).</p>
+
+<p>The simplest way to keep check of which Block peg the mouse was last hovering over is by using a Display cycle hook, which is part of our <code class="text-sm text-red-800">makeRender</code> factory function:</p>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  [... define entitys]
+
+  [... define disc group]
+
+  <b class="text-red-800">let dragActions = </b>scrawl.makeDragZone({
+
+    zone: canvas,
+    collisionGroup: `${namespace}-discs`,
+    endOn: ['up', 'leave'],
+    <b class="text-red-800">exposeCurrentArtefact: true,</b>
+  });
+
+  <span class="redcode">let checkPeg = function () {
+
+    <i class="comment">// Variables local to the function</i>
+    let peg = false,
+      disc;
+
+    <i class="comment">// Create a new Group for the Block peg entitys</i>
+    let pegGroup = scrawl.makeGroup({
+
+      name: `${namespace}-pegs`,
+
+    }).addArtefacts(
+      `${namespace}-peg-1`, 
+      `${namespace}-peg-2`, 
+      `${namespace}-peg-3`);
+
+    <i class="comment">// We return a function which can be invoked as part of the Display cycle</i>
+    return function () {
+
+      <i class="comment">// Get the peg (if any) that the cursor is currently hovering over</i>
+      <i class="comment">// - every canvas wrapper has a <b>here</b> object</i>
+      <i class="comment">// - this contains mouse/touch cursor coordinates local to the canvas</i>
+      <i class="comment">// - we can feed the here object into a Group's <b>getArtefactAt</b> function</i>
+      <i class="comment">// - which returns the entity object currently under the cursor</i>
+      <i class="comment">// - or false if there are no artefacts at the current coordinates</i>
+      let hit = pegGroup.getArtefactAt(canvas.here);
+
+      <i class="comment">// Update the <b>peg</b> variable with latest data</i>
+      if (hit) peg = hit.artefact;
+      else peg = false;
+
+      <i class="comment">// Get the current drag status</i>
+      let checkDrag = dragActions();
+
+      <i class="comment">// We are currently dragging a disc</i>
+      <i class="comment">// - no further action required during this Display cycle</i>
+      if (checkDrag) disc = checkDrag.artefact;
+
+      <i class="comment">// We are not dragging a disc, but we were a moment ago</i>
+      <i class="comment">// - user has just dropped the disc they were dragging</i>
+      else if (disc) {
+
+        <i class="comment">// If we have a peg, and a disc - move disc to peg</i>
+        if (peg) {
+
+          disc.set({ 
+            pivot: peg, 
+          });
+          
+          disc = false;
+        }
+      }
+    }
+  <i class="comment">// Immediately invoke the function to prepare it for use</i>
+  }();</span>
+
+  scrawl.makeRender({
+    name: `${namespace}-animation`,
+    target: canvas,
+    <b class="text-red-800">commence: checkPeg,</b>
+  });
+&lt;/script>
+</code></pre>
+
+<p><img class="mx-auto" src="/assets/lesson-03/04.png" /></p>
+
+<p>The main changes we have made to the code are:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2">Update <code class="text-sm text-red-800">makeDragZone</code> &mdash; set the <code class="text-sm text-red-800">exposeCurrentArtefact</code> flag and capture the factory function's return value in a variable. We can invoke that returned function later to find out which entity &mdash; if any &mdash; is currently being dragged by the user.</li>
+  <li class="mb-2">Create a <b>Display cycle hook function</b> stored in the <code class="text-sm text-red-800">checkPeg</code> variable &mdash; this function will be triggered once per Display cycle; we use it to check which disc (if any) is currently being dragged by the user, and which peg (if any) the mouse/touch cursor is currently hovering over. Changes to either of those values may lead to a Wheel disc's <code class="text-sm text-red-800">pivot</code> attribute being updated to match the current Block peg entity.</li>
+  <li class="mb-2">Update <code class="text-sm text-red-800">makeRender</code> &mdash; we add our Display cycle hook function to the <code class="text-sm text-red-800">commence</code> hook. The function will trigger once, at the start of each Display cycle.</li>
+</ul>
+
+<p>We're almost done with building the game. The only remaining work to do is to add checks to enforce the rules about which discs can be moved, and which pegs those discs can be moved to.</p>
+
+<p>Which means we're going to have to add some <i>state</i> to our web page.</p>
+
+<h3>Adding the game logic, and game state</h3>
+
+<pre class="code-block"><code>&lt;script type="module">
+  [... canvas setup]
+
+  [... define entitys]
+
+  <b class="text-red-800">let discGroup = scrawl.makeGroup({
+    name: `${namespace}-discs`,
+  });</b>
+
+  [... drag zone]
+
+    let checkPeg = function () {
+
+      let peg = false,
+        disc;
+
+      let pegGroup = scrawl.makeGroup({
+
+        name: `${namespace}-pegs`,
+
+      }).addArtefacts(
+        `${namespace}-peg-1`, 
+        `${namespace}-peg-2`, 
+        `${namespace}-peg-3`);
+
+      <span class="redcode">
+      <i class="comment">// Setup the game's initial state</i>
+      let <b>pegState</b> = {
+
+        [`${namespace}-peg-1`]: [
+          `${namespace}-disc-1`, 
+          `${namespace}-disc-2`, 
+          `${namespace}-disc-3`
+        ],
+
+        [`${namespace}-peg-2`]: [],
+
+        [`${namespace}-peg-3`]: [],
+      };
+
+      <i class="comment">// Function to update the game's state</i>
+      <i class="comment">// - mydisc will always be the last member of an array, </i>
+      <i class="comment">// - so we can pop it when found, then push it onto mypeg</i>
+      let <b>updateState</b> = function (mypeg, mydisc) {
+
+        for (let [pName, pState] of Object.entries(pegState)) {
+
+          if (pState.includes(mydisc.name)) pState.pop();
+        }
+        pegState[mypeg.name].push(mydisc.name);
+      }
+
+      <i class="comment">// Function to update the disc group's membership</i>
+      <i class="comment">// - a disc can only be moved if it is a member of this group</i>
+      let <b>updateDiscGroup</b> = function () {
+
+        discGroup.clearArtefacts();
+
+        for (let [pName, pState] of Object.entries(pegState)) {
+
+          if (pState.length) {
+
+            discGroup.addArtefacts(pState[pState.length - 1]);
+          }
+        }
+
+        <i class="comment">// Because this Group is outside the Display cycle</i>
+        <i class="comment">// - (we haven't assigned it to a Cell object)</i>
+        <i class="comment">// - we need to manually invoke its sort routine</i>
+        discGroup.sortArtefacts();
+      }
+      updateDiscGroup();
+
+      <i class="comment">// Enforce the game rules</i>
+      <i class="comment">// - a disc can only move to a peg </i>
+      <i class="comment">// - if no smaller discs are already on that peg</i>
+      let entity = scrawl.library.entity;
+
+      let <b>checkForLegalMove</b> = function (mypeg, mydisc) {
+
+        if (!pegState[mypeg.name].length) return true;
+
+        return pegState[mypeg.name].every(d => {
+          entity[d].order < mydisc.order;
+        });
+      }</span>
+
+      return function () {
+
+        let hit = pegGroup.getArtefactAt(canvas.here);
+
+        if (hit) peg = hit.artefact;
+        else peg = false;
+
+        let checkDrag = dragActions();
+
+        if (checkDrag) disc = checkDrag.artefact;
+
+        else if (disc) {
+
+          <span class="redcode">if (peg) {
+
+            if (checkForLegalMove(peg, disc)) {
+
+              updateState(peg, disc);
+              updateDiscGroup();
+
+              disc.set({ 
+                pivot: peg, 
+              });
+            }
+          }</span>
+          disc = false;
+        }
+      }
+    }();
+
+  [... render animation]
+&lt;/script>
+</code></pre>
+
+<h2>Try for yourself</h2>
+
+<p>A game of Tower of Hanoi, using three discs, can be completed in seven moves. Try adding more discs to the game.</p>
+
+<p>For a bigger challenge, find some images of wooden discs and convert the Wheel entitys into Picture entitys.</p>
+
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas-v8 - Tower of Hanoi" src="https://codepen.io/kaliedarik/embed/VwvPNEg?height=600&theme-id=26779&default-tab=js,result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy">
+  See the Pen <a href='https://codepen.io/kaliedarik/pen/VwvPNEg'>Scrawl-canvas-v8 - Tower of Hanoi</a> by Rik Roots
+  (<a href='https://codepen.io/kaliedarik'>@kaliedarik</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+
+
+
+
+

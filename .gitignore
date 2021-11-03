@@ -1,0 +1,14 @@
+/node_modules/
+/public/build/
+/public/docs/
+/public/demo/
+/public/source/
+/public/min/
+/public/learn/
+/public/how-do-i/
+/public/demonstrations/
+/public/documentation/
+/public/error/
+/public/privacy-and-cookies/
+
+.DS_Store
