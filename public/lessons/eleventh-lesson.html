@@ -54,7 +54,7 @@
   <li class="mb-2">User preference media features &mdash; in particular <code class="text-sm text-red-800">prefers-reduced-motion</code> and <code class="text-sm text-red-800">prefers-color-scheme</code>.</li>
   <li class="mb-2">How to add accessible controls to start and halt the animation.</li>
   <li class="mb-2">How to make the &lt;canvas> element, and any text we include in it, accessible to screen readers.</li>
-  <li class="mb-2">How to add accessible web links to areas within the canvas, including navigating between them and invoking them using a keyboard.</li>
+  <li class="mb-2">How to add accessible, focussable web links to areas within the canvas, including navigating between them and invoking them using a keyboard.</li>
 </ol>
 
 <h3>User preference media features</h3>
@@ -205,7 +205,7 @@
 
 <p>If we ever wanted to prevent this happening, we can set a <code class="text-sm text-red-800">delay: true</code> attribute in the factory's argument, which will prevent the animation object starting until we invoke its <code class="text-sm text-red-800">run()</code> function.</p>
 
-<p>The drawback of using this approach is that the initial canvas scene will not be drawn until we start the animation. A much better approach would be to allow the animation to complete its first Display cycle, then stop it. This is an easy fix:</p>
+<p>The drawback of using this approach is that the initial canvas scene will not be drawn until we start the animation. A much better approach would be to allow the animation to complete its first Display cycle, then stop it:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
   [...setup]
@@ -220,7 +220,7 @@
 &lt;/script>
 </code></pre>
 
-<p>The accessibility guidelines suggest that we are allowed to run the initial animation for up to five seconds before halting it. We can achieve this by wrapping our <code class="text-sm text-red-800">halt()</code> in a <code class="text-sm text-red-800">setTimeout()</code> function:</p>
+<p>The accessibility guidelines suggest that we are allowed to run the initial animation for up to five seconds before halting it. We can achieve this by wrapping our <code class="ctext-red-800">halt()</code> in a <code class="text-sm text-red-800">setTimeout()</code> function:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
   [...setup]
@@ -239,7 +239,7 @@
 
 <p>We can make a case that if a user has not set their <code class="text-sm text-red-800">prefers-reduced-motion</code> flag to limit animations, then we don't need to stop the animation.</p>
 
-<p>Happily this, too, is a simple fix. Scrawl-canvas comes with functionality built-in which makes it easy to check the status of the <code class="text-sm text-red-800">prefers-reduced-motion</code> flag, and act on that flag's setting &mdash; including any changes the user may make to the flag while viewing our canvas demo:</p>
+<p>Scrawl-canvas comes with functionality built-in which makes it easy to check the status of the <code class="text-sm text-red-800">prefers-reduced-motion</code> flag, and act on that flag's setting &mdash; including any changes the user may make to the flag while viewing our canvas demo:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
   [...setup]
@@ -269,6 +269,8 @@
 <p><b><i>To test this code</i></b> we can access the browser's Inspector and toggle the <code class="text-sm text-red-800">prefers-reduced-motion</code> flag on and off. For instance in Chrome: open the Inspector, press <code class="text-sm text-red-800">Ctrl/Cmd+Shift+P</code>, type <code class="text-sm text-red-800">'show rendering'</code>, then click on the 'Show rendering' button.</p>
 
 <p><img class="mx-auto" src="/assets/lesson-11/03.png" alt="Screen capture of Chrome browser inspector, showing the location of the 'prefers reduced motion' selector." /></p>
+
+<p class="text-sm">(Note that &mdash; as we will see later in this lesson &mdash; halting the animation object is not the best approach to stopping an animation in Scrawl-canvas. If we stop the Display cycle then we prevent users who are navigating the web page using a keyboard from seeing when an entity acting as a navigation link has been focussed. A much better fix can be found in the CodePen demo at the end of this lesson, which we will discuss further in Lesson 12.)</p>
 
 <p><b><i>Scrawl-canvas includes similar functionality for handling other user preference settings</i></b>. For reference, these are:</p>
 
@@ -601,7 +603,7 @@
   <li class="mb-2">Include some visual clue to indicate that the entity is a clickable link &mdash; for instance by underlining text, adding shadow to a shape, changing colors, changing the browser cursor (to a pointer), etc. This should preferably happen on hover events, but we also need a consistent approach to signify a link for users accessing the site on a mobile device.</li>
   <li class="mb-2">Include descriptive text in the link anchor attribute so that people using screen readers know what the link is, and where it will take them, when clicked.</li>
   <li class="mb-2">Make sure people using keyboards can navigate to the links using the <code class="text-sm text-red-800">[TAB]</code> key, and can invoke the navigation using various combinations of keys which include the <code class="text-sm text-red-800">[ENTER]</code> key when the link entity is focussed (the exact choice of keys is, sadly, browser dependant).</li>
-  <li class="mb-2">Again for keyboard users, make sure that when a user navigates to a link entity, it displays the same as if it was being hovered over.</li>
+  <li class="mb-2">Again for keyboard users, make sure that when a user navigates to a link entity, it displays the same as if it was being hovered over. Note that the visual effect we use should meet the requirements for WCAG-compliant focus indicators &mdash; <a href="https://www.sarasoueidan.com/blog/focus-indicators/">as discussed by Sara Soueidan in her blog post</a>.</li>
   <li class="mb-2">For Phrase-based links, suppress text replication as the anchor attribute will create a real anchor &lt;a> element in the &lt;canvas> shadow DOM, which in turn means the screen reader can end up unnecessarily repeating text to their users.</li>
 </ul>
 
