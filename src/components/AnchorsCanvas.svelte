@@ -3,10 +3,8 @@
 
     const scrawl = getContext('scrawl');
 
-    // scrawl.setIgnorePixelRatio(false);
-
     let canvas, animation, observer, hitGroup, pinGroup, labelGroup,
-        moveListener, upListener, backgroundAsset,
+        moveListener, upListener, backgroundAsset, updateOnResize,
         namespace = 'anchors-canvas';
 
     let artefact = scrawl.library.artefact,
@@ -15,7 +13,8 @@
     let pinRadius = 6,
         pinLineWidth = 3,
         focussedPinRadius = 10,
-        focussedPinLineWidth = 5; 
+        focussedPinLineWidth = 5, 
+        fontSize = 2;
 
     onMount(() => {
 
@@ -341,10 +340,8 @@
             pivot: `${namespace}-goblets`,
         });
 
-        moveListener = scrawl.addListener('move', function (e) { 
 
-            canvas.cascadeEventAction('move');
-        }, canvas.domElement);
+        moveListener = scrawl.addListener('move', () => canvas.cascadeEventAction('move'), canvas.domElement);
 
         upListener = scrawl.addListener('up', function (e) { 
 
@@ -354,77 +351,92 @@
             }
         }, canvas.domElement);
 
-        let checkResize = function () {
 
-            let getSize = (w) => {
+        // Resizing breakpoints and actions
+        canvas.set({
 
-                if (w >= 850) return 2;
-                else if (w >= 500) return 1;
-                return 0; 
-            };
+            breakToSmallest: 120000,
+            breakToSmaller: 180000,
+            breakToLarger: 300000,
+            breakToLargest: 420000,
 
-            let width, size, fontSize;
+            actionSmallestArea: () => {
 
-            return function () {
+                pinRadius = 14,
+                pinLineWidth = 7,
+                focussedPinRadius = 18,
+                focussedPinLineWidth = 9; 
 
-                let tempWidth = canvas.get('width');
+                fontSize = 3.25;
 
-                if (width !== tempWidth) {
+                updateOnResize();
+            },
 
-                    let tempSize = getSize(tempWidth);
+            actionSmallerArea: () => {
 
-                    if (size !== tempSize) {
+                pinRadius = 12;
+                pinLineWidth = 6;
+                focussedPinRadius = 16;
+                focussedPinLineWidth = 8; 
 
-                        if (tempSize === 2) {
+                fontSize = 2.75;
 
-                            pinRadius = 6,
-                            pinLineWidth = 3,
-                            focussedPinRadius = 10,
-                            focussedPinLineWidth = 5; 
+                updateOnResize();
+            },
 
-                            fontSize = 2;
-                        }
-                        else if (tempSize === 1) {
+            actionRegularArea: () => {
 
-                            pinRadius = 10,
-                            pinLineWidth = 5,
-                            focussedPinRadius = 14,
-                            focussedPinLineWidth = 7; 
+                pinRadius = 10,
+                pinLineWidth = 5,
+                focussedPinRadius = 14,
+                focussedPinLineWidth = 7; 
 
-                            fontSize = 2.5;
-                        }
-                        else {
+                fontSize = 2.25;
 
-                            pinRadius = 14,
-                            pinLineWidth = 7,
-                            focussedPinRadius = 18,
-                            focussedPinLineWidth = 9; 
+                updateOnResize();
+            },
 
-                            fontSize = 3;
-                        }
+            actionLargerArea: () => {
 
-                        pinGroup.setArtefacts({
-                            radius: pinRadius,
-                            lineWidth: pinLineWidth,
-                        });
+                pinRadius = 8;
+                pinLineWidth = 8;
+                focussedPinRadius = 12;
+                focussedPinLineWidth = 6; 
 
-                        labelGroup.setArtefacts({
-                            sizeValue: fontSize,
-                        });
+                fontSize = 1.75;
 
-                        size = tempSize;
-                    }
-                    width = tempWidth;
-                }
-            };
-        }();
+                updateOnResize();
+            },
+
+            actionLargestArea: () => {
+
+                pinRadius = 6;
+                pinLineWidth = 3;
+                focussedPinRadius = 10;
+                focussedPinLineWidth = 5; 
+
+                fontSize = 1.25;
+
+                updateOnResize();
+            },
+        });
+
+        updateOnResize = function () {
+
+            pinGroup.setArtefacts({
+                radius: pinRadius,
+                lineWidth: pinLineWidth,
+            });
+
+            labelGroup.setArtefacts({
+                sizeValue: fontSize,
+            });
+        };
 
         animation = scrawl.makeRender({
 
             name: `${namespace}-render`,
             target: canvas,
-            commence: checkResize,
-            afterCreated: checkResize,
         });
 
         observer = scrawl.makeAnimationObserver(animation, canvas);

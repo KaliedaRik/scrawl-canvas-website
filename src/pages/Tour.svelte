@@ -58,6 +58,19 @@
         width: 60%;
         height: 440px;
         min-width: 300px;
+
+        position: relative;
+    }
+
+    .canvas-grid::after {
+        position: absolute;
+        content: '';
+        bottom: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-bottom: 1em solid red;
+        border-left: 1em solid transparent;
     }
 
     .text-grid {
@@ -89,6 +102,9 @@
     .clear-both {
         clear: both;
     }
+    ul {
+        @apply mb-4;
+    }
     li {
         @apply mb-2 ml-8 list-disc;
     }
@@ -113,42 +129,53 @@
     <HelloWorldCanvas />
 
     <section>
-        <h1>Scrawl-canvas - make the canvas work for you</h1>
+        <h1>Welcome to the Scrawl-canvas Library</h1>
 
         <p>Scrawl-canvas is a Javascript library for working with the HTML5 &lt;canvas> element. The library:</p>
 
         <ul>
-            <li>Adds functionality to make &lt;canvas> elements <b>responsive</b>, adapting their size according to their surrounding environment.</li>
-            <li>Makes the canvas both <b>accessible</b>, and <b>interactive</b> - including the ability to easily track user interactions with different parts of the canvas.</li>
-            <li>Defines a set of factory functions to <b>create a wide range of graphic artefacts and effects</b> which can be drawn on a canvas.</li>
-            <li>Includes an adaptable - yet easy to use - protocol to <b>position, display and animate artefacts and effects</b> across the canvas.</li>
-            <li><b>Builds, controls and animates many canvases</b> - it automatically discovers existing &lt;canvas> elements in a web page, and can add and remove &lt;canvas> elements dynamically, in real time.</li>
+            <li>Defines a set of factory functions for creating a wide range of graphic artefacts and effects, which can be drawn on a canvas.</li>
+            <li>Includes an adaptable - yet easy to use - protocol for positioning, displaying and animating artefacts and effects across the canvas.</li>
+            <li>Adds functionality to make &lt;canvas> elements <strong>responsive</strong>, adapting their size to their surrounding environment while remaining fully <strong>interactive</strong>.</li>
+            <li>Helps make &lt;canvas> elements more <strong>accessible</strong> for both keyboard and AT users.</li>
         </ul>
+
+        <p>
+            &rarr; <a href="https://github.com/KaliedaRik/Scrawl-canvas">See the code on Github.</a>
+            &rarr; <a href="https://codepen.io/collection/RzzMjw">View the CodePen collection.</a>
+            &rarr; <a href="https://discord.com/channels/906541519509536829/906541519996080149">Discuss Scrawl-canvas on Discord.</a></p>
     </section>
 
     <section>
-        <h2>Why does the world need Scrawl-canvas?</h2>
+        <h2>Why use Scrawl-canvas?</h2>
         <div class="text-grid">
             <div>
                 <h4>Working with the native Canvas API is hard work</h4>
+
                 <p>Particularly when the desired result is more complex than a couple of coloured boxes in a static display.</p>
                 <ul>
-                    <li>Working directly with the canvas-related APIs leads to writing significant amounts of JS boilerplate code.</li>
-                    <li>&lt;canvas> elements can be resized and styled using CSS, but changing the CSS size does not affect the element's drawing dimensions - leading to sub-optimal graphic displays.</li>
-                    <li>Events work on the canvas, not on the artefacts within the canvas - we cannot use artefacts as links or hot-spots (click/tap events), we cannot give them the equivalent of a CSS hover state (focus/blur events), we cannot drag-and-drop them around the display (move events).</li>
-                    <li>Tracking a user's interaction with the various parts of a canvas display is particularly difficult.</li>
-                    <li>We cannot save and share artefacts and effects; each canvas display is tightly coupled to the code that defines the display.</li>
-                    <li><b>Of most concern</b>, canvases are entirely graphical - visual - by nature; they come with <b>significant accessibility issues</b>. Given the ever-stricter requirements for websites to be accessible to all users, this makes using a canvas to present important information a dangerous proposition.</li>
+                    <li>Working directly with the canvas-related APIs means writing significant amounts of Javascript boilerplate code.</li>
+                    <li>&lt;canvas> elements can be resized and styled using CSS, but changing the CSS size does not affect the element's drawing dimensions - leading to ugly results.</li>
+                    <li>Events work on the canvas, not on the graphical objects within the canvas - we cannot use those objects as links or hot-spots (click/tap events), we cannot give them the equivalent of a CSS hover state (focus/blur events), we cannot drag-and-drop them around the display (move events).</li>
+                    <li>Tracking a user's interaction with the various parts of a canvas display, for analytics and research on web page performance, is particularly difficult.</li>
+                    <li>We cannot easily save and share displays, effects and animations; each &lt;canvas> element's output is tightly coupled to the code that defines that output.</li>
+                    <li><strong>Of most concern,</strong> canvases are entirely graphical - visual - by nature; they come with <strong>significant accessibility issues.</strong> Given the ever-stricter requirements for websites to be accessible to all users, this makes using a canvas to present important information a dangerous proposition.</li>
                 </ul>
             </div>
             <div>
                 <h4>But the benefits of using canvases for graphical displays and animations are also great</h4> 
-                <p>Canvases are part of the DOM (unlike Flash); they are natively wired for events and user interactions; they use immediate mode redering (which makes them very quick); and the canvas-related APIs are designed to be used with Javascript.</p>
-                <p>There are a number of other Javascript canvas libraries available, each with their strengths and weaknesses. Some have been designed to make the production of charts and other data visualisations easier. Some focus on game development, others on making videos interactive.</p>
-                <p>Libraries which attempt to emulate Flash-Actionscript animations have been developed, as have libraries whose aim is to combine 2D, 3D and even SVG graphics into a usable whole. Speed is a key goal for some of the best libraries, while ease-of-use is an objective for many others.</p>
-                <h4>Scrawl-canvas overcomes the big barriers</h4>
-                <p>Scrawl-canvas aims to be fast, and developer-friendly. It also aims to be broadly focussed, suitable for building infographics, games, interactive videos - whatever we can imagine for a 2D graphical presentation.</p>
-                <p><b>But the main purpose of Scrawl-canvas is to make the &lt;canvas> element - and the parts that make up its displays and animations - <span class="main-message">Responsive, Interactive, Linkable, Trackable, and Accessible!</span></b></p>
+
+                <ul>
+                    <li>Canvases are part of the DOM (unlike Flash).</li>
+                    <li>They are natively wired for events and user interactions.</li>
+                    <li>They use immediate mode redering (which makes them very quick).</li>
+                    <li>The canvas-related APIs are designed to be used with Javascript.</li>
+                </ul>
+
+                <h4>Scrawl-canvas overcomes these barriers</h4>
+
+                <p>Scrawl-canvas is fast, and developer-friendly. It's suitable for building infographics, games, interactive videos - whatever we can imagine for a 2D graphical presentation. And it is modular - we can break the code for a particular effect into its own module file which can be reused in other projects.</p>
+                <p>Scrawl-canvas offers all of this while never losing its hard focus on making the &lt;canvas> element <strong>accessible, responsive and fully interactive</strong> while at the same time offering a <strong>pleasant developer experience</strong>.</p>
             </div>
         </div>
     </section>

@@ -3,9 +3,8 @@
 
     const scrawl = getContext('scrawl');
 
-    // scrawl.setIgnorePixelRatio(false);
-
-    let canvas, animation, gradient, observer,
+    let canvas, animation, gradient, observer, ball, mouseCheck,
+        animateGradient = true,
         group = scrawl.library.group;
 
     export let namespace;
@@ -81,7 +80,7 @@
             method: 'fillThenDraw',
         });
 
-        let ball = scrawl.makeWheel({
+        ball = scrawl.makeWheel({
 
             name: `${namespace}-ball`,
 
@@ -126,7 +125,8 @@
             font: '4rem Garamond, sans-serif',
         });
 
-        let mouseCheck = function () {
+
+        mouseCheck = function () {
 
             let active = false;
 
@@ -140,7 +140,7 @@
                         lockTo: (active) ? 'mouse' : 'start'
                     });
                 }
-                gradient.updateByDelta();
+                if (animateGradient) gradient.updateByDelta();
             };
         }();
 
@@ -150,6 +150,18 @@
             name: `${namespace}-render`,
             target: canvas,
             commence: mouseCheck,
+        });
+
+        canvas.setReduceMotionAction(() => {
+
+            ball.set({ noDeltaUpdates: true });
+            animateGradient = false;
+        });
+
+        canvas.setNoPreferenceMotionAction(() => {
+
+            ball.set({ noDeltaUpdates: false });
+            animateGradient = true;
         });
 
         observer = scrawl.makeAnimationObserver(animation, canvas);
