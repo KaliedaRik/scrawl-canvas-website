@@ -248,17 +248,15 @@
 
     name: `${namespace}-animation`,
     target: canvas,
-
-    <span class="redcode">afterCreated: () => scrawl.reducedMotionActions(),</span>
   });
 
   <i class="comment">// prefers-reduced-motion hook functions</i>
-  <span class="redcode">scrawl.setReduceMotionAction(() => {
+  <span class="redcode">canvas.setReduceMotionAction(() => {
 
       if (myAnimation.isRunning()) setTimeout(() => myAnimation.halt(), 5000);
   });
 
-  scrawl.setNoPreferenceMotionAction(() => {
+  canvas.setNoPreferenceMotionAction(() => {
 
       if (!myAnimation.isRunning()) myAnimation.run();
   });</span>
@@ -318,15 +316,10 @@
 
     name: `${namespace}-animation`,
     target: canvas,
-
-    <span class="redcode">afterCreated: () => {
-      scrawl.reducedMotionActions();
-      scrawl.colorSchemeActions();
-    },</span>
   });
 
   <i class="comment">// prefers-color-scheme hook functions</i>
-  <span class="redcode">scrawl.setColorSchemeDarkAction(() => {
+  <span class="redcode">canvas.setColorSchemeDarkAction(() => {
 
     testBackground.set({ fillStyle: darkBackground });
     testForeground.set({ 
@@ -335,7 +328,7 @@
     });
   });
 
-  scrawl.setColorSchemeLightAction(() => {
+  canvas.setColorSchemeLightAction(() => {
 
     testBackground.set({ fillStyle: lightBackground });
     testForeground.set({ 

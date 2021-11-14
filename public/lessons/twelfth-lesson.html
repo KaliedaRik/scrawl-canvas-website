@@ -191,8 +191,6 @@
     const myAnimation = scrawl.makeRender({
       name: `${namespace}-animation`,
       target: canvas,
-
-      afterCreated: () => scrawl.reducedMotionActions(),
     });
 
     const startAnimation = (e) => {
@@ -207,9 +205,9 @@
       }
     };
 
-    scrawl.setReduceMotionAction(() => stopAnimation('reduced-motion'));
+    canvas.setReduceMotionAction(() => stopAnimation('reduced-motion'));
 
-    scrawl.setNoPreferenceMotionAction(() => startAnimation('reduced-motion'));
+    canvas.setNoPreferenceMotionAction(() => startAnimation('reduced-motion'));
 
     const checkE = (e) => {
       if (e) {
@@ -316,8 +314,6 @@
   const myAnimation = scrawl.makeRender({
     name: `${namespace}-animation`,
     target: canvas,
-
-    afterCreated: () => scrawl.reducedMotionActions(),
 
     <i class="comment">// 8. Animate the palette start and end points (part 2)</i>
     <span class="redcode">commence: () => myGradient.updateByDelta(),</span>
@@ -448,9 +444,6 @@
 
     name: `${namespace}-animation`,
     target: canvas,
-
-    afterCreated: () => scrawl.reducedMotionActions(),
-<s>    commence: () => myGradient.updateByDelta(),</s>
   });
 
   const startAnimation = (e) => {
@@ -847,9 +840,6 @@
 
     name: `${namespace}-animation`,
     target: canvas,
-
-    afterCreated: () => scrawl.reducedMotionActions(),
-    <span class="redcode">commence: () => isTextGradientAnimated && mygradient.updateByDelta(),</span>
   });
 
   const cellPatternGroup = scrawl.library.group[`${namespace}-cell-pattern`];
