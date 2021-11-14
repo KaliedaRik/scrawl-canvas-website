@@ -19,6 +19,9 @@
             fit: fit,
             checkForResize: true,
             ignoreCanvasCssDimensions: true,
+
+            label: 'The Scrawl-canvas "Hello world" animation.',
+            description: 'A very simple canvas displaying a variation of the Scrawl-canvas artefact\'s "fit" attribute.',
         });
 
         canvas.setBase({

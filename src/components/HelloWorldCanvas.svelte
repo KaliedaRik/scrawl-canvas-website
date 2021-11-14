@@ -18,6 +18,9 @@
         canvas.set({
             fit: 'cover',
             checkForResize: true,
+
+            label: 'A banner animation.',
+            description: 'Scene displays "Hello" text in four different languages (English, Spanish, Russian, Chinese) animating along a path across the sky. Text goes behind plants in the foreground and in front of trees in the background.'
         }).setBase({
             width: 2000,
             height: 1000,

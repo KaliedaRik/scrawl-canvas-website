@@ -16,6 +16,8 @@
             width: 200,
             height: 330,
             baseMatchesCanvasDimensions: true,
+            label: 'A decorative animation.',
+            description: 'The Scrawl-canvas banner image animates vertically over the canvas, twisting like a ribbon as it proceeds.'
         });
 
         scrawl.makeShape({

@@ -43,7 +43,8 @@
             fit: 'fill',
             checkForResize: true,
             ignoreCanvasCssDimensions: true,
-            title: `${canvas.name} canvas element`,
+            label: 'A static kitchen scene.',
+            description: 'Users are able to identify items in the kitchen by hovering over hotspot pins in the image which, when hovered over, reveal a label describing the scene. Clicking on the pin will open a Wikipedia page about that item.'
 
         }).setBase({
             width: 1200,
