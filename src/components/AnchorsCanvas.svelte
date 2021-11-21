@@ -440,6 +440,7 @@
             target: canvas,
         });
 
+        // generate the observer separately so we can cleanly destroy it on dismount
         observer = scrawl.makeAnimationObserver(animation, canvas);
     });
 
