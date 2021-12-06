@@ -85,12 +85,12 @@
   &lt;/div>
 
   &lt;script type="module">
-    import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.4';
+    import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.5';
 
     let canvas = scrawl.library.canvas.mycanvas,
       namespace = 'video-example';
 
-    <code class="text-red-800">canvas.set({
+    <span class="redcode">canvas.set({
 
       <i class="comment">// fit:fill is not ideal; it will distort the video output</i>
       <i class="comment">// - We use it here for demonstration purposes (hit zones, described later)</i>
@@ -103,7 +103,7 @@
       width: 640,
       height: 360,
 
-    }).setAsCurrentCanvas();</code>
+    }).setAsCurrentCanvas();</span>
 
     scrawl.makeRender({
       name: `${namespace}-animation`,
@@ -123,7 +123,7 @@
 <pre class="code-block"><code>&lt;script type="module">
   [... canvas setup]
 
-  <code class="text-red-800">let myvideo = scrawl.makePicture({
+  <span class="redcode">let myvideo = scrawl.makePicture({
 
     name: `${namespace}-video`,
 
@@ -134,7 +134,7 @@
 
     copyWidth: '100%',
     copyHeight: '100%',
-  });</code>
+  });</span>
 
   [... render animation]
 &lt;/script>
@@ -170,7 +170,7 @@
 
     [...]
 
-  })<code class="text-red-800 font-bold">.videoPlay()</code>;
+  })<span class="redcode">.videoPlay()</span>;
 
   [... render animation]
 &lt;/script>
@@ -209,7 +209,7 @@
 
   });
 
-  <code class="text-red-800">let initialVideoStart = scrawl.addListener('up', () => {
+  <span class="redcode">let initialVideoStart = scrawl.addListener('up', () => {
 
     myvideo.set({
 
@@ -224,7 +224,7 @@
     <i class="comment">// - Invoking that function removes the event listener(s) from the &lt;canvas> element</i>
     initialVideoStart();
 
-  }, canvas.domElement);</code>
+  }, canvas.domElement);</span>
 
   [... render animation]
 &lt;/script>
@@ -251,7 +251,7 @@
 
   [... initialization event listener]
 
-  <code class="text-red-800">scrawl.makePhrase({
+  <span class="redcode">scrawl.makePhrase({
 
     name: `${namespace}-button-play-pause`,
     order: 2,
@@ -275,7 +275,7 @@
     name: `${namespace}-button-listen-mute`,
     text: 'LISTEN',
     startX: '25%',
-  });</code>
+  });</span>
 
   [... render animation]
 &lt;/script>
@@ -302,7 +302,7 @@
 
 <p>Let's change the mouse cursor to a pointer when the user hovers over our Phrase entitys, and add an underline to the text:</p>
 
-<pre class="code-block"><code><code class="text-red-800">scrawl.makePhrase({
+<pre class="code-block"><code><span class="redcode">scrawl.makePhrase({
 
   [...]
 
@@ -346,7 +346,7 @@
   <i class="comment">// The artefact event functions will be copied over automatically</i>
 
   [...]
-});</code>
+});</span>
 </code></pre>
 
 <p>The code above is, on its own, not enough to make the magic happen. This is because our Phrase entitys are not part of the DOM event management system. They're just a set of instructions for drawing graphical text onto a &lt;canvas> element.</p>
@@ -362,11 +362,11 @@
 
   [... define Phrase entitys]
 
-  <code class="text-red-800">scrawl.addListener(
+  <span class="redcode">scrawl.addListener(
     'move', 
     () => canvas.cascadeEventAction('move'), 
     canvas.domElement 
-  );</code>
+  );</span>
 
   [... render animation]
 &lt;/script>
@@ -376,7 +376,7 @@
 
 <p>All looks good so far. Let's make our Phrase entitys interactive. We do this using the <b>onUp</b> artefact event function:</p>
 
-<pre class="code-block"><code><code class="text-red-800">scrawl.makePhrase({
+<pre class="code-block"><code><span class="redcode">scrawl.makePhrase({
 
   [...]
 
@@ -427,7 +427,7 @@
       });
     }
   },
-});</code>
+});</span>
 </code></pre>
 
 <p>Again, these functions won't trigger on their own. We need to tell the &lt;canvas> element that user <b>click</b> events need to be cascaded down to our entitys.</p>
@@ -445,11 +445,11 @@
 
   let initialVideoStart = scrawl.addListener('up', () => {
 
-    <code class="text-red-800">myvideo.set({
+    <span class="redcode">myvideo.set({
 
       video_muted: true,
       video_loop: true,
-    });</code>
+    });</span>
 
     initialVideoStart();
 
@@ -458,11 +458,11 @@
   [... define Phrase entitys]
 
   [... user interaction event listeners]
-  <code class="text-red-800">scrawl.addNativeListener(
+  <span class="redcode">scrawl.addNativeListener(
     'click', 
     () => canvas.cascadeEventAction('up'), 
     canvas.domElement 
-  );</code>
+  );</span>
 
   [... render animation]
 &lt;/script>
@@ -487,7 +487,7 @@
 
   [... user interaction event listeners]
 
-  <code class="text-red-800">let vtBackground = scrawl.makeBlock({
+  <span class="redcode">let vtBackground = scrawl.makeBlock({
 
     name: `${namespace}-video-time-background`,
 
@@ -544,13 +544,13 @@
         });
       }
     };
-  }();</code>
+  }();</span>
 
   scrawl.makeRender({
     name: `${namespace}-animation`,
     target: canvas,
 
-    <code class="text-red-800">commence: videoTimeBar,</code>
+    <span class="redcode">commence: videoTimeBar,</span>
   });
 &lt;/script>
 </code></pre>

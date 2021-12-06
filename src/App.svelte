@@ -18,7 +18,7 @@
         background-color: #f5fef8;
     }
 
-    h1, h2, h3 {
+    h1, h2, h3, h4, h5 {
         @apply font-serif font-semibold mb-4 pt-4;
     }
     h1 {
@@ -29,6 +29,14 @@
     }
     h3 {
         @apply text-xl; 
+    }
+
+    h4 {
+        @apply text-lg; 
+    }
+
+    h5 {
+        @apply text-base italic; 
     }
 
     p {
