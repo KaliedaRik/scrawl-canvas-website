@@ -27,15 +27,13 @@
   }
 </style>
 
-<p>[Warning: article is still in draft]</p>
-
 <h2>Issue</h2>
 
 <p>We want to display our &lt;canvas> scene in the web page.</p>
 
 <h2>Solution</h2>
 
-<p>Invoke the <code class="text-sm text-red-800">Canvas</code> wrapper's <code class="text-sm text-red-800">.render()</code> function, or alternatively we can trigger each part of the <strong>Display cycle</strong> individually.</p>
+<p>Invoke the Canvas wrapper's <code class="text-sm text-red-800">.render()</code> function, or alternatively we can trigger each part of the <strong>Display cycle</strong> individually.</p>
 
 <pre class="code-block"><code>&lt;canvas width="400" height="200" id="my-canvas-id">&lt;/canvas>
 
@@ -56,15 +54,15 @@
     <i class="comment">// We can render the canvas in one invocation:</i>
     <span class="redcode">canvas.render();</span>
 
-    <i class="comment">// &hellip; Or trigger each part of the Display cycle in turn:</i>
+    <i class="comment">// ... Or trigger each part of the Display cycle in turn:</i>
     <span class="redcode">canvas.clear();
     canvas.compile();
     canvas.show();</span>
 
-    <i class="comment">// &hellip; Or render all the &lt;canvas> elements on the web page in one invocation:</i>
+    <i class="comment">// ... Or render all the &lt;canvas> elements on the web page in one invocation:</i>
     <span class="redcode">scrawl.render();</span>
 
-    <i class="comment">// &hellip; Or trigger each part of the Display cycle in turn, for all &lt;canvas> elements:</i>
+    <i class="comment">// ... Or trigger each part of the Display cycle in turn, for all &lt;canvas> elements:</i>
     <span class="redcode">scrawl.clear();
     scrawl.compile();
     scrawl.show();</span>
@@ -80,7 +78,7 @@
         },
     });</span>
 
-    <i class="comment">// &hellip; or we can build a renderAnimation convenience object to do the work for us:</i>
+    <i class="comment">// ... or we can build a renderAnimation convenience object to do the work for us:</i>
     <span class="redcode">scrawl.makeRender({
         name: 'my-animation',
         target: canvas,
@@ -96,62 +94,85 @@
 <p>We divide the Display cycle into three distinct actions:</p>
 
 <ul class="list-disc list-outside ml-8 mb-4">
-    <li class="mb-2">The <code class="text-sm text-red-800">.clear()</code> action clears the <code class="text-sm text-red-800">Canvas</code> wrapper's <code class="text-sm text-red-800">Cell</code>s in preparation for the work ahead</li>
-    <li class="mb-2">For the <code class="text-sm text-red-800">.compile()</code> action, the <code class="text-sm text-red-800">Canvas</code> wrapper tells all the <code class="text-sm text-red-800">Cell</code>s associated with it to get their graphical entitys to stamp themselves into the <code class="text-sm text-red-800">Cell</code>'s drawing context.</li>
-    <li class="mb-2">The <code class="text-sm text-red-800">.show()</code> action brings together all the work done by the <code class="text-sm text-red-800">Cell</code>s, which now stamp themselves into the <code class="text-sm text-red-800">Canvas</code> wrapper's base Cell, which in turn copies itself into the visible &lt;canvas> element.</li>
+    <li class="mb-2">The <code class="text-sm text-red-800">.clear()</code> action clears the <code class="text-sm text-red-800">Canvas</code> wrapper's Cells in preparation for the work ahead</li>
+    <li class="mb-2">For the <code class="text-sm text-red-800">.compile()</code> action, the <code class="text-sm text-red-800">Canvas</code> wrapper tells all the Cells associated with it to get their graphical entitys to stamp themselves into the Cell's drawing context.</li>
+    <li class="mb-2">The <code class="text-sm text-red-800">.show()</code> action brings together all the work done by the Cells, which now stamp themselves into the Canvas wrapper's base Cell, which in turn copies itself into the visible &lt;canvas> element.</li>
 </ul>
 
-<h4>Clear</h4>
+<h4>Clear action</h4>
 
-<p>By default, a Scrawl-canvas <code class="text-sm text-red-800">Cell</code> will clear its rendering context using the Canvas API's <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/clearRect">.clearRect()</a> functionality. This call resets all the pixels in the <code class="text-sm text-red-800">Cell</code>'s hidden &lt;canvas> to transparent black (<code class="text-sm text-red-800">rgba(0,0,0,0)</code>).</p>
+<p>By default, a Scrawl-canvas Cell will clear its rendering context using the Canvas API's <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/clearRect">.clearRect()</a> functionality. This call resets all the pixels in the Cell's hidden &lt;canvas> to transparent black &mdash; rgba(0,0,0,0).</p>
 
 <p>Scrawl-canvas gives us three alternatives to this default action:</p> 
 
 <ol class="list-decimal list-outside ml-8 mb-4">
     <li class="mb-2">Do not clear the canvas.</li>
     <li class="mb-2">Fill the canvas with a background color.</li>
-    <li class="mb-2">Capture the existing scene, clear the canvas, then repost the scene capture at a given <code class="text-sm text-red-800">globalAlpha</code> level &mdash; this creates a "ghosting effect" in the scene for any animated entitys associated with that <code class="text-sm text-red-800">Cell</code>.</li>
+    <li class="mb-2">Capture the existing scene, clear the canvas, then repost the scene capture at a given <code class="text-sm text-red-800">.globalAlpha</code> level &mdash; this creates a "ghosting effect" in the scene for any animated entitys associated with that Cell.</li>
 </ol>
 
 <h5>Suppress the clear action</h5>
 
-<p>To stop a <code class="text-sm text-red-800">Cell</code> from clearing itself, set its <code class="text-sm text-red-800">.cleared</code> attribute to false.</p>
+<p>To stop a Cell from clearing itself, set its <code class="text-sm text-red-800">.cleared</code> attribute to false.</p>
 
 <p>A good reason for suppressing the clear action is to preserve a static part of the completed scene &mdash; particularly if the static graphic is complex or took a long time to generate.</p>
 
 <h5>Use a background color</h5>
 
-<p>To make a <code class="text-sm text-red-800">Cell</code> clear itself using a background color, set its <code class="text-sm text-red-800">.backgroundColor</code> attribute to <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">any valid CSS color string</a>.</p>
+<p>To make a Cell clear itself using a background color, set its <code class="text-sm text-red-800">.backgroundColor</code> attribute to <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">any valid CSS color string</a>.</p>
 
-<p>We can also set this attribute on the <code class="text-sm text-red-800">Canvas</code> wrapper; in this case the wrapper will automatically cascade the color value down to its <code class="text-sm text-red-800">base Cell</code>.</p>
+<p>We can also set this attribute on the Canvas wrapper; in this case the wrapper will automatically cascade the color value down to its base Cell.</p>
 
 <h5>Create a ghosting effect</h5>
 
-<p>The ghosting effect is a fairly niche requirement, where a series of previous frames are captured and restamped into the <code class="text-sm text-red-800">Cell</code> with the older frames being more transparent than the newer frames.</p>
+<p>The ghosting effect is a fairly niche requirement, where a series of previous frames are captured and restamped into the Cell with the older frames being more transparent than the newer frames.</p>
 
-<p>We can create the effect by setting the <code class="text-sm text-red-800">Cell</code>'s <code class="text-sm text-red-800">.clearAlpha</code> attribute to a value greater than 0.9 (to a maximum value of 1.0). Note that if the <code class="text-sm text-red-800">.backgroundColor</code> attribute has also been set, then the background effect takes precedence over the ghosting effect.</p>
+<p>We can create the effect by setting the Cell's <code class="text-sm text-red-800">.clearAlpha</code> attribute to a value greater than 0.9 (to a maximum value of 1.0). Note that if the <code class="text-sm text-red-800">.backgroundColor</code> attribute has also been set, then the color effect takes precedence over the ghosting effect.</p>
 
-<h4>Compile</h4>
+<h4>Compile action</h4>
 
-<p>The compile action starts after the clear action completes. The action triggers a cascade of <code class="text-sm text-red-800">.stamp()</code> invocations on entitys associated with the <code class="text-sm text-red-800">Cell</code> via any <code class="text-sm text-red-800">Group</code>s associated with the <code class="text-sm text-red-800">Cell</code>.</p>
+<p>The compile action starts after the clear action completes. The action triggers a cascade of <code class="text-sm text-red-800">.stamp()</code> invocations on entitys associated with the Cell via any Groups assigned to the Cell.</p>
 
 <h5>Compile order</h5>
 
-<p>The order in which <code class="text-sm text-red-800">Cell</code>s compile can become important, especially when a <code class="text-sm text-red-800">Cell</code> is used as an asset for a <code class="text-sm text-red-800">Pattern</code> style or a <code class="text-sm text-red-800">Picture</code> entity in another <code class="text-sm text-red-800">Cell</code>. We change the compile order by setting a <code class="text-sm text-red-800">Cell</code>'s <code class="text-sm text-red-800">.compileOrder</code> attribute to an positive integer Number value.</p>
+<p>The order in which Cells compile can become important, especially when a Cell is used as an asset for a Pattern style or a Picture entity in another Cell. We change the compile order by setting a Cell's <code class="text-sm text-red-800">.compileOrder</code> attribute to a positive integer Number value.</p>
 
-<p>If a Pattern or Picture whose graphical content is based on a <code class="text-sm text-red-800">Cell</code> asset does not appear in the output scene as expected, check that the <code class="text-sm text-red-800">Canvas</code> wrapper's base <code class="text-sm text-red-800">Cell</code>'s <code class="text-sm text-red-800">.compileOrder</code> value is greater than the asset's value.</p>
+<p>If a Pattern or Picture whose graphical content is based on a Cell asset does not appear in the output scene as expected, check that the Canvas wrapper's base Cell's <code class="text-sm text-red-800">.compileOrder</code> value is greater than the asset's value.</p>
 
 <h5>Suppressing the compile step</h5>
 
-<p>We can prevent a <code class="text-sm text-red-800">Cell</code> from compiling itself as part of the Display cycle by setting its <code class="text-sm text-red-800">.compiled</code> attribute to <code class="text-sm text-red-800">false</code>.</p>
+<p>We can prevent a Cell from compiling itself as part of the Display cycle by setting its <code class="text-sm text-red-800">.compiled</code> attribute to <code class="text-sm text-red-800">false</code>.</p>
 
-<p>One reason for disabling the compile step is to preserve the contents of a static <code class="text-sm text-red-800">Cell</code>, similar to the way we can suppress the clear action.</p>
+<p>One reason for disabling the compile step is to preserve the contents of a static Cell, similar to the way we can suppress the clear action.</p>
 
-<p>If we need to <code class="text-sm text-red-800">Cell</code> to compile just once, we can invoke the <code class="text-sm text-red-800">Cell</code>'s <code class="text-sm text-red-800">.compile()</code> function directly. Alternatively, if we are animating the scene with a RenderAnimation object, we can unset the <code class="text-sm text-red-800">.compiled</code> flag in an <code class="text-sm text-red-800">.afterCreated()</code> hook function which will run after the first Display cycle completes.</p>
+<p>If we need the Cell to compile just once, we can invoke the Cell's <code class="text-sm text-red-800">.compile()</code> function directly. Alternatively, if we are animating the scene with a RenderAnimation object, we can unset the <code class="text-sm text-red-800">.compiled</code> flag in an <code class="text-sm text-red-800">.afterCreated()</code> hook function which will run after the first Display cycle completes.</p>
 
 <h4>Entity stamping during the compile action</h4>
 
-<h4>Show</h4>
+<p>While entitys can be stamped onto a Cell at any time during the Display cycle, it makes most sense to stamp them either after the compile step, or instead of it. Stamping is invoked using the <code class="text-sm text-red-800">entity.simpleStamp(host, changeObject)</code> method, where:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+    <li class="mb-2"><code class="text-sm text-red-800">host</code> is a Cell wrapper's name, or the Cell wrapper object itself; and</li>
+    <li class="mb-2"><code class="text-sm text-red-800">changeObject</code> is a normal key:value object defining the attributes to be applied to the entity for the stamping action &mdash; these attributes can be any attribute applicable to that entity (as used in the <code class="text-sm text-red-800">.set</code> method.</li>
+</ul>
+
+<h4>Show action</h4>
+
+<p>Just as entitys stamp themselves onto Cells during the compile step, so Cells will stamp themselves onto the Canvas wrapper's base Cell during the show step of the Display cycle. The order in which Cells perform this action can be changed by setting the Cell's <code class="text-sm text-red-800">.showOrder</code> attribute to a positive integer Number; Cells with higher <code class="text-sm text-red-800">.showOrder</code> values will stamp themselves over Cells with lower values.</p>
+
+<p>Just as entitys can position, scale and rotate themselves on a Cell, so Cells can position, scale and rotate themselves on the base Cell, using the same attributes: <code class="text-sm text-red-800">.start, .handle, .offset, .scale, .roll, .flipReverse, .flipUpend</code>, etc. Cells can be positioned exactly like entitys using absolute or relative coordinates, or by reference to entitys and other cells using appropriate pivot, mimic and path attributes.</p>
+
+<h5>Suppressing a Cell's show step</h5>
+
+<p>There will be times when we want a Cell to clear and compile itself but we do not want it to display itself on the base Cell, for instance when we need to use that Cell as an asset for Picture entitys and Pattern styles. We can do this by setting the Cell's <code class="text-sm text-red-800">.shown</code> attribute to <code class="text-sm text-red-800">false</code>.</p>
+
+<h5>Canvas fit</h5>
+
+<p>In the DOM, &lt;img> elements are able to display themselves responsively within a container element using the CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit">object-fit</a> property, which can be set to values such as <code class="text-sm text-red-800">'fill', 'contain', 'cover'</code>, or <code class="text-sm text-red-800">'none'</code>. In a similar way background images can be fitted to an element using the CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-size">background-size</a> property.</p>
+
+<p>This functionality does not extend to HTML &lt;canvas> elements, which will always fill the space they have been allocated. This often leads to distorted graphical outputs when the CSS dimensions set on the canvas do not match the drawing dimensions defined by the &lt;canvas> element's <code class="text-sm text-red-800">'width'</code> and <code class="text-sm text-red-800">'height'</code> attributes.</p>
+
+<p>Scrawl-canvas gives us the power to fit the base Cell's graphical output to the &lt;canvas> element's displayed output, by setting the Canvas wrapper's <code class="text-sm text-red-800">.fit</code> attribute to either <code class="text-sm text-red-800">'fill', 'contain', 'cover'</code>, or <code class="text-sm text-red-800">'none'</code> (the default).</p>
 
 <h3>Example</h3>
 
@@ -160,81 +181,157 @@
 &lt;head>&lt;/head>
 &lt;body>
 
-    &lt;canvas id="my-canvas-id" width="600" height="600">&lt;/canvas>
+  &lt;canvas id="my-canvas-id" width="600" height="600">&lt;/canvas>
 
-    &lt;script type="module">
+  &lt;script type="module">
         
-        <span class="redcode">import scrawl from "https://unpkg.com/scrawl-canvas@8.6.5";
+    import scrawl from 'https://unpkg.com/scrawl-canvas@8.6.5';
 
-        scrawl.setIgnorePixelRatio(false);
+    const canvas = scrawl.library.canvas.mycanvas;
 
-        const canvas = scrawl.library.canvas['my-canvas-id'];
+    canvas.setBase({
+      compileOrder: 2,
+      backgroundColor: 'black',
+    });
 
-        <i class="comment">// This layer Cell will be half the dimensions of its host Canvas </i>
-        <i class="comment">// - we position it in the center of the canvas </i>
-        <i class="comment">// - so it covers the lower-right quadrant of the display</i>
-        const myLayer = canvas.buildCell({
-            name: 'my-layer-cell',
-            host: canvas.base.name,
-            dimensions: ['50%', '50%'],
-            start: ['center', 'center'],
-        });
+    <span class="italic text-xs text-gray-700">// Utilities used by this pattern</span>
+    const namespace = 'edge-weave',
+      tweenDuration = 1000;
 
-        <i class="comment">// This block stamps itself into the center of the layer Cell</i>
-        const layerBlock = scrawl.makeBlock({
-            name: 'my-layer-block',
-            group: 'my-layer-cell',
-            dimensions: ['50%', '50%'],
-            start: ['center', 'center'],
-            handle: ['center', 'center'],
-            fillStyle: 'red',
-        });
+    const colorFactory = scrawl.makeColor({
+      name: `${namespace}-colors`,
+      minimumColor: 'coral',
+      maximumColor: 'azure',
+    });
 
-        <i class="comment">// This block stamps itself across the &lt;canvas> element's base Cell</i>
-        <i class="comment">// - it will be twice the size of the previous block</i>
-        const baseBlock = scrawl.makeBlock({
-            name: 'my-base-block',
-            group: canvas.base.name,
-            dimensions: ['50%', '50%'],
-            start: ['center', 'center'],
-            handle: ['center', 'center'],
-            fillStyle: 'blue',
-        });
+    const ticker = scrawl.makeTicker({
+      name: `${namespace}-ticker`,
+      cycles: 0,
+      duration: tweenDuration,
+    });
 
-        <i class="comment">// Display the scene</i>
-        canvas.render();
+    const colorTweenEngine = (start, change, position) => {
+      return colorFactory.getRangeColor(start + (position * change));
+    };
 
-        <i class="comment">// Our layer Cell can act just like out Block entitys</i>
-        <i class="comment">// - we can scale, flip, rotate and animate it</i>
+    <span class="italic text-xs text-gray-700">// We'll build the pattern in two stages </span>
+    <span class="italic text-xs text-gray-700">// - a sub-pattern, four of which will make the final pattern</span>
+    canvas.buildCell({
+      name: `${namespace}-sub-pattern`,
+      width: 150,
+      height: 150,
+      shown: false,
+      compileOrder: 0,
+    });
 
-        <i class="comment">// We can reposition all the entitys displayed in the layer Cell</i>
-        <i class="comment">// - by repositioning the Cell itself</i>
+    <span class="italic text-xs text-gray-700">// Guidelines for the effect</span>
+    scrawl.makeLine({
+      name: `${namespace}-vertical`,
+      group: `${namespace}-sub-pattern`,
+      start: ['right', 'top'],
+      end: ['right', 'bottom'],
+      method: 'none',
+      useAsPath: true,
+    }).clone({
+      name: `${namespace}-horizontal`,
+      start: ['right', 'bottom'],
+      end: ['left', 'bottom'],
+    });
 
-        <i class="comment">// This update positions the layer Cell's Block exactly over the base Cell's Block</i>
-        myLayer.set({
-            handle: ['center', 'center'],
-            scale: 1.9,
-        });
+    <span class="italic text-xs text-gray-700">// These are the visible colored lines</span>
+    for (let i = 0; i < 10; i++) {
+      scrawl.makeLine({
+        name: `${namespace}-line-${i}`,
+        group: `${namespace}-sub-pattern`,
+        path: `${namespace}-vertical`,
+        pathPosition: i / 10,
+        lockTo: 'path',
+        endPath: `${namespace}-horizontal`,
+        endPathPosition: i / 10,
+        endLockTo: 'path',
+        method: 'draw',
+        lineCap: 'round',
+        strokeStyle: colorFactory.getRangeColor(i/10),
+        globalAlpha: (i < 5) ? i / 5 : (10 - i) / 5,
+        lineWidth: 15,
+      });
+      
+      <span class="italic text-xs text-gray-700">// Animate the lines using tweens</span>
+      scrawl.makeTween({
+        name: `tween-${i}`,
+        targets: `${namespace}-line-${i}`,
+        ticker: `${namespace}-ticker`,
+        time: 0,
+        duration: tweenDuration,
+        definitions: [
+          {
+            attribute: 'pathPosition',
+            start: i / 10,
+            end: (i + 1) / 10,
+          },
+          {
+            attribute: 'endPathPosition',
+            start: i / 10,
+            end: (i + 1) / 10,
+          },
+          {
+            attribute: 'globalAlpha',
+            start: (i < 5) ? i / 5 : (10 - i) / 5,
+            end: ((i + 1) < 5) ? (i + 1) / 5 : (10 - (i + 1)) / 5,
+          },
+          {
+            attribute: 'strokeStyle',
+            start: i / 10,
+            end: (i + 1) / 10,
+            engine: colorTweenEngine,
+          }
+        ],
+      });
+    }
 
-        <i class="comment">// Update the scene</i>
-        canvas.render();
+    <span class="italic text-xs text-gray-700">// Pull the sub-pattern into the main pattern cell</span>
+    canvas.buildCell({
+      name: `${namespace}-pattern`,
+      width: 300,
+      height: 300,
+      shown: false,
+      compileOrder: 1,
+    });
 
-        <i class="comment">// Let's get the our Block entitys to stamp themselves on each other's Cell</i>
-        layerBlock.simpleStamp(canvas.base, {
-            start: ['25%', '25%'],
-            dimensions: ['50%', '50%'],
-            fillStyle: 'green',
-        });
+    scrawl.makeBlock({
+      name: `${namespace}-block-tl`,
+      group: `${namespace}-pattern`,
+      dimensions: ['50%', '50%'],
+      start: ['center', 'center'],
+      handle: ['bottom', 'right'],
+      fillStyle: `${namespace}-sub-pattern`,
+    }).clone({
+      name: `${namespace}-block-tr`,
+      flipReverse: true,
+    }).clone({
+      name: `${namespace}-block-br`,
+      flipUpend: true,
+    }).clone({
+      name: `${namespace}-block-bl`,
+      flipReverse: false,
+    });
 
-        baseBlock.simpleStamp(myLayer, {
-            start: ['75%', '75%'],
-            dimensions: ['50%', '50%'],
-        });
+    <span class="italic text-xs text-gray-700">// Display our pattern in a Block entity</span>
+    scrawl.makeBlock({
+      name: 'test-block',
+      dimensions: ['100%', '100%'],
+      fillStyle: `${namespace}-pattern`,
+    });
 
-        canvas.show();</span>
-    &lt;/script>
+    <span class="italic text-xs text-gray-700">// Scene animation</span>
+    scrawl.makeRender({
+      name: "demo-animation",
+      target: canvas,
+    });
 
-    &lt;/script>
+    <span class="italic text-xs text-gray-700">// Start the tweens running</span>
+    ticker.run();
+  &lt;/script>
 
 &lt;/body>
 &lt;/html></code></pre>
