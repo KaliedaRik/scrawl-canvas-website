@@ -17,7 +17,7 @@ $> <span class="text-red-800">npm install scrawl-canvas</span>
 &lt;script>
     import { onMount, onDestroy } from 'svelte';
 
-    <span class="text-red-800">import scrawl from 'scrawl-canvas';</span>
+    <span class="text-red-800">import * as scrawl from 'scrawl-canvas';</span>
 
     let canvas;
 
@@ -45,7 +45,7 @@ $> <span class="text-red-800">npm install scrawl-canvas</span>
 
 <p>Scrawl-canvas plays well with <a href="https://rollupjs.org/guide/en/">Rollup</a>, which Svelte uses as its default module bundler.</p>
 
-<p>Once installed in the project (using NPM or Yarn), Scrawl-canvas can be added to any component using the <code class="text-sm text-red-800">import scrawl from 'scrawl-canvas';</code> statement. Scrawl-canvas will initialize itself the first time this statement is encountered; thereafter the statement will return the scrawl object.</p>
+<p>Once installed in the project (using NPM or Yarn), Scrawl-canvas can be added to any component using the <code class="text-sm text-red-800">import * as scrawl from 'scrawl-canvas';</code> statement. Scrawl-canvas will initialize itself the first time this statement is encountered; thereafter the statement will return the scrawl object.</p>
 
 <p>The <b>scrawl object</b> should be treated as 'global', thus artefacts and assets created for a particular canvas display should be namespaced to minimize potential naming conflicts and to make debugging the code a bit easier.</p>
 
@@ -113,7 +113,7 @@ export default app;
 <pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script>
     import { getContext, onMount, onDestroy } from 'svelte';
 
-    import scrawl from 'scrawl-canvas';
+    import * as scrawl from 'scrawl-canvas';
 
     let canvas, animation, label;
 

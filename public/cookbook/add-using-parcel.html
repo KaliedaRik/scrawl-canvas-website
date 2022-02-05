@@ -24,7 +24,7 @@
 
 <b>index.js</b>
 
-import scrawl from 'scrawl-canvas';
+import * as scrawl from 'scrawl-canvas';
 
 // Your Javascript code can now include Scrawl-canvas code
 </code></pre>
@@ -35,6 +35,6 @@ import scrawl from 'scrawl-canvas';
 
 <p>We use <a href="https://rollupjs.org/guide/en/">rollup.js</a> to generate that minified file and, as part of its functionality, rollup.js automatically handles (and future-proofs) module handling.</p>
 
-<p>The outcome of all this is that Scrawl-canvas should &mdash; in theory &mdash; play nicely with other code bundlers such as Parcel. It also means that the <code class="text-sm text-red-800">import scrawl from 'scrawl-canvas'</code> code <i>can be used in any <code class="text-sm text-red-800">&lt;script></code> tag &mdash; there should be no need to explicitly mark the tag as  <code class="text-sm text-red-800">type="module"</code></i>.</p>
+<p>The outcome of all this is that Scrawl-canvas should &mdash; in theory &mdash; play nicely with other code bundlers such as Parcel. It also means that the <code class="text-sm text-red-800">import * as scrawl from 'scrawl-canvas'</code> code <i>can be used in any <code class="text-sm text-red-800">&lt;script></code> tag &mdash; there should be no need to explicitly mark the tag as  <code class="text-sm text-red-800">type="module"</code></i>.</p>
 
 <p>Note that testing with bundlers has (to date) been limited. Your mileage may vary.</p>

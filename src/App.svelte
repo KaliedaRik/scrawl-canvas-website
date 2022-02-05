@@ -77,7 +77,7 @@
 
     // Handle Scrawl-canvas
     import { setContext } from 'svelte';
-    import scrawl from 'scrawl-canvas';
+    import * as scrawl from 'scrawl-canvas';
     setContext('scrawl', scrawl);
 
     // Page.js routing functionality
