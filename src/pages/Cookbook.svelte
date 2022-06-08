@@ -1,7 +1,7 @@
 <script>
 	import cookbookData from '../data/cookbookData.mjs';
 
-    import { updateMetadata, navigateTo } from '../handleMetadata.js';
+    import { updateMetadata, navigateTo, scrollToTopOnLoad, } from '../handleMetadata.js';
 
 	import CookbookCard from '../components/CookbookCard.svelte';
 
@@ -13,6 +13,7 @@
 
         post = post[0];
         updateMetadata(post);
+        scrollToTopOnLoad();
     }
     else navigateTo('/error');
 </script>

@@ -25,6 +25,9 @@
     color: #4a5568;
     font-size: 0.75rem;
   }
+  iframe {
+    margin-bottom: 1rem;
+  }
 </style>
 
 <p>The <a href="https://en.wikipedia.org/wiki/Tower_of_Hanoi">Tower of Hanoi</a> is a simple game where we have to move different sized discs between 3 pegs, with an aim to demolish the tower from one peg and rebuild it on a different peg. The rules of the game are very simple:</p>
@@ -50,7 +53,7 @@
   <li class="mb-2">Add in the game functionality which will check the legality of each move.</li>
 </ul>
 
-<p>As before, we'll start with a basic web page. Note that we're using a fixed canvas for this build (you can make it responsive if you prefer) and defining its dimensions in the &lt;canvas> element rather than in Javascript:</p>
+<p>As before, we'll start with a basic web page:</p>
 
 <pre class="code-block"><code>&lt;!DOCTYPE html>
 &lt;html lang="en">
@@ -61,19 +64,32 @@
   &lt;title>Tower of Hanoi&lt;/title>
 
   &lt;style type="text/css">
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      color: white;
+      background-color: #444;
+    }
+
     canvas {
-      border: 2px solid black;
+      margin: 0 auto;
     }
   &lt;/style>
 &lt;/head>
 
 &lt;body>
-  &lt;canvas id="mycanvas" <code class="text-red-800">width="600" height="200"</code>>&lt;/canvas>
+  &lt;h2>Tower of Hanoi&lt;/h2>
+
+  &lt;canvas 
+    id="mycanvas" 
+    <code class="text-red-800">width="600" 
+    height="200"</code>
+  >&lt;/canvas>
 
   &lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
 
-    let canvas = scrawl.library.canvas.mycanvas,
+    const canvas = scrawl.library.canvas.mycanvas,
       namespace = 'tower-of-hanoi';
 
     canvas.set({
@@ -222,7 +238,7 @@
 <p>We can fix all of these issues by:</p>
 
 <ol class="list-decimal list-outside ml-8 mb-4">
-  <li class="mb-2">Better definition of our makeDragZone invocation, and understanding how Scrawl-canvas groups events together.</li>
+  <li class="mb-2">Better definition of our makeDragZone invocation, and understanding how Scrawl-canvas gathers events together.</li>
   <li class="mb-2">Artefact order.</li>
   <li class="mb-2">Scrawl-canvas Group objects.</li>
 </ol>
@@ -231,7 +247,7 @@
 
 <p>Most of the web page (DOM) events that Scrawl-canvas has to worry about are related to <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent">mouse button clicks and mouse movements</a> into, over and out of &lt;canvas> elements. This is fine for users visiting a site on a regular desktop browser, but doesn't deal with users using touch-enabled devices where a different set of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Touch_events">touch events</a> need to be captured and acted on. And to add to the confusion we have a set of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events">pointer events</a>, which attempt to solve the problem for us but have not (yet) been widely adopted by developers and others.</p>
 
-<p>Scrawl-canvas only needs to worry about 5 user interactions, and does work behind the scenes to gather all these different event types into groups for each interaction type:</p>
+<p>Scrawl-canvas only needs to worry about 5 user interactions, and does work behind the scenes to gather all these different event types into bundles for each interaction type:</p>
 
 <ul class="list-disc list-outside ml-8 mb-4">
   <li class="mb-2"><b>enter</b> &mdash; for <code class="text-sm text-red-800">mouseenter, touchenter, pointerenter</code> events</li>
@@ -455,7 +471,7 @@
 
 <p>Additionally, if we were to reposition our Block pin, the Wheel discs would automatically update to match that change.</p>
 
-<p>Pivoting artefacts to other artefacts is a powerful way of grouping artefacts together, both for positioning and animation, without needing to place them all in the same group or container (as is done in a number of other Javascript-based canvas libraries).</p>
+<p>Pivoting artefacts to other artefacts is a powerful way of grouping artefacts together, both for positioning and animation, without needing to place them all in the same group or container.</p>
 
 <p>And by updating our Wheel discs' pivot values when we drop them over a different Block pin, we can move a big step forward towards completing the code for our Tower of Hanoi game.</p>
 
@@ -687,13 +703,11 @@
 
 <p>For a bigger challenge, find some images of wooden discs and convert the Wheel entitys into Picture entitys.</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas-v8 - Tower of Hanoi" src="https://codepen.io/kaliedarik/embed/VwvPNEg?height=600&theme-id=26779&default-tab=js,result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy">
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas-v8 - Tower of Hanoi" src="https://codepen.io/kaliedarik/embed/VwvPNEg?height=600&theme-id=26779&default-tab=result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy">
   See the Pen <a href='https://codepen.io/kaliedarik/pen/VwvPNEg'>Scrawl-canvas-v8 - Tower of Hanoi</a> by Rik Roots
   (<a href='https://codepen.io/kaliedarik'>@kaliedarik</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
+<h2>In the next lesson ...</h2>
 
-
-
-
-
+<p>In <a href="https://scrawl-v8.rikweb.org.uk/learn/fourth-lesson">Lesson 4</a> we will aim a little higher by creating an interactive video display in the canvas, with the help of artefact event functions.</p>

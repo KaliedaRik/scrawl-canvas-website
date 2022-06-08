@@ -159,11 +159,9 @@ scrawl.makePicture({
 
 <p>Well ... the swans are certainly a bit pinker. But so is the river.</p>
 
-<p>To fix this, we need to find a way to remove the river from our new Picture's display. Scrawl-canvas has a filter that can do this: the <b>chroma filter</b>.</p>
+<p>To fix this, we need to find a way to remove the river from our new Picture's display. Scrawl-canvas includes a couple of filters that can do this: the one we'll use is the <b>chroma filter</b>.</p>
 
 <p>This filter performs a <a href="https://en.wikipedia.org/wiki/Chroma_key">chroma key effect</a>, testing pixels in the image to see if they match a specific color, or range of colors; if yes, then that pixel is set to a transparent value, which allows any background image to show through our image.</p>
-
-<p class="italic text-sm">(Note: the Scrawl-canvas chroma filter is a fairly simplistic interpretation of the chroma key algorithm. For a more accurate effect (for instance, fewer spill areas) developers can write their own filter and use that instead or &mdash; even better &mdash; use a dedicated 3rd party compositing library which can export a <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaStream">MediaStream</a>, which Scrawl-canvas can then import and use.)</p>
 
 <pre class="code-block"><code>scrawl.makeFilter({
 
@@ -305,4 +303,4 @@ scrawl.makePicture({
 
 <p>Unlike the well-behaved swans, the geese and seagulls in the video shift around the screen quite a bit. To make hit zones for them, we need to track their movements and shift the hit zones around to match their positions at any given moment during video playback.</p>
 
-<p>And to achieve that, we're going to have to use Scrawl-canvas <b>Tickers</b> and <b>Tween animations</b>.</p>
+<p>And to achieve that, in <a href="https://scrawl-v8.rikweb.org.uk/learn/sixth-lesson">Lesson 6</a>, we're going to have to use Scrawl-canvas <b>Tickers</b> and <b>Tween animations</b>.</p>

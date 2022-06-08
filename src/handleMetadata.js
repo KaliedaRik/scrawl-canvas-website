@@ -67,8 +67,23 @@ const updateMetadata = (data) => {
 // Used entirely by ./pages/PoemsIndex.svelte to keep track of current index filter
 const HDIHash = writable('');
 
+// Page load manipulation functionality
+const scrollToTopOnLoad = () => {
+
+    if (window.scrollY > 0) {
+
+        window.scrollTo({
+            top: 0, 
+            left: 0, 
+            behavior: 'smooth'
+        });
+    }
+};
+
 export {
     navigateTo,
     updateMetadata,
     HDIHash,
+
+    scrollToTopOnLoad,
 }

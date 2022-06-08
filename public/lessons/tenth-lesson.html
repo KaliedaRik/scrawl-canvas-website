@@ -41,7 +41,7 @@
 
 <p>The concept of <b>cel</b> animation dates back over 100 years. As explained in the <a href="https://en.wikipedia.org/wiki/Cel">Wikipedia article</a>, cels are transparent layers that can be placed over a background and animated separately from it.</p>
 
-<p>Everything drawn onto a Scrawl-canvas &lt;canvas> element is in fact drawn on an internal canvas, wrapped by a <code class="text-sm text-red-800">Cell object</code>, and then copied over to the visible canvas as the last step in the Scrawl-canvas <b>Display cycle</b>. We explored this functionality back in Lesson 1 (<i>"Getting started with Scrawl-canvas"</i>), which explains the differences between the display and base canvases, and touched on the Scrawl-canvas Display cycle.</p>
+<p>Everything drawn onto a Scrawl-canvas &lt;canvas> element is in fact drawn on an internal canvas, wrapped by a <code class="text-sm text-red-800">Cell object</code>, and then copied over to the visible canvas as the last step in the Scrawl-canvas <b>Display cycle</b>.</p>
 
 <p>In this lesson we'll discover:</p>
 
@@ -104,39 +104,61 @@
 
   &lt;title>Kaleidoscope Clock&lt;/title>
 
-  &lt;style type="text/css">
+  <span class="comment">&lt;style type="text/css">
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      color: white;
+      background-color: #444;
+    }
     canvas {
       background-color: lemonchiffon;
-      border: 1px dashed red;
-      width: 100%;
-      height: 100%;
     }
     .canvas-host {
       overflow: hidden;
       resize: both;
-
       border: 1px solid black;
-
       width: 400px;
       height: 400px;
-
       min-width: 200px;
       min-height: 200px;
-
       max-width: 800px;
       max-height: 800px;
+      position: relative;
+      margin: 0 auto;
     }
-  &lt;/style>
+    .canvas-host::after {
+      position: absolute;
+      content: '';
+      bottom: 0;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-bottom: 1em solid red;
+      border-left: 1em solid transparent;
+    }
+  &lt;/style></span>
 &lt;/head>
 
 &lt;body>
 
+  &lt;h1>SC Lesson 10: Kaleidoscope Clock&lt;/h1>
+
+  &lt;p>Resize the clock by dragging the bottom-right corner of the canvas&lt;/p>
+
   &lt;div class="canvas-host">
-    &lt;canvas id="mycanvas">&lt;/canvas>
+    &lt;canvas 
+      id="mycanvas" 
+      data-is-responsive="true" 
+      data-base-width="400" 
+      data-base-height="400" 
+      data-fit="cover" 
+      data-base-background-color="honeydew"
+    >&lt;/canvas>
   &lt;/div>
 
   <span class="redcode">&lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
 
     <i class="comment">// Our code will go here</i>
   &lt;/script></span>
@@ -151,7 +173,7 @@
 <pre class="code-block"><code>[...]
 
 &lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
 
   <span class="redcode"><b>const buildClockface = function (canvas, namespace)</b> {
 
@@ -308,13 +330,6 @@
     base = canvas.base,
     namespace = 'kaleidoscope-clock';
 
-  <i class="comment">// Prepare the canvas</i>
-  canvas.set({
-    backgroundColor: 'honeydew',
-    checkForResize: true,
-    fit: 'cover',
-  });
-
   <b><i class="comment">// Build the clock face and retrieve its API</i>
   let clock = buildClockface(canvas, namespace);</b>
 
@@ -396,14 +411,9 @@
   });
 
   <b><i class="comment">// Use a Color factory object to generate random colors</i>
-  <i class="comment">// - This allows us to set a restricted palette</i>
   let myColorFactory = scrawl.makeColor({
 
     name: `${namespace}-color-factory`,
-
-    rMax: 160,
-    gMax: 160,
-    bMax: 160,
   });</b>
 
   <i class="comment">// Add some blocks to create the animated background</i>
@@ -445,7 +455,7 @@
 &lt;/script>
 </code></pre>
 
-<p>One new thing of interest here is the <code class="text-sm text-red-800">delta</code> attribute. All Scrawl-canvas artefacts can take a delta object containing key/value pairs for any artefact attribute which accepts either an Number (absolute) or String (relative) value. These values get added to the artefacts's main attribute at the start of each Display cycle loop. This is known as <b>delta animation</b>.</p>
+<p>One new thing of interest here is the <code class="text-sm text-red-800">delta</code> attribute. All Scrawl-canvas artefacts can take a delta object containing key/value pairs for any artefact attribute which accepts either a Number (absolute) or String (relative) value. These values get added to the artefacts's main attribute at the start of each Display cycle loop. This is known as <b>delta animation</b>.</p>
 
 <p>The last piece of code we need to implement is for the Picture entitys which will display our hidden Cell's contents. We can assign these entitys to the canvas wrapper's base Cell, just as we have been doing in previous lessons.</p>
 
@@ -509,8 +519,6 @@
 
 <p>The issue appears to be that only one of the Picture entitys is displaying our hidden Cell's content &mdash; which is an incorrect conclusion. In fact all of our Picture entitys are working as we have specified. However five of the entitys are displaying the Cell after it has been cleared, but before it has been compiled.</p>
 
-<p>Under the hood, Scrawl-canvas uses a set of Promise cascades to perform the clear, compile and show portions of the Display Cycle. Because of Javascript's single-threaded <i>run-to-completion</i> nature Promises will start and end in consecutive fashion ... but there is no guarantees about which other Promise will run after the current Promise (or Event code, or main thread code, etc) completes.</p>
-
 <p>The fix is simple &mdash; we set the base Cell to compile its Picture entitys <b>after</b> the background Cell has finished compiling its display:</p>
 
 <pre class="code-block"><code>[...]
@@ -535,7 +543,9 @@
 
 <p>Try adapting the CodePen below to use different sorts of entitys. What happens when you use a picture entity as part of the background? Can you come up with a way for the user to drag an image file from their local device onto the clock, so that that image will be used as the clock's background?</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas v8 - Kaleidoscope clock " src="https://codepen.io/kaliedarik/embed/vYLaOxK?height=600&theme-id=26779&default-tab=js,result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy" class="mb-4">
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas v8 - Kaleidoscope clock " src="https://codepen.io/kaliedarik/embed/vYLaOxK?height=600&theme-id=26779&default-tab=result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy" class="mb-4">
   See the Pen <a href='https://codepen.io/kaliedarik/pen/vYLaOxK'>Scrawl-canvas v8 - Kaleidoscope clock</a> by Rik Roots
   (<a href='https://codepen.io/kaliedarik'>@kaliedarik</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
+
+<p>In <a href="https://scrawl-v8.rikweb.org.uk/learn/eleventh-lesson">Lesson 11</a> we'll investigate the issues surrounding accessibility and the canvas element, and how Scrawl-canvas addresses them.</p>

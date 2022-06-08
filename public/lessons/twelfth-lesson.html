@@ -34,7 +34,7 @@
 
 <p>Producing a gradient in graphical software should, in theory, be easy. The code interpolates between the colors along a given vector for a given distance to create the desired effect. Using this idea, the architects of the world-wide web created functionality in CSS to easily generate <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient()">linear gradients</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/radial-gradient()">radial gradients</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/conic-gradient()">conic gradients</a>, each in both normal and repeated forms.</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: Creative coding 20210413-1" src="https://codepen.io/kaliedarik/embed/poRLBLp?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: Creative coding 20210413-1" src="https://codepen.io/kaliedarik/embed/poRLBLp?default-tab=result&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/kaliedarik/pen/poRLBLp">
   Scrawl-canvas: Creative coding 20210413-1</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
   on <a href="https://codepen.io">CodePen</a>.
@@ -42,7 +42,7 @@
 
 <p>Other image processing software packages such as <a href="https://helpx.adobe.com/photoshop/using/gradients.html">Adobe Photoshop</a> and <a href="https://gimp.linux.it/www/manual/2.10/html/en/gimp-tool-gradient.html">The Gimp</a> have gone further, allowing users to create effects such as reflected and diamond gradients (Photoshop), and shaped and spiral gradients (Gimp). Both allow the user to add dithering to the effect, to make the resulting mix of colors look more rough/naturalistic. One of the most exciting things that these programs offer is <a href="https://docs.gimp.org/2.10/en/plug-in-gradmap.html">gradient mapping</a> &mdash; colorising a grayscale image using a gradient mapped to each pixel's brightness.</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: animate a gradient over a noise asset" src="https://codepen.io/kaliedarik/embed/BaRNXzV?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: animate a gradient over a noise asset" src="https://codepen.io/kaliedarik/embed/BaRNXzV?default-tab=result&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/kaliedarik/pen/BaRNXzV">
   Scrawl-canvas: animate a gradient over a noise asset</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
   on <a href="https://codepen.io">CodePen</a>.
@@ -50,7 +50,7 @@
 
 <p>The bad news for us is that, when it comes to implementing gradients in the 2D &lt;canvas> element, there is much to be desired. While the Canvas API does include <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient">functionality for linear, radial and conic gradients</a>, that functionality is implemented at a very low level; currently the conic gradient only works in the Firefox browser.</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: Creative coding 20210823-01" src="https://codepen.io/kaliedarik/embed/RwgwpyG?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas: Creative coding 20210823-01" src="https://codepen.io/kaliedarik/embed/RwgwpyG?default-tab=result&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/kaliedarik/pen/RwgwpyG">
   Scrawl-canvas: Creative coding 20210823-01</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
   on <a href="https://codepen.io">CodePen</a>.
@@ -156,7 +156,7 @@
     class="demo-images" />
 
   <span class="redcode">&lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
 
     scrawl.importDomImage('.demo-images');
 
@@ -341,7 +341,7 @@
 
 <p>Now that we know how to create and use gradients, we can make use of them in our tribute to Mr Shakespeare &mdash; the final code for which can be seen in this CodePen:</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="CPC Challenge September 2021 - Week 4" src="https://codepen.io/kaliedarik/embed/zYzXvqw?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+<iframe height="600" style="width: 100%;" scrolling="no" title="CPC Challenge September 2021 - Week 4" src="https://codepen.io/kaliedarik/embed/zYzXvqw?default-tab=sresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/kaliedarik/pen/zYzXvqw">
   CPC Challenge September 2021 - Week 4</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
   on <a href="https://codepen.io">CodePen</a>.
@@ -538,7 +538,7 @@
 
 <p>... Which all sounds a bit useful-yet-boring. Until we move beyond using static image files for our pattern assets.</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="Codecember - Day 18 (3)" src="https://codepen.io/kaliedarik/embed/OJRxMMG?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+<iframe height="600" style="width: 100%;" scrolling="no" title="Codecember - Day 18 (3)" src="https://codepen.io/kaliedarik/embed/OJRxMMG?default-tab=result&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/kaliedarik/pen/OJRxMMG">
   Codecember - Day 18 (3)</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
   on <a href="https://codepen.io">CodePen</a>.
@@ -546,7 +546,7 @@
 
 <p>Patterns can use any asset that Picture entitys can use. This includes animated sprite sheets, video feeds and files, and even other &lt;canvas> element:</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="Codecember - Day 18 (1)" src="https://codepen.io/kaliedarik/embed/eYdGYLp?default-tab=html%2Cresult&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+<iframe height="600" style="width: 100%;" scrolling="no" title="Codecember - Day 18 (1)" src="https://codepen.io/kaliedarik/embed/eYdGYLp?default-tab=result&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/kaliedarik/pen/eYdGYLp">
   Codecember - Day 18 (1)</a> by Rik Roots (<a href="https://codepen.io/kaliedarik">@kaliedarik</a>)
   on <a href="https://codepen.io">CodePen</a>.

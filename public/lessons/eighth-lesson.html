@@ -33,7 +33,7 @@
 
 <p>When it comes to generating charts, we have hundreds of software libraries to choose from. Some of those libraries generate responsive and/or interactive charts, often displaying their output in SVG format rather than painting the results to a &lt;canvas> element.</p>
 
-<p>Many of the better libraries are licenced (you'll need to pay for commercial use of the library), but the best library of all &mdash; <a href="https://d3js.org/">D3.js</a> &mdash; is free-to-use for any project. Check out this <a href="https://www.freecodecamp.org/news/these-are-the-best-javascript-chart-libraries-for-2019-29782f5e1dc2/">FreeCodeCamp article</a> for a summary of charting software on offer to web developers in 2019.</p>
+<p>Many of the better libraries are licenced (you'll need to pay for commercial use of the library), but the best library of all &mdash; <a href="https://d3js.org/">D3.js</a> &mdash; is free-to-use for any project. Check out this <a href="https://www.codewall.co.uk/best-javascript-chart-libraries/">CodeWall article</a> for a summary of charting software on offer to web developers in 2021.</p>
 
 <p>Every charting library will come with its own strengths and weaknesses. To summarize the article: <span class="italic font-bold">use the best tool available to meet your particular data visualization needs!</span></p>
 
@@ -61,52 +61,52 @@
 
   &lt;title>London crime&lt;/title>
 
-  &lt;style type="text/css">
-
+  <span class="comment">&lt;style type="text/css">
     html {
       font-size: 18px;
       font-family: roboto;
     }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-    }
-
     .canvas-container {
       position: relative;
-
       overflow: hidden;
       resize: both;
-
       width: 500px;
       height: 500px;
-
       min-height: 350px;
       min-width: 350px;
-
       max-height: 600px;
       max-width: 600px;
+      border: 1px solid black;
     }
-
     .image-hold {
       height: 0;
       display: none;
     }
-
     #library-reporter {
       background: honeydew;
       white-space: pre-wrap;
       font: 12px monospace;
       padding: 1em;
     }
-  &lt;/style>
+    #display-controls {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+  &lt;/style></span>
 &lt;/head>
 
 &lt;body>
 
   &lt;div class="canvas-container">
-    &lt;canvas id="mycanvas">&lt;/canvas>
+    &lt;canvas 
+      id="mycanvas"
+      data-is-responsive="true" 
+      data-base-width="600" 
+      data-base-height="600" 
+      data-fit="contain"
+      data-base-background-color="lemonchiffon"
+    >&lt;/canvas>
   &lt;/div>
 
   &lt;p id="library-reporter">&lt;/p>
@@ -121,7 +121,6 @@
     &lt;img id="Sexual Offences" class="crime" src="assets/sexual-grey.jpg" />
     &lt;img id="Theft and Handling" class="crime" src="assets/theft-grey.jpg" />
     &lt;img id="Violence Against the Person" class="crime" src="assets/violence-grey.jpg" />
-    
     &lt;img id="Hackney" class="crime" src="assets/hackney-grey.jpg" />
     &lt;img id="Kingston" class="crime" src="assets/kingston-grey.jpg" />
     &lt;img id="Heathrow" class="crime" src="assets/heathrow-grey.jpg" /></span>
@@ -144,7 +143,7 @@
 
 <p>Let's have a look at the code in our new <code class="text-sm text-red-800">london-crime-graphic.js</code> file:</p>
 
-<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
 
 <span class="heavycode">import * as frame from './simple-chart-frame.js';</span>
 
@@ -152,22 +151,11 @@ let canvas = scrawl.library.canvas.mycanvas,
   namespace = 'London-crimes';
 
 canvas.set({
-
-  backgroundColor: 'lemonchiffon',
-
   <i class="comment">// Adding label and description attributes to our &lt;canvas> element</i>
   <i class="comment">// - To make it more accessible for non-visual users</i>
   label: 'Crime statistics for London areas - from 1999 to 2017',
 
   description: 'Interactive graphic showing crimes recorded in various London areas, broken down into crime types. Data taken from https://data.london.gov.uk/dataset/recorded_crime_rates',
-
-  fit: 'contain',
-  checkForResize: true,
-
-}).setBase({
-
-  width: 600,
-  height: 600,
 });
 
 <span class="heavycode">frame.build(`${namespace}-frame`, canvas, 'Other Notifiable Offences');</span>
@@ -205,8 +193,8 @@ scrawl.makeRender({
 
 <ul class="list-disc list-outside ml-8 mb-4">
   <li class="mb-2">The first thing we do is import Scrawl-canvas. Every file which uses Scrawl-canvas needs to import it before attempting to use its functions, or access its library object.</li>
-  <li class="mb-2">The code then captures the &lt;canvas> element's wrapper object, sets up a report function (for testing), and finishes by defining a RenderAnimation object.</li>
   <li class="mb-2">The code <b><i>does not define any Scrawl-canvas entitys</i></b>. Instead it invokes a second import statement &mdash; <code class="text-sm text-red-800">import * as frame from './simple-chart-frame.js';</code> &mdash; and later invokes a function supplied by that module: <code class="text-sm text-red-800">frame.build</code>.</li>
+  <li class="mb-2">The code then captures the &lt;canvas> element's wrapper object, sets up a report function (for testing), and finishes by defining a RenderAnimation object.</li>
 </ul>
 
 <p>What we are doing here is <b>separating concerns</b>. Our code in <code class="text-sm text-red-800">london-crime-graphic.js</code> takes care of setting up the Canvas object and <b><i>orchestrating the display</i></b> it will show.</p>
@@ -226,7 +214,7 @@ scrawl.makeRender({
 
 <p>If you've been working your way through the lessons, most of the code in the <code class="text-sm text-red-800">simple-chart-frame.js</code> module will not surprise you:</p>
 
-<pre class="code-block"><code><span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+<pre class="code-block"><code><span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
 
 <i class="comment">// Import our images from the web page</i>
 scrawl.importDomImage('.crime');
@@ -386,9 +374,9 @@ export {
 
 <h3>The <code class="text-red-800">makeLine</code> factory function</h3>
 
-<p>The lines we're defining above are a form of <b>Shape entity</b>. These entitys come in many different ... well, shapes (known as <i>species</i> in Scrawl-canvas). There's a whole family of them &mdash; <code class="text-sm text-red-800">makeShape, makeLine, makeQuadratic, makeBezier, makeRectangle, makeOval, makeTetragon, makePolygon, makeStar, makeSpiral</code> &mdash; and each factory function has its own set of attributes which we can use to define that Shape.</p>
+<p>The lines we're defining above are a form of <b>Shape entity</b>. These entitys come in many different ... well, shapes; there's a whole family of them &mdash; <code class="text-sm text-red-800">makeShape, makeLine, makeQuadratic, makeBezier, makeRectangle, makeOval, makeTetragon, makePolygon, makeStar, makeSpiral</code> &mdash; and each factory function has its own set of attributes which we can use to define that Shape.</p>
 
-<p><b>Line Shapes</b> are the simplest species in the entity family. They have a <code class="text-sm text-red-800">start</code> coordinate and an <code class="text-sm text-red-800">end</code> coordinate. Both coordinates can be defined using absolute and/or relative values; both can use pivots (<code class="text-sm text-red-800">endPivot</code>) and can be locked (<code class="text-sm text-red-800">endLock</code>).</p>
+<p><b>Line Shapes</b> are the simplest of these. They have a <code class="text-sm text-red-800">start</code> coordinate and an <code class="text-sm text-red-800">end</code> coordinate. Both coordinates can be defined using absolute and/or relative values; both can use pivots (<code class="text-sm text-red-800">endPivot</code>) and can be locked (<code class="text-sm text-red-800">endLock</code>).</p>
 
 <p>... And that's pretty much all we need to know about how Scrawl-canvas defines lines (for now).</p>
 
@@ -414,7 +402,7 @@ export {
   <li class="mb-2"><i>Absolute <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/length">length values</a></i>, defined with <code class="text-sm text-red-800">px, pt, in, cm, mm, pc</code>, will usually work as expected.</li>
   <li class="mb-2"><i>Viewport lengths</i> (<code class="text-sm text-red-800">vw, vh, vmax, vmin</code>) will often work; note that these lengths are set on creation and don't automatically resize when the viewport dimensions change.</li>
   <li class="mb-2">For <i>lengths defined by the font itself</i>, <code class="text-sm text-red-800">rem</code> will use the root element's font size for its reference; <code class="text-sm text-red-800">%, em, ch</code> can be less helpful. Again these won't automatically resize in a responsive environment.</li>
-  <li class="mb-2">Of the rest, <code class="text-sm text-red-800">Q</code> is not supported by Safari browsers, while <code class="text-sm text-red-800">cap, ic, lh, rlh, vb, vi</code> are not supported by any browser. Avoid!</li>
+  <li class="mb-2">Of the rest, <code class="text-sm text-red-800">Q</code> is not supported by Safari browsers, while <code class="text-sm text-red-800">cap, ic, lh, rlh, vb, vi</code> are not supported by any browser (as at 2020). Avoid!</li>
 </ul>
 
 <p>As ever, the best approach is to check the canvas display in as many different browsers and devices as possible. And be prepared to fall back to a <a href="https://web.mit.edu/jmorzins/www/fonts.html">web-safe font</a> in case things go wrong.</p>
@@ -595,13 +583,13 @@ export {
 
 <h3>Adding some test code to our project</h3>
 
-<p>Much like writing graph code, writing a bespoke test rig can be tedious. It cal also mess up our page if we don't work out beforehand how we're going to build and display the tests.</p>
+<p>Much like writing graph code, writing a bespoke test rig can be tedious. It can also mess up our page if we don't work out beforehand how we're going to build and display the tests.</p>
 
 <p>Almost all of our frame code is in its own module. To test it, we're going to build another module &mdash; <code class="text-sm text-red-800">simple-chart-frame-tests.js</code> &mdash; which we can then include and use in our main module.</p>
 
 <p>Nothing in this code should surprise you:</p>
 
-<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
 
 <i class="comment">// Import the module we're testing</i>
 <span class="redcode">import * as frame from './simple-chart-frame.js';</span>
@@ -945,4 +933,4 @@ frame.build(`${namespace}-frame`, canvas, 'Other Notifiable Offences');
 
 <h2>In the next lesson</h2>
 
-<p>A chart frame without any graph in it looks a bit sad. In the next lesson we shall build those graphs, using some real data.</p>
+<p>A chart frame without any graph in it looks a bit sad. In <a href="https://scrawl-v8.rikweb.org.uk/learn/ninth-lesson">Lesson 9</a> we shall build those graphs, using some real data.</p>

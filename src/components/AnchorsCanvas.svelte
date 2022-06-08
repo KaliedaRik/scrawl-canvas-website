@@ -480,6 +480,7 @@
 </style>
 
 <canvas id={namespace}></canvas>
+
 <p>Hover over pins to reveal labels; click to visit relevant wikipedia page. Can also use the tab and enter keys to navigate links</p>
 
 <div>

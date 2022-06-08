@@ -22,7 +22,7 @@
     }
 </style>
 
-<p>Scrawl-canvas version 8.8.1 - released 27 Mar 2022. Please raise issues in the Discord channel, or Github.</p>
+<p>Scrawl-canvas version 8.8.2 - released 4 Jun 2022. Please raise issues in the Discord channel, or Github.</p>
 <nav>
     <div>
         <a href="/">Tour</a>
@@ -35,7 +35,7 @@
         <a rel="external" href="https://discord.gg/DcwfkZDuBV">Discord channel</a>
         <a rel="external" href="https://github.com/KaliedaRik/Scrawl-canvas">GitHub Repo</a>
         <a rel="external" href="https://github.com/KaliedaRik/Scrawl-canvas/issues">Issues & Bugs</a>
-        <a download href="/downloads/scrawl-canvas_8-8-1.zip">Download v8.8.1</a>
+        <a download href="/downloads/scrawl-canvas_8-8-2.zip">Download v8.8.2</a>
     </div>
     <div>
         <a href="/privacy-and-cookies">Privacy + Cookies</a>

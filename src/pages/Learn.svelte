@@ -1,7 +1,7 @@
 <script>
 	import learnData from '../data/learnData.mjs';
 
-    import { updateMetadata, navigateTo } from '../handleMetadata.js';
+    import { updateMetadata, navigateTo, scrollToTopOnLoad, } from '../handleMetadata.js';
 
 	import LearnCard from '../components/LearnCard.svelte';
 
@@ -13,6 +13,7 @@
 
         post = post[0];
         updateMetadata(post);
+        scrollToTopOnLoad();
     }
     else navigateTo('/error');
 </script>

@@ -31,6 +31,9 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));  
   }
+  .small-lists {
+    font-size: 0.875rem;
+  }
 </style>
 
 <p>The &lt;canvas> element comes into its own when dealing with images. It can take image data from a variety of sources &mdash; &lt;img> elements, &lt;video> elements, even other &lt;canvas> elements &mdash; then manipulate that data and and display it in its own Display graphic.</p>
@@ -40,21 +43,22 @@
 <p>In this lesson we will briefly discuss the following:</p>
 
 <ol class="list-decimal list-outside ml-4 mb-4">
+  <li class="mb-2">Make the &lt;canvas> element responsive</li>
   <li class="mb-2">Display an image in the canvas</li>
   <li class="mb-2">Include existing images from the web page in the canvas</li>
   <li class="mb-2">Handle responsive images</li>
 </ol>
 
-<p>This Codepen demonstrates the final results of this lesson:</p>
+<p>This Codepen demonstrates the final results of the lesson:</p>
 
-<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas v8 - responsive images in canvas" src="https://codepen.io/kaliedarik/embed/bGVwavW?height=300&theme-id=26779&default-tab=js,result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy">
+<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas v8 - responsive images in canvas" src="https://codepen.io/kaliedarik/embed/bGVwavW?height=300&theme-id=26779&default-tab=result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy">
   See the Pen <a href='https://codepen.io/kaliedarik/pen/bGVwavW'>Scrawl-canvas v8 - responsive images in canvas</a> by Rik Roots
   (<a href='https://codepen.io/kaliedarik'>@kaliedarik</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
-<h2>Display an image in the canvas</h2>
+<h2>Make the canvas element responsive</h2>
 
-<p>As before, we'll start with a minimal HTML5 file and build on it.</p>
+<p>One of the major drawbacks of using &lt;canvas> elements in a webpage is that they are, by definition, static images with a defined drawing area. Let's examine the following code:</p>
 
 <pre class="code-block"><code>&lt;!DOCTYPE html>
 &lt;html lang="en">
@@ -65,9 +69,21 @@
   &lt;title>Scrawl-canvas lesson 2&lt;/title>
 
   &lt;style>
+    .canvas-host {
+      overflow: hidden;
+      resize: both;
+      border: 1px solid red;
+      width: 400px;
+      height: 200px;
+      min-width: 200px;
+      min-height: 100px;
+      max-width: 600px;
+      max-height: 300px;
+      margin: 0 auto;
+      background-color: #444;
+    }
     canvas {
       background-color: lemonchiffon;
-      border: 1px dashed red;
     }
   &lt;/style>
 &lt;/head>
@@ -75,17 +91,212 @@
 &lt;body>
 
   &lt;div class="canvas-host">
-    &lt;canvas id="mycanvas">&lt;/canvas>
+    &lt;canvas 
+      id="mycanvas"
+    >&lt;/canvas>
   &lt;/div>
 
   &lt;script type="module">
+    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.8.2";
+    scrawl.setIgnorePixelRatio(false);
+
+    <i class="comment">// Setup scene</i>
+    const canvas = scrawl.library.canvas["my-canvas"];
+    const namespace = 'lesson-2';
+
+    scrawl.makePhrase({
+      name: `${namespace}-label`,
+
+      start: ['center', 'center'],
+      handle: ['center', 'center'],
+      width: '100%',
+
+      font: '2em bold Garamond, sans-serif',
+      text: 'Hello, world!',
+      justify: 'center',
+
+      fillStyle: 'lightblue',
+      lineWidth: 2,
+      strokeStyle: 'blue',
+      method: 'fillThenDraw',
+    });
+
+    <i class="comment">// Display cycle animation</i>
+    scrawl.makeRender({
+      name: `${namespace}-render`,
+      target: canvas
+    });
   &lt;/script>
 
 &lt;/body>
 &lt;/html>
 </code></pre>
 
+<p>The above code, when we run it (see Lesson 1 for details on how to run the code), shows us a user-resizable container (with the dark background) containing a canvas element which displays a "Hello, world!" message.</p>
+
 <p><img class="mx-auto" src="/assets/lesson-02/01.png" /></p>
+
+<p>If we resize the canvas container, we can see that the canvas sticks firmly to the top-left corner of the container. What we need to do is get the canvas element to resize alongside the container.</p>
+
+<p>Let's try to do this using CSS:</p>
+
+<pre class="code-block"><code>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  [...]
+
+  &lt;style>
+    .canvas-host {
+      [...]
+    }
+    canvas {
+      background-color: lemonchiffon;
+      <span class="redcode">width: 100%;
+      height: 100%;</span>
+    }
+  &lt;/style>
+&lt;/head>
+
+&lt;body>
+
+  &lt;div class="canvas-host">
+    &lt;canvas 
+      id="mycanvas"
+    >&lt;/canvas>
+  &lt;/div>
+
+  &lt;script type="module">
+    [...]
+  &lt;/script>
+
+&lt;/body>
+&lt;/html>
+</code></pre>
+
+<p>The result? Nothing changes.</p>
+
+<p>If we were doing this to a normal canvas element, not being controlled by Scrawl-canvas, the result would be a canvas that stretches to match the container's dimensions - which in turn leads to the canvas display becoming distorted ... not the result we want!</p>
+
+<p>Instead, Scrawl-canvas includes functionality to create responsive canvas elements which act more like the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit">object-fit</a> CSS property. We can invoke this functionality by adding a <code class="text-sm text-red-800">data-</code> attribute to the canvas element, like this:</p>
+
+<pre class="code-block"><code>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  [...]
+
+  &lt;style>
+    .canvas-host {
+      [...]
+    }
+    canvas {
+      background-color: lemonchiffon;
+<s>      width: 100%;
+      height: 100%;</s>
+    }
+  &lt;/style>
+&lt;/head>
+
+&lt;body>
+
+  &lt;div class="canvas-host">
+    &lt;canvas 
+      id="mycanvas"
+      <span class="redcode">data-is-responsive="true"</span>
+    >&lt;/canvas>
+  &lt;/div>
+
+  &lt;script type="module">
+    [...]
+  &lt;/script>
+
+&lt;/body>
+&lt;/html>
+</code></pre>
+
+<p>This gives us a canvas element which fills its container's entire space, and does not distort when the container's dimensions change.</p>
+
+<p><img class="mx-auto" src="/assets/lesson-02/02.png" /></p>
+
+<p>Our canvas is responsive. However this may not be what we want - particularly if we are using a mix of absolutely, and relatively, dimensioned and positioned entitys in the canvas scene.</p>
+
+<p>To solve this problem, we could code our scene using only relative values. A better solution is to set the canvas's internal dimensions to known, fixed px values and <b>fit</b> the result into the canvas display:</p>
+
+<pre class="code-block"><code>&lt;!DOCTYPE html>
+&lt;html lang="en">
+&lt;head>
+  [...]
+
+  &lt;style>
+    [...]
+  &lt;/style>
+&lt;/head>
+
+&lt;body>
+
+  &lt;div class="canvas-host">
+    &lt;canvas 
+      id="mycanvas"
+      data-is-responsive="true"
+      <span class="redcode">data-base-width="600" 
+      data-base-height="300" 
+
+      <i class="comment">Allowable values are: 'none', 'cover', 'contain' and 'fill'</i>
+      data-fit="contain"</span>
+    >&lt;/canvas>
+  &lt;/div>
+
+  &lt;script type="module">
+    [...]
+
+    scrawl.makePhrase({
+      name: `${namespace}-label`,
+
+      start: ['center', 'center'],
+      handle: ['center', 'center'],
+      width: '100%',
+
+<s>      font: '2em bold Garamond, sans-serif',</s>
+      <span class="redcode">font: '4.5em bold Garamond, sans-serif',</span>
+      text: 'Hello, world!',
+      justify: 'center',
+
+      fillStyle: 'lightblue',
+<s>      lineWidth: 1,</s>
+      <span class="redcode">lineWidth: 2,</span>
+      strokeStyle: 'blue',
+      method: 'fillThenDraw',
+    });
+
+    [...]
+  &lt;/script>
+
+&lt;/body>
+&lt;/html>
+</code></pre>
+
+<p>Now that we have a fixed-dimensions internal canvas we can design our scene with that in mind. We increased our Phrase entity's font size and line width to make it larger and clearer. The result is a properly responsive canvas that will automatically adapt to the web page environment in which it lives.</p>
+
+<p><img class="mx-auto" src="/assets/lesson-02/03.png" /></p>
+
+<h2>Display an image in the canvas</h2>
+
+<p>For the following code we can use a set of related images available to us via the CodePen site. You can see these images in action in the CodePen demo above. The full URLs of the images are:</p>
+
+<ul class="list-disc list-outside ml-8 mb-4">
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-300.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-600.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-900.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-1200.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-1600.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-2000.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-2400.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-2800.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-3200.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-3600.jpg</li>
+  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-4000.jpg</li>
+</ul>
+
+<p><b><i>Please feel free to use your own sets of images stored on your local device</i></b> - the code will run a lot quicker!</p>
 
 <h3>The Picture entity</h3>
 
@@ -97,58 +308,54 @@
 
 <pre class="code-block"><code>&lt;script type="module">
 
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+  [...]
 
-  let canvas = scrawl.library.canvas.mycanvas;
-
-  let namespace = 'lesson-two';
-
-  canvas.set({
-    backgroundColor: 'honeydew',
-  }).setAsCurrentCanvas();
-
-  <b class="text-red-800">scrawl.makePicture({
+  <span class="text-red-800">scrawl.makePicture({
 
     name: `${namespace}-image`,
-    imageSource: 'assets/river.jpg',
+    imageSource: 'path/to/river-4000.jpg',
 
-    width: 100,
-    height: 100,
-  });</b>
+    start: ['center', 'center'],
+    handle: ['center', 'center'],
+    dimensions: [600, 450],
+  });</span>
 
-  scrawl.makeRender({
-    name: `${namespace}-animation`,
-    target: canvas,
-  });
+  [...]
 &lt;/script>
 </code></pre>
 
 <p>The result is ... unexpected:</p>
 
-<p><img class="mx-auto" src="/assets/lesson-02/02.png" /></p>
+<p><img class="mx-auto" src="/assets/lesson-02/04.png" /></p>
 
-<p>When we define the Picture entity, it is not enough to give it start (<code class="text-sm text-red-800">startX, startY</code>) and dimensions (<code class="text-sm text-red-800">width, height</code>) values. We also need to tell it which part of the image we want to copy over to the canvas.</p>
+<p>When we define the Picture entity, it is not enough to give it <b>start</b> (<code class="text-sm text-red-800">startX, startY</code>) and <b>dimensions</b> (<code class="text-sm text-red-800">width, height</code>) values. We also need to tell it <i>which part of the image</i> we want to copy over to the canvas.</p>
 
-<p>We do this using a set of <b>copy</b> attributes: <code class="text-sm text-red-800">copyX, copyY, copyWidth, copyHeight</code> - which take the same types of values as the start and dimensions attributes.</p>
+<p>We do this using a set of <b>copy</b> attributes: <code class="text-sm text-red-800">copyStartX, copyStartY, copyWidth, copyHeight</code> - which take the same types of values as the start and dimensions attributes.</p>
 
-<p>By default the copyStart values are set to <code class="text-sm text-red-800">0</code>, while the copy dimensions values are set to <code class="text-sm text-red-800">1</code> &mdash; what we are seeing above is the top-left pixel of our image, spread over a 100px by 100px square on the canvas.</p>
+<p>By default the <b>copyStart</b> values are set to <code class="text-sm text-red-800">0</code>, while the <b>copyDimensions</b> values are set to <code class="text-sm text-red-800">1</code> &mdash; what we are seeing above is the top-left pixel of our image, spread over a 600px &times; 450px rectangle on the canvas.</p>
 
 <p>Let's fix this now:</p>
 
-<pre class="code-block"><code>scrawl.makePicture({
+<pre class="code-block"><code>&lt;script type="module">
 
-  name: `${namespace}-image`,
-  imageSource: 'assets/river.jpg',
+  [...]
 
-  width: '100%',
-  height: '100%',
+  scrawl.makePicture({
 
-  <b class="text-red-800">copyWidth: '100%',
-  copyHeight: '100%',</b>
-});
+    name: `${namespace}-image`,
+    imageSource: 'path/to/river-4000.jpg',
+
+    start: ['center', 'center'],
+    handle: ['center', 'center'],
+    dimensions: [600, 450],
+    <span class="text-red-800">copyDimensions: ['100%', '100%'],</span>
+  });
+
+  [...]
+&lt;/script>
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-02/03.png" /></p>
+<p><img class="mx-auto" src="/assets/lesson-02/05.png" /></p>
 
 <h2>Include existing images from the web page in the canvas</h2>
 
@@ -159,63 +366,53 @@
 <pre class="code-block"><code>&lt;!DOCTYPE html>
 &lt;html lang="en">
 &lt;head>
-  &lt;meta charset='utf-8'>
-  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
-
-  &lt;title>Scrawl-canvas lesson 2&lt;/title>
+  [...]
 
   &lt;style>
-    canvas {
-      background-color: lemonchiffon;
-      border: 1px dashed red;
-    }
-    <b class="text-red-800">.myimage {
+    [...]
+
+    <i class="comment">/* To hide the &lt;img> element on the page */</i>
+    <span class="redcode">.image-hold {
       height: 0;
-    }</b>
+      overflow: hidden;
+    }</span>
   &lt;/style>
 &lt;/head>
 
 &lt;body>
 
-  &lt;div class="canvas-host">
-    &lt;canvas id="mycanvas">&lt;/canvas>
-  &lt;/div>
+  [... canvas]
 
-  <b class="text-red-800">&lt;img 
-    id="river" 
-    class="myimage" 
-    alt="Image used in canvas element" 
-    src="assets/river.jpg" /></b>
+  <span class="redcode">&lt;div class="image-hold">
+    <i class="comment">&lt;!-- Each image should be given its own unique ID value --></i>
+    &lt;img 
+      <b>id="river" 
+      class="my-demo-images" </b>
+      alt="Image used in canvas element" 
+      src="path/to/river-4000.jpg" />
+  &lt;/div></span>
 
   &lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.1';
+    [...]
 
-    <b class="text-red-800">scrawl.importDomImage('.myimage');</b>
-
-    let canvas = scrawl.library.canvas.mycanvas;
-
-    let namespace = 'lesson-two';
-
-    canvas.set({
-      backgroundColor: 'honeydew',
-    }).setAsCurrentCanvas();
+    <i class="comment">// Argument is any valid CSS selector string</i>
+    <span class="redcode">scrawl.importDomImage(<b>'.my-demo-images'</b>);</span>
 
     scrawl.makePicture({
 
       name: `${namespace}-image`,
-      <b class="text-red-800">asset: 'river',</b>
+<s>      imageSource: 'path/to/river-4000.jpg',</s>
 
-      width: '100%',
-      height: '100%',
+      <i class="comment">// Value is the ID we gave to the image in the HTML code</i>
+      <span class="redcode">asset: <b>'river'</b>,</span>
 
-      copyWidth: '100%',
-      copyHeight: '100%',
+      start: ['center', 'center'],
+      handle: ['center', 'center'],
+      dimensions: [600, 450],
+      copyDimensions: ['100%', '100%'],
     });
 
-    scrawl.makeRender({
-      name: `${namespace}-animation`,
-      target: canvas,
-    });
+    [...]
   &lt;/script>
 
 &lt;/body>
@@ -226,133 +423,85 @@
 
 <p>When the function completes, each of the images captured by the selector string will be wrapped in a Scrawl-canvas <b>ImageAsset</b> object, and stored in the Scrawl-canvas library in the <code class="text-sm text-red-800">scrawl.library.asset</code> section, keyed by either the &lt;img> element's id value, or its name value, or the file's name if no id or name attribute was supplied for the element.</p>
 
-<p>&lt;img> elements do not need to be visible in the web page &mdash; they can be hidden in a variety of ways; here we set the element's <code class="text-sm text-red-800">height</code> attribute to zero in the CSS &lt;style> tag in the document's head.</p>
-
 <p>We can now assign the image data to our Picture entity using the <code class="text-sm text-red-800">asset</code> attribute, which will accept the ImageAsset object's name String (or the object itself).</p>
-
-<p>At this point we can also make the canvas responsive &mdash; see Lesson 1 or the CodePen above for coding details:</p>
-
-<p><img class="mx-auto" src="/assets/lesson-02/04.png" /></p>
 
 <h3>How big is that image in the window?</h3>
 
-<p>If we open the browser's console, we can check to see how big our image is. The <code class="text-sm text-red-800">river.jpg</code> file weighs in at <b>6.3 MB</b>, and has dimensions of <b>width: 4160px, height: 3120px</b> &mdash; while this may be exactly what is needed for a user with a large, high definition monitor, it is less than satisfactory for the vast majority of users.</p>
+<p>If we open the browser's console, we can check to see how big our image is. The <code class="text-sm text-red-800">river-4000.jpg</code> file weighs in at <b>6.3 MB</b>, and has dimensions of <b>width: 4160px, height: 3120px</b> &mdash; while this may be exactly what is needed for a user with a large, high definition monitor, it is less than satisfactory for the vast majority of users.</p>
 
 <p>We need to fix this. The best approach is to make our &lt;img> element responsive by giving it a range of image files to choose from, via the element's <code class="text-sm text-red-800">srcset</code> attribute:</p>
 
-<pre class="code-block"><code>&lt;img id="river" class="myimage" alt="Image used in canvas element"
-  src="assets/river.jpg"
-  <b class="text-red-800">srcset="assets/river-300.jpg 300w,
-    assets/river-600.jpg 600w,
-    assets/river-900.jpg 900w,
-    assets/river-1200.jpg 1200w,
-    assets/river-1600.jpg 1600w,
-    assets/river-2000.jpg 2000w,
-    assets/river-2400.jpg 2400w,
-    assets/river-2800.jpg 2800w,
-    assets/river-3200.jpg 3200w,
-    assets/river-3600.jpg 3600w,
-    assets/river-4000.jpg 4000w"</b> />
+<pre class="code-block"><code>&lt;div class="image-hold">
+  &lt;img 
+    id="river" 
+    class="my-demo-images" </b>
+    alt="Image used in canvas element" 
+    src="path/to/river-4000.jpg"
+    <span class="redcode">srcset="path/to/river-300.jpg 300w,
+      path/to/river-600.jpg 600w,
+      path/to/river-900.jpg 900w,
+      path/to/river-1200.jpg 1200w,
+      path/to/river-1600.jpg 1600w,
+      path/to/river-2000.jpg 2000w,
+      path/to/river-2400.jpg 2400w,
+      path/to/river-2800.jpg 2800w,
+      path/to/river-3200.jpg 3200w,
+      path/to/river-3600.jpg 3600w,
+      path/to/river-4000.jpg 4000w"</span>
+  />
+&lt;/div>
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-02/05.png" /></p>
+<p>We don't need to do anything special in our Javascript code to handle responsive images. When we run the code the most appropriate image from the set will load. If we adjust the size of the browser's viewport (window) then larger images will automatically load as the browser fetches them and makes them available.</p>
 
-<p>The beauty of defining our images in this way is that, once defined, we can leave the browser or device to make its own choices about which file to load. Big-screen, high definition users will get the 4000px image which supplies the detail they want to see; users accessing the site on their mobile device will only need to download a much smaller version of the image &mdash; saving them both bandwidth and battery power.</p>
+<p><img class="mx-auto" src="/assets/lesson-02/06.png" /></p>
 
-<h2>Handling responsive images</h2>
-
-<p>While the above result looks good, we need to test it. And the best way to test a responsive image is to resize the browser window, going from a narrow width to a screen-wide width:</p>
-
-<p class="image-grid">
-  <img src="/assets/lesson-02/06.png" />
-  <img src="/assets/lesson-02/07.png" />
-  <img src="/assets/lesson-02/08.png" />
-  <img src="/assets/lesson-02/09.png" />
-  <img src="/assets/lesson-02/10.png" />
-  <img src="/assets/lesson-02/11.png" />
-</p>
-
-<p>... What the above is showing us is that, while Scrawl-canvas is handling the browser's decision to load different images into the &lt;img> element as the width of its viewport increases, additional increases in viewport width lead to what looks like a "zoom" effect.</p>
+<p>There is, however an issue with the current code. You may notice a zoom-like effect when changing the viewport width.</p>
 
 <p>We do not want a "zoom" effect. We need 100% of the image to display in our canvas &mdash; whatever the viewport size may be, or may change to.</p>
 
 <p>The reason why this is happening is because the &lt;img> element's read-only <code class="text-sm text-red-800">naturalWidth</code> and <code class="text-sm text-red-800">naturalHeight</code> attributes are supplying incorrect information about the current image file's image data dimensions. While these attributes can be relied on in most situations, the calculations behind them behave differently with <b>srcset</b> image files.</p>
 
-<p>We can't fix this browser behaviour (because it is mandated in the HTML standards). So instead, for these situations, Scrawl-canvas resorts to a different approach: <b><i>we tell it what each image's dimensions will be</i></b>.</p>
+<p>We can't fix this browser behaviour (because it is mandated in the HTML standards). So instead, for these situations, Scrawl-canvas resorts to a different approach: <b><i>we tell it what each image's dimensions will be</i></b>.</p> 
 
-<p>There's two ways we can do this. Each approach has its benefits and drawbacks. The choice on which approach to take is up to you.</p>
+<p>The simplest way to do this by adding a <code class="text-sm text-red-800">data-dimensions</code> attribute to the element. The attribute expects to be given a JSON string containing each image's natural (real) dimensions - like this:</p>
 
-<h3>Add image dimensions data to the &lt;img> element</h3>
-
-<p><b>Solution:</b> add a <code class="text-sm text-red-800">data-dimensions</code> attribute to &lt;img> element, set to a stringified JSON object whose attributes have the following format:</p>
-
-<p class="ml-12 text-red-800">"filename-String": [width-Number, height-Number]</p>
-
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto whitespace-pre-wrap"><code class="text-sm">&lt;img id="river" class="myimage" alt="Image used in canvas element"
-  src="assets/river.jpg"
-  srcset="assets/river-300.jpg 300w,
-    assets/river-600.jpg 600w,
-    assets/river-900.jpg 900w,
-    assets/river-1200.jpg 1200w,
-    assets/river-1600.jpg 1600w,
-    assets/river-2000.jpg 2000w,
-    assets/river-2400.jpg 2400w,
-    assets/river-2800.jpg 2800w,
-    assets/river-3200.jpg 3200w,
-    assets/river-3600.jpg 3600w,
-    assets/river-4000.jpg 4000w" 
-  <b class="text-red-800">data-dimensions='{"river-300.jpg": [300, 225], "river-600.jpg": [600, 450], "river-900.jpg": [900, 675], "river-1200.jpg": [1200, 900], "river-1600.jpg": [1600, 1200], "river-2000.jpg": [2000, 1500], "river-2400.jpg": [2400, 1800], "river-2800.jpg": [2800, 2100], "river-3200.jpg": [3200, 2400], "river-3600.jpg": [3600, 2700], "river-4000.jpg": [4000, 3000]}'</b> />
+<pre class="code-block"><code>&lt;div class="image-hold">
+  &lt;img 
+    id="river" 
+    class="my-demo-images" </b>
+    alt="Image used in canvas element" 
+    src="path/to/river-4000.jpg"
+    srcset="path/to/river-300.jpg 300w,
+      path/to/river-600.jpg 600w,
+      path/to/river-900.jpg 900w,
+      path/to/river-1200.jpg 1200w,
+      path/to/river-1600.jpg 1600w,
+      path/to/river-2000.jpg 2000w,
+      path/to/river-2400.jpg 2400w,
+      path/to/river-2800.jpg 2800w,
+      path/to/river-3200.jpg 3200w,
+      path/to/river-3600.jpg 3600w,
+      path/to/river-4000.jpg 4000w"
+    <span class="redcode">data-dimensions='{
+      "river-300.jpg": [300, 225],
+      "river-600.jpg": [600, 450],
+      "river-900.jpg": [900, 675],
+      "river-1200.jpg": [1200, 900],
+      "river-1600.jpg": [1600, 1200],
+      "river-2000.jpg": [2000, 1500],
+      "river-2400.jpg": [2400, 1800],
+      "river-2800.jpg": [2800, 2100],
+      "river-3200.jpg": [3200, 2400],
+      "river-3600.jpg": [3600, 2700],
+      "river-4000.jpg": [4000, 3000]
+    }'</span>
+  />
+&lt;/div>
 </code></pre>
 
-<p><b>Advantages:</b> we are defining the image dimensions data in the &lt;img> element, alongside the files used in the <code class="text-sm text-red-800">srcset</code> attribute. If we ever need to update the files, we can update their dimensions data in the same place at the same time.</p>
+<p><img class="mx-auto" src="/assets/lesson-02/07.png" /></p>
 
-<p><b>Disadvantages:</b> the data must be supplied as a JSON String, which can be difficult to build and maintain by hand.</p>
+<h2>In the next lesson ...</h2>
 
-<h3>Supply image dimension data to the Scrawl-canvas ImageAsset wrapper</h3>
-
-<p><b>Solution:</b> in Javascript, locate and update the ImageAsset wrapper's <code class="text-sm text-red-800">intrinsicDimensions</code> attribute, setting it to an Object containing the dimensions data:</p>
-
-<pre class="code-block"><code>let myRiver = <b class="text-red-800">scrawl.library.asset.river</b>;
-
-myRiver.set({
-
-  <b class="text-red-800">intrinsicDimensions: {
-    "river-300.jpg": [300, 225], 
-    "river-600.jpg": [600, 450], 
-    "river-900.jpg": [900, 675], 
-    "river-1200.jpg": [1200, 900], 
-    "river-1600.jpg": [1600, 1200], 
-    "river-2000.jpg": [2000, 1500], 
-    "river-2400.jpg": [2400, 1800], 
-    "river-2800.jpg": [2800, 2100], 
-    "river-3200.jpg": [3200, 2400], 
-    "river-3600.jpg": [3600, 2700], 
-    "river-4000.jpg": [4000, 3000]
-  },</b>
-});
-</code></pre>
-
-<p><b>Advantages:</b> the code is a lot easier to read, and maintain.</p>
-
-<p><b>Disadvantages:</b> the image dimensions data is now stored in a separate place &mdash; even file &mdash; to the &lt;img> element, which is a form of technical debt.</p>
-
-<p>... Whichever approach we use, the update results in a canvas display which shows the entire image, with no unwanted "zoom" bug:</p>
-
-<div class="image-grid">
-  <img src="/assets/lesson-02/12.png" />
-  <img src="/assets/lesson-02/13.png" />
-  <img src="/assets/lesson-02/14.png" />
-  <img src="/assets/lesson-02/15.png" />
-</div>
-
-<p><img class="mx-auto" src="/assets/lesson-02/16.png" /></p>
-
-<h2>Try for yourself</h2>
-
-<p>The CodePen at the top of the page is fully editable. Try changing the Picture entity's <code class="text-sm text-red-800">copyStart</code> and <code class="text-sm text-red-800">copyWidth, copyHeight</code> values to see what effect they have on the displayed image.</p>
-
-<p>Also experiment with the entity's dimensions and positioning &mdash; can you make it half the size of the canvas, and center it?</p>
-
-<p>Don't forget you can also add a border to the Picture using <code class="text-sm text-red-800">strokeStyle</code> and <code class="text-sm text-red-800">lineWidth</code>, then setting the <code class="text-sm text-red-800">method</code> attribute to a value like 'fillThenDraw'.</p>
-
-<p>What happens when you add a shadow to the Picture, using the <code class="text-sm text-red-800">shadowColor</code> (eg: 'black') and <code class="text-sm text-red-800">shadowBlur</code> (eg: 10) attributes? How does the shadow change when you update the <code class="text-sm text-red-800">method</code> attribute to 'fillAndDraw'?</p>
+<p>In <a href="https://scrawl-v8.rikweb.org.uk/learn/third-lesson">Lesson 3</a> we will look at <b>user interactions</b> like drag-and-drop, and we'll learn how to position Scrawl-canvas artifacts <b>by reference</b> to other artifacts.</p>
