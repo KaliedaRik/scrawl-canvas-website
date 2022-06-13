@@ -82,12 +82,13 @@
 
   &lt;canvas 
     id="mycanvas" 
-    <code class="text-red-800">width="600" 
-    height="200"</code>
+    <span class="redcode">width="600" 
+    height="200"</span>
+    data-scrawl-canvas
   >&lt;/canvas>
 
   &lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.0';
 
     const canvas = scrawl.library.canvas.mycanvas,
       namespace = 'tower-of-hanoi';

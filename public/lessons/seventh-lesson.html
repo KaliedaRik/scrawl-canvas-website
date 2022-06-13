@@ -111,7 +111,14 @@
 
 &lt;body>
   &lt;div class="canvas-container">
-    &lt;canvas id="mycanvas">&lt;/canvas>
+    &lt;canvas 
+      id="mycanvas" 
+      data-scrawl-canvas
+      data-is-responsive="true" 
+      data-base-width="800" 
+      data-base-height="400" 
+      data-fit="cover"
+    >&lt;/canvas>
   &lt;/div>
 
   &lt;div id="reportmessage">&lt;/div>
@@ -127,23 +134,14 @@
 
   &lt;script type="module">
 
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.0';
 
     <span class="redcode">scrawl.importDomImage('.angels');</span>
 
     let canvas = scrawl.library.canvas.mycanvas,
       namespace = 'lesson-7';
 
-    canvas.set({
-
-      fit: 'cover',
-      checkForResize: true,
-
-    }).setBase({
-
-      width: 800,
-      height: 400,
-    });
+    canvas.setAsCurrentCanvas();
 
     scrawl.makeRender({
       name: `${namespace}-animation`,

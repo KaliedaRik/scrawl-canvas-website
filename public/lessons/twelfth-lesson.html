@@ -128,7 +128,16 @@
 &lt;body>
 
   &lt;div class="canvas-container">
-    &lt;canvas id="mycanvas">&lt;/canvas>
+
+    &lt;canvas 
+      id="mycanvas"
+      data-scrawl-canvas
+      data-is-responsive="true" 
+      data-base-width="800" 
+      data-base-height="600" 
+      data-fit="cover"
+    >&lt;/canvas>
+
     &lt;div class="animation-controls">
       &lt;button id="play" title="Play animation">
         &lt;span class="material-icons">play_circle&lt;/span>
@@ -137,6 +146,7 @@
         &lt;span class="material-icons">pause_circle&lt;/span>
       &lt;/button>
     &lt;/div>
+
   &lt;/div>
 
   <i class="comment">&lt;!-- 
@@ -156,7 +166,7 @@
     class="demo-images" />
 
   <span class="redcode">&lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.0';
 
     scrawl.importDomImage('.demo-images');
 
@@ -165,17 +175,9 @@
 
     canvas.set({
 
-      fit: 'cover',
-      checkForResize: true,
-      ignoreCanvasCssDimensions: true,
-
       label: 'An animation celebrating William Shakespeare.',
+
       description: 'An image of Shakespeare sits in the middle of a sky filled with stars. The scene is reflected in rippling water',
-
-    }).setBase({
-
-      width: 800,
-      height: 600,
     });
 
     scrawl.makeBlock({

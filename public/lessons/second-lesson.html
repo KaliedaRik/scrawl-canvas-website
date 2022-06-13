@@ -92,13 +92,13 @@
 
   &lt;div class="canvas-host">
     &lt;canvas 
-      id="mycanvas"
+      id="my-canvas"
+      data-scrawl-canvas
     >&lt;/canvas>
   &lt;/div>
 
   &lt;script type="module">
-    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.8.2";
-    scrawl.setIgnorePixelRatio(false);
+    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.9.0";
 
     <i class="comment">// Setup scene</i>
     const canvas = scrawl.library.canvas["my-canvas"];
@@ -138,6 +138,8 @@
 
 <p>If we resize the canvas container, we can see that the canvas sticks firmly to the top-left corner of the container. What we need to do is get the canvas element to resize alongside the container.</p>
 
+<p class="text-sm text-gray-700"><i><b>Known issue:</b> we're using a user-resizable &lt;div> element as our canvas container in this code, for demonstration purposes. While Chrome and Firefox browsers are happy with this trick, Safari (currently) refuses to allow the user to resize the container, for reasons unknown and unknowable.</i></p>
+
 <p>Let's try to do this using CSS:</p>
 
 <pre class="code-block"><code>&lt;!DOCTYPE html>
@@ -161,7 +163,8 @@
 
   &lt;div class="canvas-host">
     &lt;canvas 
-      id="mycanvas"
+      id="my-canvas"
+      data-scrawl-canvas
     >&lt;/canvas>
   &lt;/div>
 
@@ -175,7 +178,7 @@
 
 <p>The result? Nothing changes.</p>
 
-<p>If we were doing this to a normal canvas element, not being controlled by Scrawl-canvas, the result would be a canvas that stretches to match the container's dimensions - which in turn leads to the canvas display becoming distorted ... not the result we want!</p>
+<p>If we were doing this to a normal canvas element, not being controlled by Scrawl-canvas, the result would be a canvas that stretches to match the container's dimensions &mdash; which in turn leads to the canvas display becoming distorted ... not the result we want!</p>
 
 <p>Instead, Scrawl-canvas includes functionality to create responsive canvas elements which act more like the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit">object-fit</a> CSS property. We can invoke this functionality by adding a <code class="text-sm text-red-800">data-</code> attribute to the canvas element, like this:</p>
 
@@ -200,7 +203,8 @@
 
   &lt;div class="canvas-host">
     &lt;canvas 
-      id="mycanvas"
+      id="my-canvas"
+      data-scrawl-canvas
       <span class="redcode">data-is-responsive="true"</span>
     >&lt;/canvas>
   &lt;/div>
@@ -217,7 +221,7 @@
 
 <p><img class="mx-auto" src="/assets/lesson-02/02.png" /></p>
 
-<p>Our canvas is responsive. However this may not be what we want - particularly if we are using a mix of absolutely, and relatively, dimensioned and positioned entitys in the canvas scene.</p>
+<p>Our canvas is responsive. However this may not be what we want &mdash; particularly if we are using a mix of absolutely, and relatively, dimensioned and positioned entitys in the canvas scene.</p>
 
 <p>To solve this problem, we could code our scene using only relative values. A better solution is to set the canvas's internal dimensions to known, fixed px values and <b>fit</b> the result into the canvas display:</p>
 
@@ -235,7 +239,8 @@
 
   &lt;div class="canvas-host">
     &lt;canvas 
-      id="mycanvas"
+      id="my-canvas"
+      data-scrawl-canvas
       data-is-responsive="true"
       <span class="redcode">data-base-width="600" 
       data-base-height="300" 
@@ -296,7 +301,7 @@
   <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-4000.jpg</li>
 </ul>
 
-<p><b><i>Please feel free to use your own sets of images stored on your local device</i></b> - the code will run a lot quicker!</p>
+<p><b><i>Please feel free to use your own sets of images stored on your local device</i></b> &mdash; the code will run a lot quicker!</p>
 
 <h3>The Picture entity</h3>
 
@@ -330,7 +335,7 @@
 
 <p>When we define the Picture entity, it is not enough to give it <b>start</b> (<code class="text-sm text-red-800">startX, startY</code>) and <b>dimensions</b> (<code class="text-sm text-red-800">width, height</code>) values. We also need to tell it <i>which part of the image</i> we want to copy over to the canvas.</p>
 
-<p>We do this using a set of <b>copy</b> attributes: <code class="text-sm text-red-800">copyStartX, copyStartY, copyWidth, copyHeight</code> - which take the same types of values as the start and dimensions attributes.</p>
+<p>We do this using a set of <b>copy</b> attributes: <code class="text-sm text-red-800">copyStartX, copyStartY, copyWidth, copyHeight</code> &mdash; which take the same types of values as the start and dimensions attributes.</p>
 
 <p>By default the <b>copyStart</b> values are set to <code class="text-sm text-red-800">0</code>, while the <b>copyDimensions</b> values are set to <code class="text-sm text-red-800">1</code> &mdash; what we are seeing above is the top-left pixel of our image, spread over a 600px &times; 450px rectangle on the canvas.</p>
 
@@ -464,7 +469,7 @@
 
 <p>We can't fix this browser behaviour (because it is mandated in the HTML standards). So instead, for these situations, Scrawl-canvas resorts to a different approach: <b><i>we tell it what each image's dimensions will be</i></b>.</p> 
 
-<p>The simplest way to do this by adding a <code class="text-sm text-red-800">data-dimensions</code> attribute to the element. The attribute expects to be given a JSON string containing each image's natural (real) dimensions - like this:</p>
+<p>The simplest way to do this by adding a <code class="text-sm text-red-800">data-dimensions</code> attribute to the element. The attribute expects to be given a JSON string containing each image's natural (real) dimensions &mdash; like this:</p>
 
 <pre class="code-block"><code>&lt;div class="image-hold">
   &lt;img 
