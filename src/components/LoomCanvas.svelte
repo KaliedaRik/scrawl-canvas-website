@@ -13,9 +13,6 @@
         canvas = scrawl.getCanvas(`#${namespace}`);
 
         canvas.set({
-            width: 200,
-            height: 330,
-            baseMatchesCanvasDimensions: true,
             label: 'A decorative animation.',
             description: 'The Scrawl-canvas banner image animates vertically over the canvas, twisting like a ribbon as it proceeds.'
         });
@@ -163,7 +160,7 @@
 </style>
 
 <div class="canvas-container">
-  <canvas id={namespace}></canvas>
+  <canvas id={namespace} width="200" height="330"></canvas>
   <div class="animation-controls">
     <button id="play" title="Play animation">
       <span class="material-icons">play_circle</span>

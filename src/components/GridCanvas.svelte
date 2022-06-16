@@ -15,18 +15,9 @@
         canvas = scrawl.getCanvas(`#${namespace}`);
 
         canvas.set({
-            backgroundColor: 'honeydew',
             fit: fit,
-            checkForResize: true,
-            ignoreCanvasCssDimensions: true,
-
             label: 'The Scrawl-canvas "Hello world" animation.',
             description: 'A very simple canvas displaying a variation of the Scrawl-canvas artefact\'s "fit" attribute.',
-        });
-
-        canvas.setBase({
-            width: 600,
-            height: 300,
         });
 
         gradient = scrawl.makeRadialGradient({
@@ -196,5 +187,5 @@
 </style>
 
 <div>
-    <canvas id={namespace}></canvas>
+    <canvas id={namespace} data-is-responsive="true" data-base-width="600" data-base-height="300" data-base-background-color="honeydew"></canvas>
 </div>

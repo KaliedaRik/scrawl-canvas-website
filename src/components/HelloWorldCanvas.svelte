@@ -16,14 +16,8 @@
         canvas = scrawl.getCanvas(`#${namespace}`);
 
         canvas.set({
-            fit: 'cover',
-            checkForResize: true,
-
             label: 'A banner animation.',
             description: 'Scene displays "Hello" text in four different languages (English, Spanish, Russian, Chinese) animating along a path across the sky. Text goes behind plants in the foreground and in front of trees in the background.'
-        }).setBase({
-            width: 2000,
-            height: 1000,
         });
 
         backgroundAsset = scrawl.library.asset[`${namespace}-background-image`];
@@ -212,8 +206,6 @@
     }
 
     canvas {
-        width: 100%;
-        padding: 1px;
         @apply rounded-lg mx-auto;
     }
 
@@ -253,7 +245,7 @@
 </style>
 
 <div class="canvas-container">
-  <canvas id={namespace}></canvas>
+  <canvas id={namespace} data-is-responsive="true" data-base-width="2000" data-base-height="1000" data-fit="cover"></canvas>
   <div class="animation-controls">
     <button id="play" title="Play animation">
       <span class="material-icons">play_circle</span>

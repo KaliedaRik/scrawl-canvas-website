@@ -40,15 +40,8 @@
         });
 
         canvas.set({
-            fit: 'fill',
-            checkForResize: true,
-            ignoreCanvasCssDimensions: true,
             label: 'A static kitchen scene.',
             description: 'Users are able to identify items in the kitchen by hovering over hotspot pins in the image which, when hovered over, reveal a label describing the scene. Clicking on the pin will open a Wikipedia page about that item.'
-
-        }).setBase({
-            width: 1200,
-            height: 600,
         });
 
         hitGroup = scrawl.makeGroup({
@@ -461,9 +454,8 @@
 
 <style>
     canvas {
-        width: 100%;
-        max-width: 1200px;
         @apply rounded-lg mx-auto;
+        max-width: 1200px;
     }
 
     p {
@@ -479,7 +471,7 @@
     }
 </style>
 
-<canvas id={namespace}></canvas>
+<canvas id={namespace} data-is-responsive="true" data-base-width="1200" data-base-height="600" data-fit="fill"></canvas>
 
 <p>Hover over pins to reveal labels; click to visit relevant wikipedia page. Can also use the tab and enter keys to navigate links</p>
 
