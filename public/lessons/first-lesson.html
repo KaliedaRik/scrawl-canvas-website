@@ -114,7 +114,7 @@
 <pre class="code-block"><code>[... canvas setup]
 
 &lt;script type="module">
-  <span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.3';</span>
+  <span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.4';</span>
 &lt;/script>
 </code></pre>
 
@@ -125,7 +125,7 @@
 <p>We defined one canvas element in our HTML and gave it an id of "my-canvas". We can use that id value to get a handle on the canvas wrapper object in our code:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.3';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.4';
 
   <span class="comment">// Get a handle to our canvas element's wrapper object</span>
   <span class="redcode">const canvas = scrawl.library.canvas['my-canvas'];</span>
@@ -137,7 +137,7 @@
 <p>Also, if there's more than one canvas present in the page, we need to make the canvas we are about to work on the <b>current canvas</b> &mdash; it's not essential, but it saves us having to worry about assigning our artefacts to the correct groups when we create them.</p>
 
 <pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.3';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.4';
 
   const canvas = scrawl.library.canvas['my-canvas'];
 
@@ -152,7 +152,7 @@
 <p>Set functions always return the object, which means we can dot-chain an additional function call onto the set call:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.3';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.4';
 
   const canvas = scrawl.library.canvas['my-canvas'];
 
