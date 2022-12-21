@@ -154,7 +154,7 @@ Data format requirements - a Javascript object with structure:
 }
 */</i>
 
-<span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.5';
+<span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.6';
 
 <i class="comment">// We need to adapt the chart frame with data specific to this graph</i>
 import * as frame from './simple-chart-frame.js';
@@ -304,7 +304,7 @@ export {
   <li class="mb-2">Export functions which can be used by our controller module (<code class="text-sm text-red-800">london-crime-graphic.js</code>).</li>
 </ul>
 
-<pre class="code-block"><code><span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.5';
+<pre class="code-block"><code><span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.6';
 
 <i class="comment">// We need to adapt the graph frame with data specific to this graph</i>
 import * as frame from './simple-chart-frame.js';
@@ -453,7 +453,7 @@ export {
 
 <p>... And the updated code for <code class="text-sm text-red-800">london-crime-graphic.js</code>:</p>
 
-<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.5';
+<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.6';
 
 let canvas = scrawl.library.canvas.mycanvas,
   namespace = 'London-crimes';
@@ -572,7 +572,7 @@ Data supplied to graph module as Javascript object with structure:
 }
 */</i>
 
-import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.5';
+import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.6';
 
 <i class="comment">// We need to adapt the chart frame with data specific to this graph</i>
 import * as frame from './simple-chart-frame.js';
@@ -853,7 +853,7 @@ Data supplied to graph module as Javascript object with structure:
 }
 */</i>
 
-import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.5';
+import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.6';
 
 <i class="comment">// We need to adapt the chart frame with data specific to this graph</i>
 import * as frame from './simple-chart-frame.js';
@@ -1064,5 +1064,5 @@ switch (target) {
 
 <p>A final question: while our graph modules are heading towards becoming components, they are not there yet. They are still tightly coupled to a specific chart frame. How would you go about decoupling graph modules from chart frame modules? Once you find an answer to that question, you are on the way to building your own <a href="https://en.wikipedia.org/wiki/Comparison_of_JavaScript_charting_libraries">Javascript charting library</a>!</p>
 
-<p>In <a href="https://scrawl-v8.rikweb.org.uk/learn/tenth-lesson">Lesson 10</a> we shall start looking at Scrawl-canvas Cells - multiple canvases contributing to a single canvas display.</p>
+<p>In the next lesson we shall start looking at Scrawl-canvas Cells - multiple canvases contributing to a single canvas display.</p>
 
