@@ -5,7 +5,7 @@
     }
     p {
         @apply text-sm text-center text-gray-500 m-0 mt-4 pt-4;
-        border-top: 1px solid rgba(200, 200, 200, 0.3);
+        border-top: 1px solid rgb(200 200 200 / 0.3);
     }
     button {
         @apply bg-blue-800 block w-full mt-5 border-0 outline-none;

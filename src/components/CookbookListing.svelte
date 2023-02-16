@@ -5,12 +5,12 @@
 <style>
   div {
     border-width: 0 0 0 4px;
-    border-color: rgba(0, 100, 0, 0);
+    border-color: rgb(0 100 0 / 0);
     transition: border-color 0.5s;
     @apply m-0 pl-4 mb-4;
   }
   div:hover {
-    border-color: rgba(0, 100, 0, 0.5);
+    border-color: rgb(0 100 0 / 0.5);
   }
 
   a {
