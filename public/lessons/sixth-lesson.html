@@ -101,7 +101,7 @@
 
   <span class="text-red-800">scrawl.makeTicker({
 
-    name: `${namespace}-ticker`,
+    name: name('ticker'),
 
     <i class="comment">// We set the duration to match the video's playing time</i>
     duration: '22.55s',
@@ -136,7 +136,7 @@
 
   [...]
 
-  <span class="text-red-800"><b>let myticker = </b>scrawl.makeTicker({
+  <span class="text-red-800"><b>const myticker = </b>scrawl.makeTicker({
 
     [...]
   });</span>
@@ -145,7 +145,7 @@
 
   [... video progress bar]
 
-  let videoTimeBar = function () {
+  const videoTimeBar = function () {
 
     [...]
 
@@ -180,9 +180,9 @@
 
   [... Ticker definition]
 
-  <span class="text-red-800">let mygoose = scrawl.makeBlock({
+  <span class="text-red-800">const mygoose = scrawl.makeBlock({
 
-    name: `${namespace}-goose1-hitzone`,
+    name: name('goose1-hitzone'),
     order: 1,
 
     width: '15%',
@@ -219,7 +219,7 @@
 
 <p>The results of our investigations look like this:</p>
 
-<pre class="code-block"><code>let mygoose = scrawl.makeBlock({
+<pre class="code-block"><code>const mygoose = scrawl.makeBlock({
 
   [...]
 
@@ -275,13 +275,13 @@
 
 <span class="text-red-800">scrawl.makeTween({
 
-  name: `${namespace}-goose1-tween1`,
+  name: name('goose1-tween1'),
 
   <i class="comment">// Assign the Tween to a Ticker object</i>
-  ticker: `${namespace}-ticker`,
+  ticker: name('ticker'),
 
   <i class="comment">// Tell the Tween which objects it needs to apply updates to</i>
-  targets: [`${namespace}-goose1-hitzone`],
+  targets: [name('goose1-hitzone')],
 
   <i class="comment">// Tween start time</i>
   time: 0,
@@ -315,7 +315,7 @@
 
 })<span class="text-red-800">.clone({
 
-  name: `${namespace}-goose1-tween2`,
+  name: name('goose1-tween2'),
   time: '3s',
 
   definitions: [
@@ -339,11 +339,11 @@
 
 <p>So it makes sense to refactor our code now. We can generate the Tweens in a local tween factory function &mdash; like this:</p>
 
-<pre class="code-block"><code><span class="text-red-800"><b>let myLocalTweenFactory = function (name, ticker, target, data)</b> {
+<pre class="code-block"><code><span class="text-red-800"><b>const myLocalTweenFactory = function (name, ticker, target, data)</b> {
 
   for (let i = 0, iz = data.length; i < iz; i++) {
 
-    let [start, duration, x0, y0, x1, y1] = data[i];
+    const [start, duration, x0, y0, x1, y1] = data[i];
 
     scrawl.makeTween({
 
@@ -372,7 +372,7 @@
   }
 };</span>
 
-let mygoose = scrawl.makeBlock({
+const mygoose = scrawl.makeBlock({
 
   [...]
 
@@ -393,9 +393,9 @@ let mygoose = scrawl.makeBlock({
 });
 
 <span class="text-red-800"><b>myLocalTweenFactory (
-  `${namespace}-goose1-tween`, 
-  `${namespace}-ticker`, 
-  `${namespace}-goose1-hitzone`, 
+  name('goose1-tween'),
+  name('ticker'), 
+  name('goose1-hitzone'), 
   [
     [0,  '3s', '27%', '73%', '12%', '66%'],
     ['3s', '3s', '12%', '66%', '-3%', '68%']
@@ -421,13 +421,13 @@ let mygoose = scrawl.makeBlock({
 
 <span class="text-red-800">scrawl.makeAction({
 
-  name: `${namespace}-goose1-action-show`,
+  name: name('goose1-action-show'),
 
-  ticker: `${namespace}-ticker`,
+  ticker: name('ticker'),
 
   time: 0,
 
-  targets: [`${namespace}-goose1-hitzone`],
+  targets: [name('goose1-hitzone')],
 
   action: function () { 
 
@@ -439,7 +439,7 @@ let mygoose = scrawl.makeBlock({
 
 }).clone({
 
-  name: `${namespace}-goose1-action-hide`,
+  name: name('goose1-action-hide'),
   time: '6s',
 
   action: function () { 
@@ -468,7 +468,7 @@ let mygoose = scrawl.makeBlock({
 
 <span class="text-red-800">mygoose.clone({
 
-  name: `${namespace}-goose2-hitzone`,
+  name: name('goose2-hitzone'),
 
   width: '22%',
   height: '16%',
@@ -512,9 +512,9 @@ let mygoose = scrawl.makeBlock({
 });
 
 myLocalTweenFactory (
-  `${namespace}-goose2-tween`, 
-  `${namespace}-ticker`, 
-  `${namespace}-goose2-hitzone`, 
+  name('goose2-tween'),
+  name('ticker'),
+  name('goose2-hitzone'),
   [
     [0,     '4s',   '89%', '89%', '77%', '80%'],
     ['4s',  '4s',   '77%', '80%', '65%', '80%'],

@@ -63,7 +63,7 @@
 
   <span class="redcode">scrawl.makePicture({
 
-    name: `${namespace}-swan-image`,
+    name: name('swan-image'),
 
     <i class="comment">// We can reference the video asset by its name-String</i>
     asset: 'swans',
@@ -101,7 +101,7 @@
 
 <pre class="code-block"><code>scrawl.makePicture({
 
-  name: `${namespace}-swan-image`,
+  name: name('swan-image'),
 
   asset: 'swans',
 
@@ -129,13 +129,13 @@
 
 <pre class="code-block"><code><span class="redcode">scrawl.makeFilter({
 
-  name: `${namespace}-filter-red`,
+  name: name('filter-red'),
   method: 'red',
 });</span>
 
 scrawl.makePicture({
 
-  name: `${namespace}-swan-image`,
+  name: name('swan-image'),
 
   asset: 'swans',
 
@@ -149,7 +149,7 @@ scrawl.makePicture({
 
   copyStartY: '30%',
 
-  <span class="redcode">filters: [`${namespace}-filter-red`],
+  <span class="redcode">filters: [name('filter-red')],
 
   globalAlpha: 0.15,</span>
 });
@@ -165,19 +165,19 @@ scrawl.makePicture({
 
 <pre class="code-block"><code>scrawl.makeFilter({
 
-  name: `${namespace}-filter-red`,
+  name: name('filter-red'),
   method: 'red',
 
 })<span class="redcode">.clone({
 
-  name: `${namespace}-filter-chroma`,
+  name: name('filter-chroma'),
   method: 'chroma',
   ranges: [[0, 0, 0, 190, 190, 190]],</span>
 });
 
 scrawl.makePicture({
 
-  name: `${namespace}-swan-image`,
+  name: name('swan-image'),
 
   asset: 'swans',
 
@@ -193,7 +193,7 @@ scrawl.makePicture({
 
   <i class="comment">// An entity can have more than one filter applied to it</i>
   <i class="comment">// - Filters are applied in the order given in the filters array</i>
-  <span class="redcode">filters: [`${namespace}-filter-chroma`, `${namespace}-filter-red`],</span>
+  <span class="redcode">filters: [name('filter-chroma'), name('filter-red')],</span>
 
   globalAlpha: 0.15,
 });

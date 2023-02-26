@@ -114,7 +114,7 @@
 <pre class="code-block"><code>[... canvas setup]
 
 &lt;script type="module">
-  <span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';</span>
+  <span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';</span>
 &lt;/script>
 </code></pre>
 
@@ -125,9 +125,9 @@
 <p>We defined one canvas element in our HTML and gave it an id of "my-canvas". We can use that id value to get a handle on the canvas wrapper object in our code:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
-  <span class="comment">// Get a handle to our canvas element's wrapper object</span>
+  <i class="comment">// Get a handle to our canvas element's wrapper object</i>
   <span class="redcode">const canvas = scrawl.library.canvas['my-canvas'];</span>
 &lt;/script>
 </code></pre>
@@ -137,11 +137,13 @@
 <p>Also, if there's more than one canvas present in the page, we need to make the canvas we are about to work on the <b>current canvas</b> &mdash; it's not essential, but it saves us having to worry about assigning our artefacts to the correct groups when we create them.</p>
 
 <pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
   const canvas = scrawl.library.canvas['my-canvas'];
 
+  <i class="comment">// Namespacing boilerplate</i>
   <span class="redcode">const namespace = 'hello-world';
+  const name = (n) => `${namespace}-${n}`;
 
   canvas.setAsCurrentCanvas();</span>
 &lt;/script>
@@ -152,11 +154,12 @@
 <p>Set functions always return the object, which means we can dot-chain an additional function call onto the set call:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
   const canvas = scrawl.library.canvas['my-canvas'];
 
   const namespace = 'hello-world';
+  const name = (n) => `${namespace}-${n}`;
 
   <i class="comment">// We can chain our canvas wrapper invocations</i>
   <span class="redcode">canvas.set({
@@ -192,7 +195,7 @@
 
   <span class="redcode">scrawl.makeBlock({
 
-    name: `${namespace}-box`,
+    name: name('box'),
 
     width: 100,
     height: 100,
@@ -210,7 +213,7 @@
 
   scrawl.makeBlock({
 
-    name: `${namespace}-box`,
+    name: name('box'),
 
     width: 100,
     height: 100,
@@ -243,7 +246,7 @@
 
   scrawl.makeBlock({
 
-    name: `${namespace}-box`,
+    name: name('box'),
 
     width: 100,
     height: 100,
@@ -273,7 +276,7 @@
 
   scrawl.makeBlock({
 
-    name: `${namespace}-box`,
+    name: name('box'),
 
     width: 100,
     height: 100,
@@ -284,7 +287,7 @@
   <i class="comment">// We'll create a second Block element which uses relative values</i>
   <span class="redcode">scrawl.makeBlock({
 
-    name: `${namespace}-box-relative`,
+    name: name('box-relative'),
 
     width: '25%',
     height: '25%',
@@ -346,7 +349,7 @@
 
 <s>  scrawl.makeBlock({
 
-    name: `${namespace}-box`,
+    name: name('box'),
 
     width: 100,
     height: 100,
@@ -356,7 +359,7 @@
 
   scrawl.makeBlock({
 
-    name: `${namespace}-box-relative`,
+    name: name('box-relative'),
 
 <s>    width: '25%',
     height: '25%',</s>
@@ -414,7 +417,7 @@
 
   scrawl.makeBlock({
 
-    name: `${namespace}-box-relative`,
+    name: name('box-relative'),
 
     <i class="comment">// To save typing we can pass position and dimension values as arrays</i>
 <s>    width: '60%',
@@ -439,7 +442,7 @@
   <i class="comment">// Replace our render invocation with a RenderAnimation object</i>
 <s>  canvas.render();</s>
   <span class="redcode">canvas.makeRender({
-    name: `${namespace}-animation`,
+    name: name('animation'),
     target: canvas,
   });</span>
 &lt;/script>
@@ -538,7 +541,7 @@
 
   <span class="redcode">scrawl.makePhrase({
 
-    name: `${namespace}-label`,
+    name: name('label'),
     text: 'Hello, world!',
   });</span>
 
@@ -561,7 +564,7 @@
 
   scrawl.makePhrase({
 
-    name: `${namespace}-label`,
+    name: name('label'),
     text: 'Hello, world!',
 
     <i class="comment">// The font value can be any valid CSS font String (within reason)</i>

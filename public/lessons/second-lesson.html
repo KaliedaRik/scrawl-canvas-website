@@ -98,14 +98,15 @@
   &lt;/div>
 
   &lt;script type="module">
-    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.9.8";
+    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.9.10";
 
     <i class="comment">// Setup scene</i>
     const canvas = scrawl.library.canvas["my-canvas"];
     const namespace = 'lesson-2';
+    const name = (n) => `${namespace}-${n}`;
 
     scrawl.makePhrase({
-      name: `${namespace}-label`,
+      name: name('label'),
 
       start: ['center', 'center'],
       handle: ['center', 'center'],
@@ -123,7 +124,7 @@
 
     <i class="comment">// Display cycle animation</i>
     scrawl.makeRender({
-      name: `${namespace}-render`,
+      name: name('render'),
       target: canvas
     });
   &lt;/script>
@@ -254,7 +255,7 @@
     [...]
 
     scrawl.makePhrase({
-      name: `${namespace}-label`,
+      name: name('label'),
 
       start: ['center', 'center'],
       handle: ['center', 'center'],
@@ -317,7 +318,7 @@
 
   <span class="text-red-800">scrawl.makePicture({
 
-    name: `${namespace}-image`,
+    name: name('image'),
     imageSource: 'path/to/river-4000.jpg',
 
     start: ['center', 'center'],
@@ -347,7 +348,7 @@
 
   scrawl.makePicture({
 
-    name: `${namespace}-image`,
+    name: name('image'),
     imageSource: 'path/to/river-4000.jpg',
 
     start: ['center', 'center'],
@@ -405,7 +406,7 @@
 
     scrawl.makePicture({
 
-      name: `${namespace}-image`,
+      name: name('image'),
 <s>      imageSource: 'path/to/river-4000.jpg',</s>
 
       <i class="comment">// Value is the ID we gave to the image in the HTML code</i>

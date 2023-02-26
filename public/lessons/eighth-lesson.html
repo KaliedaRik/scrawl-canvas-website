@@ -144,12 +144,13 @@
 
 <p>Let's have a look at the code in our new <code class="text-sm text-red-800">london-crime-graphic.js</code> file:</p>
 
-<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';
+<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
 <span class="heavycode">import * as frame from './simple-chart-frame.js';</span>
 
-let canvas = scrawl.library.canvas.mycanvas,
-  namespace = 'London-crimes';
+const canvas = scrawl.library.canvas.mycanvas,
+const namespace = 'London-crimes';
+const name = (n) => `${namespace}-${n}`;
 
 canvas.set({
   <i class="comment">// Adding label and description attributes to our &lt;canvas> element</i>
@@ -163,9 +164,9 @@ canvas.set({
 
 <i class="comment">// The report function forms part of our testing rig, which we'll explore later</i>
 <i class="comment">// - This will allow us to check that Scrawl-canvas objects have been created and destroyed</i>
-let report = function () {
+const report = function () {
 
-  let assets = scrawl.library.assetnames,
+  const assets = scrawl.library.assetnames,
     groups = scrawl.library.groupnames,
     entitys = scrawl.library.entitynames,
 
@@ -215,7 +216,7 @@ scrawl.makeRender({
 
 <p>If you've been working your way through the lessons, most of the code in the <code class="text-sm text-red-800">simple-chart-frame.js</code> module will not surprise you:</p>
 
-<pre class="code-block"><code><span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';
+<pre class="code-block"><code><span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
 <i class="comment">// Import our images from the web page</i>
 scrawl.importDomImage('.crime');
@@ -551,7 +552,7 @@ export {
 
 <p>We can automate this functionality by adding an <a href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">intersection observer object</a> to the &lt;canvas> element.</p>
 
-<pre class="code-block"><code>let observer = scrawl.makeAnimationObserver(animationObjet, canvasWrapperObject);</code></pre>
+<pre class="code-block"><code>const observer = scrawl.makeAnimationObserver(animationObjet, canvasWrapperObject);</code></pre>
 
 <p>Like <code class="text-sm text-red-800">addListener</code> and <code class="text-sm text-red-800">addNativeListener</code>, the <code class="text-sm text-red-800">makeAnimationObserver</code> factory function returns a function which, when invoked, will remove the observer from the &lt;canvas> element.</p>
 
@@ -590,7 +591,7 @@ export {
 
 <p>Nothing in this code should surprise you:</p>
 
-<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';
+<pre class="code-block"><code>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
 <i class="comment">// Import the module we're testing</i>
 <span class="redcode">import * as frame from './simple-chart-frame.js';</span>
@@ -614,7 +615,7 @@ const activateButton = function (frameName, canvas, host, button, background) {
       e.preventDefault();
       e.stopPropagation();
 
-      let val = parseInt(testButton.value, 10);
+      const val = parseInt(testButton.value, 10);
 
       if (val) {
 
@@ -695,7 +696,7 @@ const buildTests = function (canvas, host) {
   &lt;/p>`</span>;
 
   <i class="comment">// Get handles to each of our test inputs</i>
-  let buildButton = testParent.querySelector('#build-button'),
+  const buildButton = testParent.querySelector('#build-button'),
     killButton = testParent.querySelector('#kill-button'),
     showButton = testParent.querySelector('#show-button'),
     hideButton = testParent.querySelector('#hide-button'),
@@ -713,7 +714,7 @@ const buildTests = function (canvas, host) {
     currentYTop, currentYBottom, currentXLeft, currentXRight;
 
   <i class="comment">// Helper functions</i>
-  let setControlsToDefaults = () => {
+  const setControlsToDefaults = () => {
 
     crimeTypes.value = currentBackground = frameBackground;
     titleInput.value = currentTitle = 'No title';
@@ -738,7 +739,7 @@ const buildTests = function (canvas, host) {
   };
   setControlsToDefaults();
 
-  let setNumbersHelper = (val, current, <span class="redcode">fn</span>) => {
+  const setNumbersHelper = (val, current, <span class="redcode">fn</span>) => {
 
     val = (val) ? val : 0;
 
@@ -759,7 +760,7 @@ const buildTests = function (canvas, host) {
 
       if (e.target) {
 
-        let target = e.target.id,
+        const target = e.target.id,
           val = e.target.value;
 
         <i class="comment">// Perform tests in response to user interaction</i>

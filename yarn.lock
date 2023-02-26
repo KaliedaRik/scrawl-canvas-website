@@ -1530,10 +1530,10 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
-scrawl-canvas@^8.9.8:
-  version "8.9.8"
-  resolved "https://registry.yarnpkg.com/scrawl-canvas/-/scrawl-canvas-8.9.8.tgz#c46ee8a50b984bb099072d31e15e32804e579eb4"
-  integrity sha512-5FYRiqsSAqsYyqK/0FbkXnpiT9ssOYvuZ2kler1Dem4KMRSQj339M0wHBs3Ovj9HsEuhW2qPr21ZQz0eN0TYFQ==
+scrawl-canvas@^8.9.9:
+  version "8.9.9"
+  resolved "https://registry.yarnpkg.com/scrawl-canvas/-/scrawl-canvas-8.9.9.tgz#105fc9388217131bbd9baf473c9f1ef5302fdad9"
+  integrity sha512-TlM1UWmrr6QF+if0+2j5kdf4w0vTSgKg2vFRdiJSOrtPBfltSiHnaPwN0m3b80F4i/Bx/t6pLZ9823K2xVLMww==
 
 select@^1.1.2:
   version "1.1.2"

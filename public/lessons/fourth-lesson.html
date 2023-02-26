@@ -88,15 +88,16 @@
   &lt;/div>
 
   &lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
-    let canvas = scrawl.library.canvas.mycanvas,
-      namespace = 'video-example';
+    const canvas = scrawl.library.canvas.mycanvas;
+    const namespace = 'video-example';
+    const name = (n) => `${namespace}-${n}`;
 
     canvas.setAsCurrentCanvas();
 
     scrawl.makeRender({
-      name: `${namespace}-animation`,
+      name: name('animation',
       target: canvas,
     });
   &lt;/script>
@@ -113,9 +114,9 @@
 <pre class="code-block"><code>&lt;script type="module">
   [... canvas setup]
 
-  <span class="redcode">let myvideo = scrawl.makePicture({
+  <span class="redcode">const myvideo = scrawl.makePicture({
 
-    name: `${namespace}-video`,
+    name: name('video'),
 
     <b>videoSource: './swans.mp4',</b>
 
@@ -156,7 +157,7 @@
 <pre class="code-block"><code>&lt;script type="module">
   [... canvas setup]
 
-  let myvideo = scrawl.makePicture({
+  const myvideo = scrawl.makePicture({
 
     [...]
 
@@ -193,13 +194,13 @@
 <pre class="code-block"><code>&lt;script type="module">
   [... canvas setup]
 
-  let myvideo = scrawl.makePicture({
+  const myvideo = scrawl.makePicture({
 
     [...]
 
   });
 
-  <span class="redcode">let initialVideoStart = scrawl.addListener('up', () => {
+  <span class="redcode">const initialVideoStart = scrawl.addListener('up', () => {
 
     myvideo.set({
 
@@ -243,7 +244,7 @@
 
   <span class="redcode">scrawl.makePhrase({
 
-    name: `${namespace}-button-play-pause`,
+    name: name('button-play-pause'),
     order: 2,
 
     text: 'PLAY',
@@ -262,7 +263,7 @@
 
   }).clone({
 
-    name: `${namespace}-button-listen-mute`,
+    name: name('button-listen-mute'),
     text: 'LISTEN',
     startX: '25%',
   });</span>
@@ -433,7 +434,7 @@
 
   [... video Picture entity]
 
-  let initialVideoStart = scrawl.addListener('up', () => {
+  const initialVideoStart = scrawl.addListener('up', () => {
 
     <span class="redcode">myvideo.set({
 
@@ -477,9 +478,9 @@
 
   [... user interaction event listeners]
 
-  <span class="redcode">let vtBackground = scrawl.makeBlock({
+  <span class="redcode">const vtBackground = scrawl.makeBlock({
 
-    name: `${namespace}-video-time-background`,
+    name: name('bvideo-time-background'),
 
     width: '100%',
     height: 10,
@@ -487,17 +488,17 @@
     fillStyle: 'white',
   });
 
-  let vtTime = vtBackground.clone({
+  const vtTime = vtBackground.clone({
 
-    name: `${namespace}-video-time-bar`,
+    name: name('video-time-bar'),
 
     width: 0,
     fillStyle: 'red',
   });
 
-  let vtPhrase = scrawl.makePhrase({
+  const vtPhrase = scrawl.makePhrase({
 
-    name: `${namespace}-video-time-phrase`,
+    name: name('video-time-phrase'),
 
     family: 'monospace',
     size: '2em',
@@ -510,7 +511,7 @@
     fillStyle: 'yellow',
   });
 
-  let videoTimeBar = function () {
+  const videoTimeBar = function () {
 
     let currentVideoTime,
       videoDuration;
@@ -537,7 +538,7 @@
   }();</span>
 
   scrawl.makeRender({
-    name: `${namespace}-animation`,
+    name: name('animation'),
     target: canvas,
 
     <span class="redcode">commence: videoTimeBar,</span>

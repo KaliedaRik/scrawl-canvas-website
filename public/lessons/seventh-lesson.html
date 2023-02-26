@@ -126,25 +126,26 @@
   <span class="redcode">&lt;div class="image-hold">
 
     <i class="comment">&lt;!-- bigger image dimensions: 2400px by 1200px --></i>
-    &lt;img id="big-angels" class="angels" src="assets/angelsOriginal-2400.png">
+    &lt;img id="big-angels" class="angels" src="assets/angelsOriginal-2400.webp">
 
     <i class="comment">&lt;!-- smaller image dimensions: 800px by 400px --></i>
-    &lt;img id="small-angels" class="angels" src="assets/angelsOriginal-800.png">
+    &lt;img id="small-angels" class="angels" src="assets/angelsOriginal-800.webp">
   &lt;/div></span>
 
   &lt;script type="module">
 
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.8';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
     <span class="redcode">scrawl.importDomImage('.angels');</span>
 
-    let canvas = scrawl.library.canvas.mycanvas,
-      namespace = 'lesson-7';
+    const canvas = scrawl.library.canvas.mycanvas,
+    const namespace = 'lesson-7';
+    const name = (n) => `${namespace}-${n}`;
 
     canvas.setAsCurrentCanvas();
 
     scrawl.makeRender({
-      name: `${namespace}-animation`,
+      name: name('animation'),
       target: canvas,
     });
   &lt;/script>
@@ -171,7 +172,7 @@
 
   <span class="redcode">scrawl.makePicture({
 
-    name: `${namespace}-background`,
+    name: name('background'),
 
     asset: 'small-angels',
 
@@ -183,7 +184,7 @@
 
   }).clone({
 
-    name: `${namespace}-enlarged`,
+    name: name('enlarged'),
 
     asset: 'big-angels',
 
@@ -246,9 +247,9 @@
 
   [... define Picture entitys]
 
-  <span class="redcode">let report = function () {
+  <span class="redcode">const report = function () {
 
-    let <b>displayed = canvas.here,
+    const <b>displayed = canvas.here,
       hidden = canvas.base.here,</b>
       testMessage = document.querySelector('#reportmessage');
 
@@ -260,7 +261,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
   }();</span>
 
   scrawl.makeRender({
-    name: `${namespace}-animation`,
+    name: name('animation'),
     target: canvas,
 
     <span class="redcode">afterShow: report,</span>
@@ -278,23 +279,23 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
   [... canvas setup]
 
-  <span class="redcode">let <b>mybackground =</b> scrawl.makePicture({
+  <span class="redcode">const <b>mybackground =</b> scrawl.makePicture({
 
-    name: `${namespace}-background`,
+    name: name('background'),
 
     [...]
   });
 
-  let <b>myMagnifierImage =</b> mybackground.clone({
+  const <b>myMagnifierImage =</b> mybackground.clone({
 
-    name: `${namespace}-enlarged`,
+    name: name('enlarged'),
 
     [...]
   });</span>
 
   [... report function]
 
-  <span class="redcode">let <b>checkMagnifier =</b> function () {
+  <span class="redcode">const <b>checkMagnifier =</b> function () {
 
     let <b>display, base;</b>
 
@@ -303,7 +304,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
       if (!display) <b>display = canvas.here;</b>
       if (!base) <b>base = canvas.base.here;</b>
 
-      let <b>active = display.active;</b>
+      const <b>active = display.active;</b>
 
       <i class="comment">// We can add code to display or hide our magnifier here</i>
       <i class="comment">// - using the artefact <b>visibility</b> attribute</i>
@@ -329,7 +330,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
   }();</span>
 
   scrawl.makeRender({
-    name: `${namespace}-animation`,
+    name: name('animation'),
     target: canvas,
 
     <span class="redcode">commence: checkMagnifier,</span>
@@ -356,7 +357,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
   [...]
 
-  let mybackground = scrawl.makePicture({
+  const mybackground = scrawl.makePicture({
 
     [...]
 
@@ -364,7 +365,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
     <span class="redcode">visibility: false,</span>
   });
 
-  let myMagnifierImage = mybackground.clone({
+  const myMagnifierImage = mybackground.clone({
 
     [...]
 
@@ -379,7 +380,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
   <span class="redcode">scrawl.makeWheel({
 
-    name: `${namespace}-magnifier`,
+    name: name('magnifier'),
 
     <b>order: 1,</b>
 
@@ -450,10 +451,11 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 <p>Making our canvas the <b>current canvas</b> before we define the entitys we want to display in that canvas will ensure that entity-Group associations can all take place in the background as we define our entitys:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
-  let canvas = scrawl.library.canvas.mycanvas,
-    namespace = 'canvas-identifier';
+  const canvas = scrawl.library.canvas.mycanvas;
+  const namespace = 'canvas-identifier';
+  const name = (n) => `${namespace}-${n}`;
 
   canvas.set({
     backgroundColor: 'honeydew',
@@ -478,10 +480,11 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 <p>Enough talk; more code! Let's create some Groups and assign our entitys to them as we define them:</p>
 
 <pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.8.2';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
 
-  let canvas = scrawl.library.canvas.mycanvas,
-    namespace = 'lesson-7';
+  const canvas = scrawl.library.canvas.mycanvas,
+  const namespace = 'lesson-7';
+  const name = (n) => `${namespace}-${n}`;
 
   <i class="comment">// Note that we are NOT setting the canvas as the current canvas here</i>
   <i class="comment">// - instead we shall deal with Group assignments as we define our entitys</i>
@@ -491,9 +494,9 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
   <i class="comment">// We'll create two Groups:</i>
   <i class="comment">// - one for the magnifier entitys, the other for the background</i>
-  <span class="redcode">let magnifier = scrawl.makeGroup({
+  <span class="redcode">const magnifier = scrawl.makeGroup({
 
-    name: `${namespace}-magnifier-group`,
+    name: name('magnifier-group'),
     <b>host: canvas.base.name,
     order: 1,</b>
   });
@@ -502,19 +505,19 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
   <i class="comment">// - to make sure the background gets stamped last</i>
   scrawl.makeGroup({
 
-    name: `${namespace}-background-group`,
+    name: name('background-group'),
     <b>host: canvas.base.name,
     order: 2,</b>
   });</span>
 
   <i class="comment">// While we're refactoring ... </i>
   <i class="comment">// - let's get rid of the "magic numbers" scattered through the code</i>
-  <span class="redcode">let myradius = 80;</span>
+  <span class="redcode">const myradius = 80;</span>
 
-  let mybackground = scrawl.makePicture({
+  const mybackground = scrawl.makePicture({
 
-    name: `${namespace}-background`,
-    <span class="heavycode">group: `${namespace}-background-group`,</span>
+    name: name('background'),
+    <span class="heavycode">group: name('background-group'),</span>
 
     asset: 'small-angels',
 
@@ -527,10 +530,10 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
     <span class="heavycode">globalCompositeOperation: 'destination-over',</span>
   });
 
-  let myMagnifierImage = mybackground.clone({
+  const myMagnifierImage = mybackground.clone({
 
-    name: `${namespace}-enlarged`,
-    <span class="heavycode">group: `${namespace}-magnifier-group`,
+    name: name('enlarged'),
+    <span class="heavycode">group: name('magnifier-group'),
 
     order: 2,</span>
 
@@ -552,8 +555,8 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
   scrawl.makeWheel({
 
-    name: `${namespace}-magnifier`,
-    <span class="heavycode">group: `${namespace}-magnifier-group`,
+    name: name('magnifier'),
+    <span class="heavycode">group: name('magnifier-group'),
 
     order: 1,</span>
 
@@ -568,7 +571,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
   }).clone({
 
-    name: `${namespace}-magnifier-rim`,
+    name: name('magnifier-rim'),
 
     <span class="heavycode">order: 3,</span>
 
@@ -579,7 +582,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
   });
 
 
-  let checkMagnifier = function () {
+  const checkMagnifier = function () {
 
     let display, base;
 
@@ -588,7 +591,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
       if (!display) display = canvas.here;
       if (!base) base = canvas.base.here;
 
-      let active = display.active;
+      const active = display.active;
 
       <i class="comment">// Rather than set all three of our magnifier entitys' visibility flags</i>
       <i class="comment">// - we can now do this at the Group level</i>
