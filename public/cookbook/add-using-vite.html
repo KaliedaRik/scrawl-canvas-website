@@ -1,0 +1,131 @@
+<h2>Issue</h2>
+<p>We need to add Scrawl-canvas functionality to a vanilla HTML5/CSS/JS project that uses the <a href="https://vitejs.dev/">Vite</a> web application builder.</p>
+
+<h2>Solution</h2>
+
+<p>We will use <a href="https://yarnpkg.com/getting-started">Yarn</a> for this work; see the <a href="https://vitejs.dev/guide/">Vite guide</a> for alternative instructions. From the command line, run the following instructions:</p>
+
+<pre><code>
+$> yarn create vite exp-1 --template vanilla
+$> cd exp-1
+$> yarn add scrawl-canvas
+$> yarn install
+$> yarn dev
+</code></pre>
+
+<p>Then amend the <code><b>index.html</b></code> file to look like this:</p>
+
+<p><ins><b>To note:</b> if you copy-paste the following code, be aware that we've replaced all the <code>&lt;</code> characters with <code>‹</code> (single left-pointing angle quotation) characters; similarly <code>›</code> replaces <code>&gt;</code>.</ins></p>
+
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+  ‹head›
+    ‹meta charset="UTF-8" /›
+    ‹meta name="viewport" content="width=device-width, initial-scale=1.0" /›
+    ‹title›Experiment 1‹/title›
+  ‹/head›
+  ‹body›
+
+    ‹h1›Experiment 1‹/h1›
+
+    ‹canvas 
+      id="mycanvas" 
+      width="600" 
+      height="600"
+      data-scrawl-canvas
+      data-base-background-color="aliceblue"
+    ›‹/canvas›
+
+    ‹script type="module"›
+      import {
+        makeBlock,
+        render,
+      } from 'scrawl-canvas';
+
+      // Namespacing boilerplate
+      const namespace = 'exp-1';
+      const name = (n) => `${namespace}-${n}`;
+
+      makeBlock({
+        name: name('block'),
+        start: ['center', 'center'],
+        handle: ['center', 'center'],
+        dimensions: ['50%', '50%'],
+      });
+
+      render();
+
+    ‹/script›
+
+  ‹/body›
+‹/html›
+</code></pre>
+
+<h2>Solution for TypeScript projects</h2>
+
+<p>The process for adding Scrawl-canvas to a TS project is very similar:</p>
+
+<pre><code>
+$> yarn create vite exp-2 --template vanilla-ts
+$> cd exp-2
+$> yarn add scrawl-canvas
+$> yarn install
+$> yarn dev
+</code></pre>
+
+<p>Then amend the <code><b>index.html</b></code> file to look like this:</p>
+
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+  ‹head›
+    ‹meta charset="UTF-8" /›
+    ‹meta name="viewport" content="width=device-width, initial-scale=1.0" /›
+    ‹title›Experiment 2‹/title›
+  ‹/head›
+  ‹body›
+
+    ‹h1›Experiment 2‹/h1›
+
+    ‹canvas 
+      id="mycanvas" 
+      width="600" 
+      height="600"
+      data-scrawl-canvas
+      data-base-background-color="aliceblue"
+    ›‹/canvas›
+
+    ‹script type="module" src="/src/main.ts"›‹/script›
+
+  ‹/body›
+‹/html›
+</code></pre>
+
+<p>The root TS file can be found at <code><b>src/main.ts</b></code>. Amend it as follows:</p>
+
+<pre><code>
+import {
+  makeBlock,
+  render,
+} from 'scrawl-canvas';
+
+// Namespacing boilerplate
+const namespace = 'exp-2';
+const name = (n: string) => `${namespace}-${n}`;
+
+makeBlock({
+  name: name('block'),
+  start: ['center', 'center'],
+  handle: ['center', 'center'],
+  dimensions: ['50%', '50%'],
+});
+
+render();
+</code></pre>
+
+<p>... and everything should work as expected &ndash; for instance, TS should warn us when we try to add an inappropriate attribute to our Block factory invocation:</p>
+
+<p><img src="/assets/add-using-vite/01.png" /></p>
+
+<p>The complete list of Scrawl-canvas types and interfaces can be found in the <code><b>node-modules/scrawl-canvas/source/scrawl.d.ts</b></code> file.</p>
+
+<p><img src="/assets/add-using-vite/02.png" /></p>

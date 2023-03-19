@@ -10,7 +10,7 @@
 
     onMount(() => {
 
-        canvas = scrawl.getCanvas(`#${namespace}`);
+        canvas = scrawl.getCanvas(`${namespace}`);
 
         canvas.set({
             label: 'A decorative animation.',

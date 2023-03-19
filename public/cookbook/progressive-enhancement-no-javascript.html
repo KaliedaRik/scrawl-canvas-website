@@ -8,84 +8,86 @@
 
 <p>There are many ways to implement progressive enhancement; the code below demonstrates one approach:</p>
 
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;!DOCTYPE html>
-&lt;html>
+<pre><code>‹!DOCTYPE html›
+‹html›
+‹head›
+  
+  <ins>‹!-- metatags, title, links, etc --›</ins>
 
-  &lt;head>
-    
-    <span class="italic text-xs text-gray-700">&lt;!-- metatags, title, links, etc --></span>
+  ‹style›
 
-    &lt;style>
+    <ins>/* This is how we want the canvas element styled in JS-enabled environments */</ins>
+    canvas {
+      background-color: lemonchiffon;
+      border: 1px dashed red;
+    }
 
-      <span class="italic text-xs text-gray-700">/* This is how we want the canvas element styled in JS-enabled environments */</span>
-      canvas {
-        background-color: lemonchiffon;
-        border: 1px dashed red;
-      }
+    <ins>/* ... and how it should appear in JS-DISABLED environments (class can be anything) */</ins>
+    <b>canvas.javascript-disabled</b> {
 
-      <span class="italic text-xs text-gray-700">/* ... and how it should appear in JS-DISABLED environments (class can be anything) */</span>
-      <span class="text-red-800">canvas.javascript-disabled</span> {
+      <ins>/* Make sure the background color is transparent */</ins>
+      background-color: transparent;
+      border: 0;
 
-        <span class="italic text-xs text-gray-700">/* Make sure the background color is transparent */</span>
-        background-color: transparent;
-        border: 0;
+      <ins>/* 
+         Give the canvas a static background image 
+         Alternatively, add an ‹img› element to the canvas shadow DOM
+       */</ins>
+      background-image: url("path-to-image.png");
+      background-size: contain;
+      background-repeat: no-repeat;
 
-        <span class="italic text-xs text-gray-700">/* Give the canvas a static background image */</span>
-        background-image: url("path-to-image.png");
-        background-size: contain;
-        background-repeat: no-repeat;
+      <ins>/* Some devices/browsers may try to set the canvas dimensions to 0 in a no-js environment */</ins>
+      width: 50%;
+      height: 5em;
+    }
 
-        <span class="italic text-xs text-gray-700">/* Some devices/browsers may try to set the canvas dimensions to 0 in a no-js environment */</span>
-        width: 50%;
-        height: 5em;
-      }
+    <ins>/* Add CSS for the canvas shadow-DOM contents (again, class can be anything) */</ins>
+    <b>canvas .no-js-note</b> {
+      background-color: rgb(255 255 255 / 0.9); 
+      padding: 1em;
+    }
+  ‹/style›
+‹/head›
 
-      <span class="italic text-xs text-gray-700">/* Add CSS for the canvas shadow-DOM contents (again, class can be anything) */</span>
-      <span class="text-red-800">canvas .no-js-note</span> {
-        background-color: rgb(255 255 255 / 0.9); 
-        padding: 1em;
-      }
-    &lt;/style>
-  &lt;/head>
+‹body›
 
-  &lt;body>
+  <ins>[... other content]</ins>
 
-    <span class="italic text-xs text-gray-700">[... other content]</span>
+  <ins>‹!-- add the "javascript-disabled" class to the canvas element --></ins>
+  ‹canvas data-scrawl-canvas id="mycanvas" <b>class="javascript-disabled"</b>›
 
-    <span class="italic text-xs text-gray-700">&lt;!-- add the "javascript-disabled" class to the canvas element --></span>
-    &lt;canvas id="mycanvas" <span class="text-red-800">class="javascript-disabled"</span>>
+    <ins>‹!-- add the "no-js-note" class to the canvas shadow DOM --></ins>
+    ‹p <b>class="no-js-note"</b>›
+      This content will visually appear when Javascript is disabled, 
+      and should be used to describe what the canvas would be showing had 
+      JS been working. Also include any relevant links in this copy. 
+      Be aware that this text will display over the background image, so needs 
+      some styling to show up more clearly. Remember, if JS has been disabled, 
+      then text included in Phrase entitys and Anchor objects will not be processed 
+      and exposed in the canvas's shadow-DOM! Note that Scrawl-canvas appends 
+      shadow-DOM data/copy, so this paragraph will be the first canvas-related thing 
+      a screen reader encounters - unless we get the script snippet to add 
+      aria-hidden="true" as an attribute to this element.
+    ‹/p›
+  ‹/canvas›
 
-      <span class="italic text-xs text-gray-700">&lt;!-- add the "no-js-note" class to the canvas element --></span>
-      &lt;p <span class="text-red-800">class="no-js-note"</span>>
-        This content will visually appear when Javascript is disabled, 
-        and should be used to describe what the canvas would be showing had 
-        JS been working. Also include any relevant links in this copy. 
-        Be aware that this text will display over the background image, so needs 
-        some styling to show up more clearly. Remember, if JS has been disabled, 
-        then text included in Phrase entitys and Anchor objects will not be processed 
-        and exposed in the canvas's shadow-DOM! Note that Scrawl-canvas appends 
-        shadow-DOM data/copy, so this paragraph will be the first canvas-related thing 
-        a screen reader encounters - unless we get the script snippet to add 
-        aria-hidden="true" as an attribute to this element.
-      &lt;/p>
-    &lt;/canvas>
+  <ins>‹!-- if Javascript is enabled, we can progressively enhance the ‹canvas› element --›</ins>
+  <b>‹script›
+    <ins>// Boilerplate Javascript to remove the "javascript-disabled" class from the canvas element</ins>
+    document.querySelector('#mycanvas').className = '';
 
-    <span class="italic text-xs text-gray-700">&lt;!-- if Javascript is enabled, we can progressively enhance the &lt;canvas> element --></span>
-    <span class="text-red-800">&lt;script>
-      <span class="italic text-xs text-gray-700">// Boilerplate Javascript to remove the "javascript-disabled" class from the canvas element</span>
-      document.querySelector('#mycanvas').className = '';
+    <ins>// We can also add an 'aria-hidden' attribute to the shadow-DOM content</span>
+    document.querySelector('.no-js-note').setAttribute('aria-hidden', 'true');
+  ‹/script›</b>
 
-      <span class="italic text-xs text-gray-700">// We can also add an 'aria-hidden' attribute to the shadow-DOM content</span>
-      document.querySelector('.no-js-note').setAttribute('aria-hidden', 'true');
-    &lt;/script></span>
+  <ins>[... other content]</span>
 
-    <span class="italic text-xs text-gray-700">[... other content]</span>
-
-  &lt;/body>
-
-&lt;/html></code></pre>
+‹/body›
+‹/html›
+</code></pre>
 
 <h2>Discussion</h2>
 
-<p>Another progressive enhancement approach would be to load the &lt;canvas> element to the DOM dynamically, using the Scrawl-canvas <code class="text-sm text-red-800">scrawl.addCanvas()</code> function. This would work best for situations where the canvas doesn't add information to the page, but rather enhances its visual decoration.</p>
+<p>Another progressive enhancement approach would be to load the ‹canvas› element to the DOM dynamically, using the Scrawl-canvas <code><b>scrawl.addCanvas()</b></code> function. This would work best for situations where the canvas doesn't add information to the page, but rather enhances its visual decoration.</p>
 

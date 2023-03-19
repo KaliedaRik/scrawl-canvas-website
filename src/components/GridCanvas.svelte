@@ -12,7 +12,7 @@
 
     onMount(() => {
 
-        canvas = scrawl.getCanvas(`#${namespace}`);
+        canvas = scrawl.getCanvas(`${namespace}`);
 
         canvas.set({
             fit: fit,

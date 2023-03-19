@@ -1,67 +1,36 @@
-<style>
-  .code-block {
-    border-color: #e2e8f0;
-    background-color: #f7fafc;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    margin-bottom: 1rem;
-    overflow-x: auto;
-    padding: 1rem;
-  }
-  .code-block code {
-    line-height: 1.25;
-    color: #4a5568;
-    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-    font-size: 0.875rem;
-  }
-  .code-block .redcode {
-    color: #9b2c2c;
-  }
-  .code-block .heavycode {
-    font-weight: 700;
-    color: #9b2c2c;
-  }
-  .code-block .comment {
-    color: #4a5568;
-    font-size: 0.75rem;
-  }
-
-  iframe {
-    margin-bottom: 1rem;
-  }
-</style>
+<h3 tabindex="0">Web page animation</h3>
 
 <p><a href="https://www.toptal.com/designers/web/animating-the-web-in-the-post-flash-era">There's</a> <a href="https://yalantis.com/blog/web-animation-technologies-and-tools/">many</a> <a href="https://designshack.net/articles/graphics/an-introduction-to-animation-in-web-design/">reasons</a> why a designer may choose to include some animations on a website. As the three articles just linked to explain, animations can help engage the user, keep them on the site longer, highlight actions they take on the site, emphasise a call to action, or even just entertain them for the sake of, well, art.</p>
 
-<p>And as we've discussed in previous lessons there's many ways to create these animation effects, for instance:</p>
+<p>And as we've discussed in previous lessons, there's many ways to create these animation effects &ndash; for instance:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">Via HTML/CSS using <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations">native CSS animation code</a> or Javascript-based animation libraries like Greensock's <a href="https://greensock.com/gsap/">GSAP</a>.</li>
-  <li class="mb-2">Using animated SVG elements with the help of libraries such as <a href="https://svgjs.dev/docs/3.0/">SVG.js</a> or <a href="http://snapsvg.io/">Snap.svg</a>.</li>
-  <li class="mb-2">By adding video, in particular interactive video using software platforms developed by companies like <a href="https://www.wirewax.com/">Wirewax</a>, <a href="https://adventr.io/">Adventr</a>, <a href="https://h5p.org/">H5P</a>, <a href="https://touchcast.com/">TouchCast</a>, <a href="https://about.grabyo.com/us/">Grabyo</a> and many others.</li>
-  <li class="mb-2">Using the canvas element - which is what we shall be doing in this lesson.</li>
+<ul class="disc">
+  <li>Via HTML/CSS using <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations">native CSS animation code</a> or Javascript-based animation libraries like Greensock's <a href="https://greensock.com/gsap/">GSAP</a>.</li>
+  <li>Using animated SVG elements with the help of libraries such as <a href="https://svgjs.dev/docs/3.0/">SVG.js</a> or <a href="http://snapsvg.io/">Snap.svg</a>.</li>
+  <li>By adding video, in particular interactive video using software platforms developed by companies like <a href="https://www.wirewax.com/">Wirewax</a>, <a href="https://adventr.io/">Adventr</a>, <a href="https://h5p.org/">H5P</a>, <a href="https://touchcast.com/">TouchCast</a>, <a href="https://about.grabyo.com/us/">Grabyo</a> and many others.</li>
+  <li>Using the canvas element - which is what we shall be doing in this lesson.</li>
 </ul>
 
-<p><img class="mx-auto" src="/assets/lesson-11/01.png" alt="Screen capture of a canvas animation celebrating William Shakespeare." /></p>
+<p><img src="/assets/lesson-11/01.png" alt="Screen capture of a canvas animation celebrating William Shakespeare." /></p>
 
 <p>The main purpose of this lesson, and the next one, is to recreate the animation captured in the above image. To do that we will need to learn (in Lesson 12) how to: create and use linear gradient and pattern styles; animate some text along a path; and create a rippling reflection effect using a Perlin noise asset.</p>
 
-<p>The focus for this lesson will be to investigate the various issues we need to address to make canvas animations accessible.</p>
+<p>The focus for this lesson will be to investigate the various issues we need to address to <b>make canvas animations and infographics accessible</b>.</p>
 
-<h3>User accessibility</h3>
+<h3 tabindex="0">User accessibility</h3>
 
-<p>Accessibility is a wide, and expanding, field of study. As technology (and web browsers) continue to advance, so does the need to make what gets displayed in browsers accessible to people who &mdash; for whatever reason &mdash; are not able to easily view or interact with those displays.</p>
+<p>Accessibility is a wide, and expanding, field of study. As technology (and web browsers) continue to advance, so does the need to make what gets displayed in browsers accessible to people who &ndash; for whatever reason &ndash; are not able to easily view or interact with those displays.</p>
 
-<p>The &lt;canvas> element is notoriously inaccessible. At the end of the day, whatever we show in a canvas is just a collection of coloured pixels which have no meaning beyond their byte values. Our investigation on how to make our animation more accessible will touch on:</p>
+<p>The ‹canvas› element is notoriously inaccessible. At the end of the day, whatever we show in a canvas is just a collection of coloured pixels which have no meaning beyond their byte values. Our investigation on how to make our animation more accessible will touch on:</p>
 
-<ol class="list-decimal list-outside ml-8 mb-4">
-  <li class="mb-2">User preference media features &mdash; in particular <code class="text-sm text-red-800">prefers-reduced-motion</code> and <code class="text-sm text-red-800">prefers-color-scheme</code>.</li>
-  <li class="mb-2">How to add accessible controls to start and halt the animation.</li>
-  <li class="mb-2">How to make the &lt;canvas> element, and any text we include in it, accessible to screen readers.</li>
-  <li class="mb-2">How to add accessible, focussable web links to areas within the canvas, including navigating between them and invoking them using a keyboard.</li>
+<ol class="ordered">
+  <li>User preference media features &ndash; in particular <code><b>prefers-reduced-motion</b></code> and <code><b>prefers-color-scheme</b></code>.</li>
+  <li>How to add accessible controls to start and halt the animation.</li>
+  <li>How to make the ‹canvas› element, and any text we include in it, accessible to screen readers.</li>
+  <li>How to add accessible, focussable web links to areas within the canvas, including navigating between them and invoking them using a keyboard.</li>
 </ol>
 
-<h3>User preference media features</h3>
+<h3 tabindex="0">User preference media features</h3>
 
 <p>The W3C Media Queries Level 5 standard introduced the concept of <a href="https://www.w3.org/TR/mediaqueries-5/#mf-user-preferences">user preference media features</a>. These define CSS-level browser functionality which in turn reflect settings that users can change at the level of their device's operating system (through, for example, a preferences dialog or menu) which affects how programs and apps appear, and function, on their device.</p>
 
@@ -69,101 +38,101 @@
 
 <p>The Media Query standard outlines six user preference settings, each of which should affect the appearance of <i>user interfaces</i> such as an app panel or web page:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion">prefers-reduced-motion</a> - where the user wants animations in a user interface to be minimized as far as possible; supported across all modern browsers.</li>
-  <li class="mb-2"><span class="text-red-800">prefers-reduced-transparency</span> - reduce the transparency of all elements displayed by a user interface; not yet widely implemented.</li>
-  <li class="mb-2"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-contrast">prefers-contrast</a> - increased or decreased color contrast in a user interface, for instance between text and background; supported across many browsers.</li>
-  <li class="mb-2"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-color-scheme</a> - where the user indicates they prefer user interfaces to display using a light or dark theme; supported across all modern browsers.</li>
-  <li class="mb-2"><span class="text-red-800">forced-colors</span> - make the user interface display with a <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#system_colors">CSS system color scheme</a> palette chosen by the user; not yet widely implemented.</li>
-  <li class="mb-2"><span class="text-red-800">prefers-reduced-data</span> - limit the amount of data displayed in the user interface; not yet widely implemented.</li>
+<ul class="disc">
+  <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion">prefers-reduced-motion</a> &ndash; where the user wants animations in a user interface to be minimized as far as possible; supported across all modern browsers.</li>
+  <li><code><b>prefers-reduced-transparency</b></code> &ndash; reduce the transparency of all elements displayed by a user interface; not yet widely implemented.</li>
+  <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-contrast">prefers-contrast</a> &ndash; increased or decreased color contrast in a user interface, for instance between text and background; supported across many browsers.</li>
+  <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme">prefers-color-scheme</a> &ndash; where the user indicates they prefer user interfaces to display using a light or dark theme; supported across all modern browsers.</li>
+  <li><code><b>forced-colors</b></code> &ndash; make the user interface display with a <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#system_colors">CSS system color scheme</a> palette chosen by the user; not yet widely implemented.</li>
+  <li><code><b>prefers-reduced-data</b></code> &ndash; limit the amount of data displayed in the user interface; not yet widely implemented.</li>
 </ul>
 
-<p>Each of these user preferences help define the user's <span class="text-red-800"><b>accessibility preferences</b></span> and, as such, <b>it is up to us as developers to make sure the user-facing software we build &mdash; including websites &mdash; takes into account these preferences wherever possible.</b></p>
+<p>Each of these user preferences help define the user's <code><b>accessibility preferences</b></code> and, as such, <b>it is up to us as developers to make sure the user-facing software we build &ndash; including websites &ndash; takes into account these preferences wherever possible.</b></p>
 
 <p>So ... how can we implement these preferences in our canvas animations? Let's start with a very simple animation - a rotating image:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
-  &lt;meta charset='utf-8'>
-  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
+  ‹meta charset='utf-8'›
+  ‹meta name='viewport' content='width=device-width,initial-scale=1'›
 
-  &lt;title>The World's a Stage&lt;/title>
+  ‹title›The World's a Stage‹/title›
 
-  <span class="comment">&lt;style type="text/css">
-      body {
-        font-family: sans-serif;
-        text-align: center;
-      }
-      .canvas-container {
-        overflow: hidden;
-        resize: both;
-        border: 1px solid black;
-        width: 600px;
-        height: 400px;
-        min-height: 200px;
-        min-width: 400px;
-        max-height: 600px;
-        max-width: 800px;
-        margin: 0 auto 1em;
-        position: relative;
-      }
-      .canvas-container::after {
-        position: absolute;
-        content: '';
-        bottom: 0;
-        right: 0;
-        width: 0;
-        height: 0;
-        border-bottom: 1em solid red;
-        border-left: 1em solid transparent;
-      }
-      img {
-        height: 0;
-      }
-  &lt;/style></span>
-&lt;/head>
+  <ins>‹style type="text/css"›
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+    .canvas-container {
+      overflow: hidden;
+      resize: both;
+      border: 1px solid black;
+      width: 600px;
+      height: 400px;
+      min-height: 200px;
+      min-width: 400px;
+      max-height: 600px;
+      max-width: 800px;
+      margin: 0 auto 1em;
+      position: relative;
+    }
+    .canvas-container::after {
+      position: absolute;
+      content: '';
+      bottom: 0;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-bottom: 1em solid red;
+      border-left: 1em solid transparent;
+    }
+ ‹/style›</ins>
+‹/head›
 
-&lt;body>
+‹body›
 
-  &lt;h2>SC Lesson 11: Accessible canvas&lt;/h2>
+  ‹h2›SC Lesson 11: Accessible canvas‹/h2›
 
-  &lt;p>The canvas is resizable - drag its bottom-right corner.&lt;/p>
+  ‹p›The canvas is resizable - drag its bottom-right corner.‹/p›
 
-  &lt;div class="canvas-container">
-    &lt;canvas 
+  ‹div class="canvas-container"›
+    ‹canvas 
       id="mycanvas" 
       data-scrawl-canvas
       data-is-responsive="true" 
       data-base-width="800" 
       data-base-height="600" 
       data-fit="cover"
-    >&lt;/canvas>
-  &lt;/div>
+    ›
+      <ins>‹!-- 
+        Load image assets by including them in the DOM 
+        Use any image you have locally - Mr Shakespeare won't mind
+       --›</ins>
+      ‹img 
+        src="path/to/shakespeares-head.jpg" 
+        alt="William Shakespeare's portrait" 
+        id="bard" 
+        class="demo-images" /›
+    ‹/canvas›
+  ‹/div›
 
-  <i class="comment">&lt;!-- 
-    Load image assets by including them in the DOM 
-    Use any image you have locally - Mr Shakespeare won't mind
-  --></i>
-  &lt;img 
-    src="path/to/shakespeares-head.jpg" 
-    alt="William Shakespeare's portrait" 
-    id="bard" 
-    class="demo-images" />
+  <b>‹script type="module"›
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';
 
-  <span class="redcode">&lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
+    <ins>// Namespace boilerplate</ins>
+    const namespace = 'lesson-eleven';
+    const name = n => `${namespace}-${n}`;
 
-    <i class="comment">// Import the image assets</i>
+    <ins>// Import the image assets</ins>
     scrawl.importDomImage(".demo-images");
 
-    const canvas = scrawl.library.canvas.mycanvas,
-      namespace = 'lesson-eleven';
+    const canvas = scrawl.library.canvas.mycanvas;
 
-    <i class="comment">// Display our image asset in a Picture entity</i>
+    <ins>// Display our image asset in a Picture entity</ins>
     scrawl.makePicture({
 
-      name: `${namespace}-shakespeare-portrait`,
+      name: name('shakespeare-portrait'),
       asset: 'bard',
 
       dimensions: ['50%', '50%'],
@@ -172,90 +141,91 @@
       start: ['center', 'center'],
       handle: ['40%', '40%'],
 
-      <i class="comment">// We make our picture rotate using delta animation</i>
+      <ins>// We make our picture rotate using delta animation</ins>
       delta: {
         roll: 2.4,
       },
     });
 
-    <i class="comment">// Display cycle animation loop</i>
+    <ins>// Display cycle animation loop</ins>
     scrawl.makeRender({
 
-      name: `${namespace}-animation`,
+      name: name('animation'),
       target: canvas,
     });
-  &lt;/script></span>
-&lt;/body>
-&lt;/html>
+  ‹/script›</b>
+‹/body›
+‹/html›
 </code></pre>
 
-<h3>Prefers-reduced-motion</h3>
+<h3 tabindex="0">Prefers-reduced-motion</h3>
 
 <p>If you run this code, you will see that Mr Shakespeare (the famous English playwright) is spinning quite quickly. For some people, seeing this on a web page may prove distracting and annoying; for a few people, the motion may be enough to make them feel dizzy or ill.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-11/02.png" alt="Screen capture showing a rotated image of William Shakespeare." /></p>
+<p><img src="/assets/lesson-11/02.png" alt="Screen capture showing a rotated image of William Shakespeare." /></p>
 
-<p>The W3C's <a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines</a> (WCAG v2.1) make it clear that automated web page animations should be restricted wherever possible, and users should have a way to control them if they run for more than five seconds &mdash; as explained in this <a href="https://css-tricks.com/accessible-web-animation-the-wcag-on-animation-explained/">CSS-Tricks article</a>.</p>
+<p>The W3C's <a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines</a> (WCAG v2.1) make it clear that automated web page animations should be restricted wherever possible, and users should have a way to control them if they run for more than five seconds &ndash; as explained in this <a href="https://css-tricks.com/accessible-web-animation-the-wcag-on-animation-explained/">CSS-Tricks article</a>.</p>
 
 <p>So for our first exercise, we need to change our code to:</p>
 
-<ol class="list-decimal list-outside ml-8 mb-4">
-  <li class="mb-2">Load the page with the animation running.</li>
-  <li class="mb-2">Stop the animation after five seconds.</li>
-  <li class="mb-2">Add control icons/buttons to the canvas so that the user can start/stop the animation.</li>
+<ol class="ordered">
+  <li>Load the page with the animation running.</li>
+  <li>Stop the animation after five seconds.</li>
+  <li>Add control icons/buttons to the canvas so that the user can start/stop the animation.</li>
 </ol>
 
-<p>We've already achieved <b>Step 1</b>; our animation wrapper (created using the <code class="text-sm text-red-800">scrawl.makeRender</code> factory function) runs as soon as the page completes loading.</p>
+<p>We've already achieved <b>Step 1</b>; our animation wrapper (created using the <code><b>scrawl.makeRender</b></code> factory function) runs as soon as the page completes loading.</p>
 
-<p>If we ever wanted to prevent this happening, we can set a <code class="text-sm text-red-800">delay: true</code> attribute in the factory's argument, which will prevent the animation object starting until we invoke its <code class="text-sm text-red-800">run()</code> function.</p>
+<p>If we ever wanted to prevent this happening, we can set a <code><b>delay: true</b></code> attribute in the factory's argument, which will prevent the animation object starting until we invoke its <code><b>run()</b></code> function.</p>
 
 <p>The drawback of using this approach is that the initial canvas scene will not be drawn until we start the animation. A much better approach would be to allow the animation to complete its first Display cycle, then stop it:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [...setup]
 
-  <span class="redcode">const myAnimation = </span>scrawl.makeRender({
+  <b>const myAnimation = </b>scrawl.makeRender({
 
-    name: `${namespace}-animation`,
+    name: name('animation'),
     target: canvas,
 
-    <span class="redcode">afterCreated: () => myAnimation.halt(),</span>
+    <b>afterCreated: () => myAnimation.halt(),</b>
   });
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p>The accessibility guidelines suggest that we are allowed to run the initial animation for up to five seconds before halting it. We can achieve this by wrapping our <code class="ctext-red-800">halt()</code> in a <code class="text-sm text-red-800">setTimeout()</code> function:</p>
+<p>The accessibility guidelines suggest that we are allowed to run the initial animation for up to five seconds before halting it. We can achieve this by wrapping our <code><b>halt()</b></code> in a <code><b>setTimeout()</b></code> function:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [...setup]
 
   const myAnimation = scrawl.makeRender({
 
-    name: `${namespace}-animation`,
+    name: name('animation'),
     target: canvas,
 
-    <span class="redcode">afterCreated: () => setTimeout(() => myAnimation.halt(), 5000),</span>
+    <b>afterCreated: () => setTimeout(() => myAnimation.halt(), 5000),</b>
   });
-&lt;/script>
+‹/script›
 </code></pre>
 
 <p>There's one further consideration we can take into account: <i>what if the user is happy for the animation to continue playing after five seconds?</i></p>
 
-<p>We can make a case that if a user has not set their <code class="text-sm text-red-800">prefers-reduced-motion</code> flag to limit animations, then we don't need to stop the animation.</p>
+<p>We can make a case that if a user has not set their <code><b>prefers-reduced-motion</b></code> flag to limit animations, then we don't need to stop the animation.</p>
 
-<p>Scrawl-canvas comes with functionality built-in which makes it easy to check the status of the <code class="text-sm text-red-800">prefers-reduced-motion</code> flag, and act on that flag's setting &mdash; including any changes the user may make to the flag while viewing our canvas demo:</p>
+<p>Scrawl-canvas comes with functionality built-in which makes it easy to check the status of the <code><b>prefers-reduced-motion</b></code> flag, and act on that flag's setting &ndash; including any changes the user may make to the flag while viewing our canvas demo:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [...setup]
 
   const myAnimation = scrawl.makeRender({
 
-    name: `${namespace}-animation`,
+    name: name('animation'),
     target: canvas,
+<s>    afterCreated: () => setTimeout(() => myAnimation.halt(), 5000),</s>
   });
 
-  <i class="comment">// prefers-reduced-motion hook functions</i>
-  <span class="redcode">canvas.setReduceMotionAction(() => {
+  <ins>// prefers-reduced-motion hook functions</ins>
+  <b>canvas.setReduceMotionAction(() => {
 
       if (myAnimation.isRunning()) setTimeout(() => myAnimation.halt(), 5000);
   });
@@ -263,43 +233,43 @@
   canvas.setNoPreferenceMotionAction(() => {
 
       if (!myAnimation.isRunning()) myAnimation.run();
-  });</span>
+  });</b>
 
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><b><i>To test this code</i></b> we can access the browser's Inspector and toggle the <code class="text-sm text-red-800">prefers-reduced-motion</code> flag on and off. For instance in Chrome: open the Inspector, press <code class="text-sm text-red-800">Ctrl/Cmd+Shift+P</code>, type <code class="text-sm text-red-800">'show rendering'</code>, then click on the 'Show rendering' button.</p>
+<p><b><i>To test this code</i></b> we can access the browser's Inspector and toggle the <code><b>prefers-reduced-motion</b></code> flag on and off. For instance in Chrome: open the Inspector, press <code><b>Ctrl/Cmd+Shift+P</b></code>, type <code><b>'show rendering'</b></code>, then click on the 'Show rendering' button.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-11/03.png" alt="Screen capture of Chrome browser inspector, showing the location of the 'prefers reduced motion' selector." /></p>
+<p><img src="/assets/lesson-11/03.png" alt="Screen capture of Chrome browser inspector, showing the location of the 'prefers reduced motion' selector." /></p>
 
-<p class="text-sm">(Note that &mdash; as we will see later in this lesson &mdash; halting the animation object is not the best approach to stopping an animation in Scrawl-canvas. If we stop the Display cycle then we prevent users who are navigating the web page using a keyboard from seeing when an entity acting as a navigation link has been focussed. A much better fix can be found in the CodePen demo at the end of this lesson, which we will discuss further in Lesson 12.)</p>
+<p><ins>(Note that &ndash; as we will see later in this lesson &ndash; halting the animation object is not the best approach to stopping an animation in Scrawl-canvas. If we stop the Display cycle then we prevent users who are navigating the web page using a keyboard from seeing when an entity acting as a navigation link has been focussed. A much better fix can be found in the CodePen demo at the end of this lesson, which we will discuss further in Lesson 12.)</ins></p>
 
 <p><b><i>Scrawl-canvas includes similar functionality for handling other user preference settings</i></b>. For reference, these are:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">prefers-reduced-motion - <code class="text-sm text-red-800">setReduceMotionAction, setNoPreferenceMotionAction</code></li>
-  <li class="mb-2">prefers-reduced-transparency - <code class="text-sm text-red-800">setReduceTransparencyAction, setNoPreferenceTransparencyAction</code></li>
-  <li class="mb-2">prefers-contrast - <code class="text-sm text-red-800">setMoreContrastAction, setOtherContrastAction</code></li>
-  <li class="mb-2">prefers-color-scheme - <code class="text-sm text-red-800">setColorSchemeDarkAction, setColorSchemeLightAction</code></li>
-  <li class="mb-2">forced-colors - (not yet implemented)</li>
-  <li class="mb-2">prefers-reduced-data - <code class="text-sm text-red-800">setReduceDataAction, setNoPreferenceDataAction</code></li>
+<ul class="disc">
+  <li>prefers-reduced-motion - <code><b>setReduceMotionAction, setNoPreferenceMotionAction</b></code></li>
+  <li>prefers-reduced-transparency - <code><b>setReduceTransparencyAction, setNoPreferenceTransparencyAction</b></code></li>
+  <li>prefers-contrast - <code><b>setMoreContrastAction, setOtherContrastAction</b></code></li>
+  <li>prefers-color-scheme - <code><b>setColorSchemeDarkAction, setColorSchemeLightAction</b></code></li>
+  <li>forced-colors - (not yet implemented)</li>
+  <li>prefers-reduced-data - <code><b>setReduceDataAction, setNoPreferenceDataAction</b></code></li>
 </ul>
 
-<h3>Prefers-color-scheme</h3>
+<h3 tabindex="0">Prefers-color-scheme</h3>
 
-<p>Let's test the <code class="text-sm text-red-800">prefers-color-scheme</code> setting:</p>
+<p>Let's test the <code><b>prefers-color-scheme</b></code> setting:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [...previous code]
 
-  <span class="redcode">const lightForeground = '#262105',
+  <b>const lightForeground = '#262105',
     lightBackground = '#f7f5eb',
     darkForeground = '#d8dde8',
     darkBackground = '#152b5c';
 
   const testBackground = scrawl.makeBlock({
 
-    name: `${namespace}-background-block`,
+    name: name('background-block'),
     start: [0, '70%'],
     dimensions: ['100%', '30%'],
     fillStyle: lightBackground,
@@ -307,23 +277,23 @@
 
   const testForeground = scrawl.makePhrase({
 
-    name: `${namespace}-foreground-phrase`,
+    name: name('foreground-phrase'),
     start: [0, '80%'],
     width: '100%',
     justify: 'center',
     text: 'prefers-color-scheme: light',
     font: '2.4rem Arial, sans-serif',
     fillStyle: lightForeground,
-  });</span>
+  });</b>
 
   const myAnimation = scrawl.makeRender({
 
-    name: `${namespace}-animation`,
+    name: name('animation'),
     target: canvas,
   });
 
-  <i class="comment">// prefers-color-scheme hook functions</i>
-  <span class="redcode">canvas.setColorSchemeDarkAction(() => {
+  <ins>// prefers-color-scheme hook functions</ins>
+  <b>canvas.setColorSchemeDarkAction(() => {
 
     testBackground.set({ fillStyle: darkBackground });
     testForeground.set({ 
@@ -339,38 +309,38 @@
       fillStyle: lightForeground, 
       text: 'prefers-color-scheme: light', 
     });
-  });</span>
+  });</b>
 
   [...rest of code]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-11/04.png" alt="Screen capture of a canvas animation displayed using the 'dark' color scheme." /></p>
+<p><img src="/assets/lesson-11/04.png" alt="Screen capture of a canvas animation displayed using the 'dark' color scheme." /></p>
 
-<h3>Add controls to start and halt the animation</h3>
+<h3 tabindex="0">Add controls to start and halt the animation</h3>
 
-<p>The Web Content Accessibility Guidelines suggest that it is best practice to include controls which a user can access to start and stop larger animations. Web browsers already do this for &lt;video> (and &lt;audio>) elements in web pages and most users are comfortable using such controls.</p>
+<p>The Web Content Accessibility Guidelines suggest that it is best practice to include controls which a user can access to start and stop larger animations. Web browsers already do this for ‹video› (and ‹audio›) elements in web pages and most users are comfortable using such controls.</p>
 
-<p>There's no reason why we cannot add similar controls to our canvas animation. Indeed we covered this topic in some detail in Lesson 4 (Fun with ... videos). In that lesson we constructed our controls in the canvas element itself. But graphic controls are not the best solution &mdash; particularly from an accessibility perspective.</p>
+<p>There's no reason why we cannot add similar controls to our canvas animation. Indeed we covered this topic in some detail in Lesson 4 (Fun with ... videos). In that lesson we constructed our controls in the canvas element itself. But graphic controls are not the best solution &ndash; particularly from an accessibility perspective.</p>
 
 <p>For this mini-exercise, let's adapt the code to use DOM elements as our control buttons. To keep things simple we'll use Google's cloud-based <a href="https://fonts.google.com/icons">Material Icons</a>:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
   [...]
 
-  <i class="comment">&lt;!-- Import material icons from the cloud --></i>
-  <span class="redcode">&lt;link 
+  <ins>‹!-- Import material icons from the cloud --›</ins>
+  <b>‹link 
     href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    rel="stylesheet" ></span>
+    rel="stylesheet" ›</b>
 
-  &lt;style type="text/css">
+  ‹style type="text/css"›
 
     [...]
 
-    <i class="comment">/* CSS related to animation controls */</i>
-    <span class="redcode">.animation-controls {
+    <ins>/* CSS related to animation controls */</ins>
+    <b>.animation-controls {
       position: absolute;
       top: 0;
       left: calc(50% - 48px);
@@ -384,31 +354,36 @@
     .animation-controls-button:hover {
       cursor: pointer;
       opacity: 1;
-    }</span>
-  &lt;/style>
-&lt;/head>
+    }</b>
+  ‹/style›
+‹/head›
 
-&lt;body>
+‹body›
 
-  &lt;div class="canvas-host">
-    &lt;canvas id="mycanvas" [...]>&lt;/canvas>
-    <span class="redcode">&lt;div class="animation-controls">
-      &lt;span id="play" class="animation-controls-button material-icons">
-        play_circle
-      &lt;/span>
-      &lt;span id="pause" class="animation-controls-button material-icons">
-        pause_circle
-      &lt;/span>
-    &lt;/div></span>
-  &lt;/div>
+  ‹div class="canvas-host"›
+    ‹canvas id="mycanvas" [...] ›
+
+      [... image code]
+
+      <b>‹div class="animation-controls"›
+        ‹span id="play" class="animation-controls-button material-icons"›
+          play_circle
+        ‹/span›
+        ‹span id="pause" class="animation-controls-button material-icons"›
+          pause_circle
+        ‹/span›
+      ‹/div›</b>
+
+    ‹/canvas›
+  ‹/div›
 
   [...]
 
-  &lt;script type="module">
+  ‹script type="module"›
     [...]
 
-    <i class="comment">// user interaction with animation controls</i>
-    <span class="redcode">const startAnimation = () => {
+    <ins>// user interaction with animation controls</ins>
+    <b>const startAnimation = () => {
       if (!myAnimation.isRunning()) myAnimation.run();
     };
 
@@ -417,49 +392,57 @@
     };
 
     scrawl.addNativeListener('click', startAnimation, '#play');
-    scrawl.addNativeListener('click', stopAnimation, '#pause');</span>
+    scrawl.addNativeListener('click', stopAnimation, '#pause');</b>
 
-  &lt;/script></span>
-&lt;/body>
-&lt;/html>
+  ‹/script›
+‹/body›
+‹/html›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-11/05.png" alt="Screen capture of a canvas animation with animation control icons (not fully accessible)." /></p>
+<p><img src="/assets/lesson-11/05.png" alt="Screen capture of a canvas animation with animation control icons (not fully accessible)." /></p>
 
 <p>The above code works. Clicking on the 'pause' icon will halt the animation; clicking on the 'play' icon will restart it.</p>
 
 <p><b><i>But these icons are not properly accessible:</i></b></p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">We cannot access the controls using a keyboard.</li>
-  <li class="mb-2">Screen readers have no way of knowing that the icons are acting as controls, and that we can interact with them.</li>
+<ul class="disc">
+  <li>We cannot access the controls using a keyboard.</li>
+  <li>Screen readers have no way of knowing that the icons are acting as controls, and that we can interact with them.</li>
 </ul>
 
-<p>The simplest way to make our icons fully accessible is to wrap them in &lt;button> elements, and refactor our code accordingly.</p>
+<p>The simplest way to make our icons fully accessible is to wrap them in ‹button› elements, and refactor our code accordingly.</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">Browsers and devices will include the &lt;button> element in their <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex">tabindex</a> attribute so that we can navigate to the icons using the keyboard <code class="text-sm text-red-800">[TAB]</code> and <code class="text-sm text-red-800">[SHIFT+TAB]</code> keys. We can then adapt our event listener code to decide whether to action a keypress received when the &lt;button> element is focussed</li>
-  <li class="mb-2">Screen readers will automatically identify the &lt;button> element as an interactive control and inform the listener accordingly, which means we don't have to add ARIA roles and labels to our icons.</li>
+<ul class="disc">
+  <li>Browsers and devices will include the ‹button> element in their <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex">tabindex</a> attribute so that we can navigate to the icons using the keyboard <code><b>[TAB]</b></code> and <code><b>[SHIFT+TAB]</b></code> keys. We can then adapt our event listener code to decide whether to action a keypress received when the ‹button> element is focussed</li>
+  <li>Screen readers will automatically identify the ‹button› element as an interactive control and inform the listener accordingly, which means we don't have to add ARIA roles and labels to our icons.</li>
 </ul>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
   [...]
 
-  &lt;style type="text/css">
+  ‹style type="text/css"›
 
     [...]
 
-    <i class="comment">/* CSS related to animation controls */</i>
-    <span class="redcode">.animation-controls {
+    <ins>/* CSS related to animation controls */</ins>
+    .animation-controls {
       position: absolute;
       top: 0;
-      left: calc(50% - 51px);
-      width: 102px;
+      left: calc(50% - 48px);
+      width: 100px;
       background-color: #ffffff8f;
     }
-    .animation-controls button {
+<s>    .animation-controls-button {
+      font-size: 48px;
+      opacity: 0.5;
+    }
+    .animation-controls-button:hover {
+      cursor: pointer;
+      opacity: 1;
+    }</s>
+    <b>.animation-controls button {
       background-color: transparent;
       border-width: 0;
       padding:  0;
@@ -474,31 +457,51 @@
     }
     .animation-controls span:hover {
       opacity: 1;
-    }</span>
-  &lt;/style>
-&lt;/head>
+    }</b>
+  ‹/style›
+‹/head›
 
-&lt;body>
+‹body›
 
-  &lt;div class="canvas-host">
-    &lt;canvas id="mycanvas" [...]>&lt;/canvas>
-    <span class="redcode">&lt;div class="animation-controls">
-      &lt;button id="play" title="Play animation">
-        &lt;span class="material-icons">play_circle&lt;/span>
-      &lt;/button>
-      &lt;button id="pause" title="Pause animation">
-        &lt;span class="material-icons">pause_circle&lt;/span>
-      &lt;/button>
-    &lt;/div></span>
-  &lt;/div>
+  ‹div class="canvas-host"›
+    ‹canvas id="mycanvas" [...] ›
+
+      [... image code]
+
+      ‹div class="animation-controls"›
+<s>        ‹span id="play" class="animation-controls-button material-icons"›
+          play_circle
+        ‹/span›
+        ‹span id="pause" class="animation-controls-button material-icons"›
+          pause_circle
+        ‹/span›</s>
+
+        <b>‹button id="play" title="Play animation"›
+          ‹span class="material-icons"›play_circle‹/span›
+        ‹/button›
+        ‹button id="pause" title="Pause animation"›
+          ‹span class="material-icons"›pause_circle‹/span›
+        ‹/button›</b>
+      ‹/div›
+
+    ‹/canvas›
+  ‹/div›
 
   [...]
 
-  &lt;script type="module">
+  ‹script type="module"›
     [...]
 
-    <i class="comment">// user interaction with animation controls</i>
-    <span class="redcode">const checkE = (e) => {
+    <ins>// user interaction with animation controls</ins>
+<s>    const startAnimation = () => {
+      if (!myAnimation.isRunning()) myAnimation.run();
+    };
+
+    const stopAnimation = () => {
+      if (myAnimation.isRunning()) myAnimation.halt();
+    };</s>
+
+    <b>const checkE = (e) => {
 
       if (e) {
         if ('keydown' === e.type) {
@@ -517,100 +520,91 @@
 
     const stopAnimation = (e) => {
       if (checkE(e) && myAnimation.isRunning()) myAnimation.halt();
-    };
+    };</b>
 
-    scrawl.addNativeListener(['click', 'keydown', 'touchend'], startAnimation, '#play');
-    scrawl.addNativeListener(['click', 'keydown', 'touchend'], stopAnimation, '#pause');</span>
+<s>    scrawl.addNativeListener('click', startAnimation, '#play');
+    scrawl.addNativeListener('click', stopAnimation, '#pause');</s>
 
-  &lt;/script></span>
-&lt;/body>
-&lt;/html>
+    <b>scrawl.addNativeListener(['click', 'keydown', 'touchend'], startAnimation, '#play');
+    scrawl.addNativeListener(['click', 'keydown', 'touchend'], stopAnimation, '#pause');</b>
+
+  ‹/script›
+‹/body›
+‹/html›
 </code></pre>
 
 <p>Now we have properly accessible controls that everybody can use to start and stop our animation playing!</p>
 
-<p><img class="mx-auto" src="/assets/lesson-11/06.png" alt="Screen capture of a canvas animation with accessible animation control buttons." /></p>
+<p><img src="/assets/lesson-11/06.png" alt="Screen capture of a canvas animation with accessible animation control buttons." /></p>
 
-<h3>ARIA attributes and the &lt;canvas> element</h3>
+<h3 tabindex="0">ARIA attributes and the ‹canvas› element</h3>
 
-<p>ARIA &mdash; <a href="https://www.w3.org/TR/wai-aria-1.1/">Accessible Rich Internet Applications</a> &mdash; is a technical specification which defines how to increase the accessibility of web pages. The specification has been around since 2008; the later introduction of HTML5 semantic elements has superceded many of its recommendations.</p>
+<p>ARIA &ndash; <a href="https://www.w3.org/TR/wai-aria-1.1/">Accessible Rich Internet Applications</a> &ndash; is a technical specification which defines how to increase the accessibility of web pages. The specification has been around since 2008; the later introduction of HTML5 semantic elements has superceded many of its recommendations.</p>
 
-<p>The &lt;canvas> element, on its own, is invisible to screen readers; people relying on such devices to access web content will not know that the canvas is part of the web page. This is convenient when the canvas is used to supply nothing more than decoration.</p>
+<p>The ‹canvas› element, on its own, is invisible to screen readers; people relying on such devices to access web content will not know that the canvas is part of the web page. This is convenient when the canvas is used to supply nothing more than decoration.</p>
 
 <p><b><i>When the canvas is used to convey information or data which is needed to understand the surrounding page then screen reader invisibility becomes a serious (and often illegal) hinderance.</i></b></p>
 
-<p>Scrawl-canvas overcomes this issue by automatically adding ARIA metadata to every visible &lt;canvas> element on the web page. This will make screen readers aware of the element's existence. However the default label and description is minimal: we need to make them more relevant, unique to each canvas we develop and deploy in the web page.</p>
+<p>Scrawl-canvas overcomes this issue by automatically adding ARIA metadata to every visible ‹canvas› element on the web page. This will make screen readers aware of the element's existence. However the default label and description is minimal: we need to make them more relevant, unique to each canvas we develop and deploy in the web page.</p>
 
 <p>We can do that easily, by updating two attributes on the canvas wrapper like this:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
     [...]
 
-    <i class="comment">// Javascript to make the canvas responsive <b>and accessible</b></i>
-    canvas.set({
-
-      fit: "cover",
-      checkForResize: true,
-      ignoreCanvasCssDimensions: true,
-
-      backgroundColor: 'white',
-
-      <span class="redcode">label: 'An animation celebrating William Shakespeare.',
+    <ins>// Javascript to make the canvas accessible</ins>
+    <b>canvas.set({
+      label: 'An animation celebrating William Shakespeare.',
 
       description: `An image of Shakespeare revolves in the middle of the canvas. 
         Text on a colored banner at the bottom of the canvas tells us whether 
-        the user prefers a light, or dark, color scheme.`,</span>
-
-    }).setBase({
-
-      width: 800,
-      height: 600,
-    });
+        the user prefers a light, or dark, color scheme.`,
+    });</b>
 
     [...]
-  &lt;/script>
+  ‹/script›
 </code></pre>
 
-<h3>Accessible text</h3>
+<h3 tabindex="0">Accessible text</h3>
 
-<p>Just as the &lt;canvas> element, in it's raw, unmodified state, hides itself from screen readers, so does any text that appears as part of the canvas scene. Where human eyes can read words, computers see nothing more than pixel data.</p>
+<p>Just as the ‹canvas› element, in it's raw, unmodified state, hides itself from screen readers, so does any text that appears as part of the canvas scene. Where human eyes can read words, computers see nothing more than pixel data.</p>
 
-<p>Scrawl-canvas Phrase entitys overcome this issue by replicating their text attribute value into the web page DOM (in fact in a dedicated set of &lt;div> child elements inside the <a href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/hh968259(v=vs.85)">&lt;canvas> shadow DOM</a>). This text is automatically exposed to screen readers by the browser.</p>
+<p>Scrawl-canvas Phrase entitys overcome this issue by replicating their text attribute value into the web page DOM (in fact in a dedicated set of ‹div› child elements inside the <a href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/hh968259(v=vs.85)">‹canvas› shadow DOM</a>). This text is automatically exposed to screen readers by the browser.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-11/07.png" alt="Screen capture of the Chrome browser console displaying the canvas element's shadow DOM HTML code." /></p>
+<p><img src="/assets/lesson-11/07.png" alt="Screen capture of the Chrome browser console displaying the canvas element's shadow DOM HTML code." /></p>
 
-<p>Situations can arise where this default behaviour is less than helpful. Decorative text which adds nothing to the information load of the web page, for instance, can prove to be distracting to people using screen readers &mdash; particularly if that text updates on a regular or rapid basis. It is also good practice to suppress the replication if we know the text information will be described elsewhere in the web page:</p>
+<p>Situations can arise where this default behaviour is less than helpful. Decorative text which adds nothing to the information load of the web page, for instance, can prove to be distracting to people using screen readers &ndash; particularly if that text updates on a regular or rapid basis. It is also good practice to suppress the replication if we know the text information will be described elsewhere in the web page:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><b>Static:</b> to prevent a Phrase entity's text being replicated into the DOM, we can set its <code class="text-sm text-red-800">exposeText</code> attribute to <code class="text-sm text-red-800">false</code>.</li>
-  <li class="mb-2"><b>Dynamic:</b> if we need to remove the replicated text from the DOM for any reason, <code class="text-sm text-red-800">kill()</code> the Phrase entity and recreate it with <code class="text-sm text-red-800">exposeText: false</code>.</li>
+<ul class="disc">
+  <li><b>Static:</b> to prevent a Phrase entity's text being replicated into the DOM, we can set its <code><b>exposeText</b></code> attribute to <code><b>false</b></code>.</li>
+  <li><b>Dynamic:</b> if we need to remove the replicated text from the DOM for any reason, <code><b>kill()</b></code> the Phrase entity and recreate it with <code><b>exposeText: false</b></code>.</li>
 </ul>
 
-<p>Charts and infographics are also places where it is often a good idea to suppress text replication, as axis labels and values are often meaningless without some context to help give them meaning. One way to handle this situation is to inject a narrative about the data being displayed into the &lt;canvas> shadow DOM using normal Javascript <code class="text-sm text-red-800">createElement()</code> and <code class="text-sm text-red-800">appendChild()</code> functionality.</p>
+<p>Charts and infographics are also places where it is often a good idea to suppress text replication, as axis labels and values are often meaningless without some context to help give them meaning. One way to handle this situation is to inject a narrative about the data being displayed into the ‹canvas› shadow DOM using normal Javascript <code><b>createElement()</b></code> and <code><b>appendChild()</b></code> functionality.</p>
 
-<h3>Accessible links</h3>
+<h3 tabindex="0">Accessible links</h3>
 
-<p>As has been investigated in previous lessons, we can add links to regions in our &lt;canvas> element using Scrawl-canvas entitys with <code class="text-sm text-red-800">anchor</code> attributes.</p>
+<p>As has been investigated in previous lessons, we can add links to regions in our ‹canvas› element using Scrawl-canvas entitys with <code><b>anchor</b></code> attributes.</p>
 
 <p>From a visual perspective, it makes sense for these links to be Phrase entitys as they can describe what we are linking to. But we can also use graphical shapes and images for our hit regions.</p>
 
 <p>Whatever we use, we need to make sure that our links are fully accessible. This means we should:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">Include some visual clue to indicate that the entity is a clickable link &mdash; for instance by underlining text, adding shadow to a shape, changing colors, changing the browser cursor (to a pointer), etc. This should preferably happen on hover events, but we also need a consistent approach to signify a link for users accessing the site on a mobile device.</li>
-  <li class="mb-2">Include descriptive text in the link anchor attribute so that people using screen readers know what the link is, and where it will take them, when clicked.</li>
-  <li class="mb-2">Make sure people using keyboards can navigate to the links using the <code class="text-sm text-red-800">[TAB]</code> key, and can invoke the navigation using various combinations of keys which include the <code class="text-sm text-red-800">[ENTER]</code> key when the link entity is focussed (the exact choice of keys is, sadly, browser dependant).</li>
-  <li class="mb-2">Again for keyboard users, make sure that when a user navigates to a link entity, it displays the same as if it was being hovered over. Note that the visual effect we use should meet the requirements for WCAG-compliant focus indicators &mdash; <a href="https://www.sarasoueidan.com/blog/focus-indicators/">as discussed by Sara Soueidan in her blog post</a>.</li>
-  <li class="mb-2">For Phrase-based links, suppress text replication as the anchor attribute will create a real anchor &lt;a> element in the &lt;canvas> shadow DOM, which in turn means the screen reader can end up unnecessarily repeating text to their users.</li>
+<ul class="disc">
+  <li>Include some visual clue to indicate that the entity is a clickable link &ndash; for instance by underlining text, adding shadow to a shape, changing colors, changing the browser cursor (to a pointer), etc. This should preferably happen on hover events, but we also need a consistent approach to signify a link for users accessing the site on a mobile device.</li>
+  <li>Include descriptive text in the link anchor attribute so that people using screen readers know what the link is, and where it will take them, when clicked.</li>
+  <li>Make sure people using keyboards can navigate to the links using the <code><b>[TAB]</b></code> key, and can invoke the navigation using various combinations of keys which include the <code><b>[ENTER]</b></code> key when the link entity is focussed (the exact choice of keys is, sadly, browser dependant).</li>
+  <li>Again for keyboard users, make sure that when a user navigates to a link entity, it displays the same as if it was being hovered over. Note that the visual effect we use should meet the requirements for WCAG-compliant focus indicators &ndash; <a href="https://www.sarasoueidan.com/blog/focus-indicators/">as discussed by Sara Soueidan in her blog post</a>.</li>
+  <li>For Phrase-based links, suppress text replication as the anchor attribute will create a real anchor ‹a› element in the ‹canvas› shadow DOM, which in turn means the screen reader can end up unnecessarily repeating text to their users.</li>
 </ul>
 
 <p>Let's add some links to our demo to see how we can meet all these requirements:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [...previous code]
 
-  <i class="comment">// Event listeners to cascade mouse/touch events on the &lt;canvas> down to its entitys</i>
-  <span class="redcode">scrawl.addListener(
+  <ins>// Event listeners to cascade mouse/touch events on the ‹canvas› down to its entitys</ins>
+  <b>scrawl.addListener(
     'move', 
     () => canvas.cascadeEventAction('move'), 
     canvas.domElement
@@ -620,23 +614,23 @@
     'up', 
     () => canvas.cascadeEventAction('up'), 
     canvas.domElement
-  );
+  );</b>
 
-  <i class="comment">// Color variables, for consistency across links</i>
-  const linkFill = '#fffef0',
+  <ins>// Color variables, for consistency across links</ins>
+  <b>const linkFill = '#fffef0',
     linkStroke = '#302f15',
     linkHoverFill = '#dcdead',
-    linkHoverStroke = '#bd1d08';
+    linkHoverStroke = '#bd1d08';</b>
 
-  <i class="comment">// The Phrase entity link</i>
-  scrawl.makePhrase ({
-    name: `${namespace}-macbeth-link`,
+  <ins>// The Phrase entity link</ins>
+  <b>scrawl.makePhrase ({
+    name: name('macbeth-link'),
     start: ['70%', '40%'],
     handle: ['center', 'center'],
     roll: 20,
 
     text: 'MACBETH',
-    <i class="comment">// Suppress Phrase text replication to DOM</i>
+    <ins>// Suppress Phrase text replication to DOM</ins>
     exposeText: false,
 
     family: 'sans-serif',
@@ -648,18 +642,18 @@
     strokeStyle: linkStroke,
     method: 'fillThenDraw',
 
-    <i class="comment">// Anchor is defined as part of the entity</i>
+    <ins>// Anchor is defined as part of the entity</ins>
     anchor: {
-      name: `${namespace}-wikipedia-macbeth-play-link`,
+      name: name('wikipedia-macbeth-play-link'),
       href: 'https://en.wikipedia.org/wiki/Macbeth',
       description: 'Link to the Wikipedia article on Shakespeare\'s play, "Macbeth"',
 
-      <i class="comment">// This ensures keyboard navigation triggers hover state</i>
+      <ins>// This ensures keyboard navigation triggers hover state</ins>
       focusAction: true,
       blurAction: true,
     },
 
-    <i class="comment">// Mouse cursor hover start updates</i>
+    <ins>// Mouse cursor hover start updates</ins>
     onEnter: function () {
       this.set({ 
         lineWidth: 2,
@@ -670,12 +664,12 @@
         css: {
           cursor: 'pointer', 
         },
-        <i class="comment">// Anchor links often display their target URL on hover</i>
+        <ins>// Anchor links often display their target URL on hover</ins>
         title: 'https://en.wikipedia.org/wiki/Macbeth',
       });
     },
 
-    <i class="comment">// Mouse cursor hover end updates</i>
+    <ins>// Mouse cursor hover end updates</ins>
     onLeave: function () {
       this.set({ 
         lineWidth: 1,
@@ -690,15 +684,15 @@
       });
     },
 
-    <i class="comment">// Invoke the click action when user clicks/taps on Entity</i>
+    <ins>// Invoke the click action when user clicks/taps on Entity</ins>
     onUp: function () {
       this.clickAnchor();
     },
   });
 
-  <i class="comment">// The second link is a Shape entity; coding requirements for accessible links are the same</i>
+  <ins>// The second link is a Shape entity; coding requirements for accessible links are the same</ins>
   scrawl.makeShape({
-    name: `${namespace}-hamlet-link`,
+    name: name('hamlet-link'),
     start: ['30%', '40%'],
     handle: ['center', 'center'],
     roll: 180,
@@ -708,7 +702,7 @@
     method: 'fillThenDraw',
 
     anchor: {
-      name: `${namespace}-wikipedia-hamlet-play-link`,
+      name: name('wikipedia-hamlet-play-link'),
       href: 'https://en.wikipedia.org/wiki/Hamlet',
       description: 'Link to the Wikipedia article on Shakespeare\'s play, "Hamlet"',
 
@@ -749,28 +743,28 @@
     },
 
     pathDefinition: 'm82.8,171.7c-0.2,-0.2,-0.8,-0.3,-2.7,-0.3c-1.9,0.0,-2.5,-0.1,-2.7,-0.3c-0.2,-0.2,-0.7,-0.3,-2.1,-0.3c-1.4,0.0,-1.9,-0.1,-2.1,-0.3c-0.2,-0.2,-0.6,-0.3,-1.5,-0.3c-0.9,0.0,-1.3,-0.1,-1.5,-0.3c-0.2,-0.2,-0.6,-0.3,-1.5,-0.3c-0.8,0.0,-1.4,-0.1,-1.6,-0.3c-0.2,-0.2,-0.8,-0.3,-1.2,-0.3c-0.5,0.0,-0.9,-0.1,-1.1,-0.3c-0.1,-0.2,-0.5,-0.3,-0.9,-0.3c-0.4,0.0,-0.8,-0.1,-0.9,-0.3c-0.1,-0.2,-0.5,-0.3,-0.9,-0.3c-0.4,0.0,-0.8,-0.1,-0.9,-0.3c-0.2,-0.2,-0.6,-0.3,-1.1,-0.3c-0.8,0.0,-2.3,-0.6,-2.6,-1.0c-0.1,-0.1,-0.4,-0.2,-0.7,-0.2c-0.6,0.0,-3.3,-1.3,-3.5,-1.6c-0.1,-0.1,-0.3,-0.2,-0.6,-0.2c-0.3,0.0,-0.6,-0.1,-0.7,-0.3c-0.1,-0.2,-0.5,-0.3,-0.7,-0.4c-0.3,-0.1,-0.5,-0.2,-0.5,-0.3c0.0,-0.1,-0.1,-0.2,-0.3,-0.2c-0.5,0.0,-2.0,-0.9,-2.7,-1.6c-0.4,-0.4,-0.9,-0.8,-1.0,-0.8c-0.2,0.0,-0.9,-0.5,-1.5,-1.2c-0.7,-0.7,-1.3,-1.2,-1.5,-1.2c-0.3,0.0,-2.5,-2.2,-2.5,-2.5c0.0,-0.1,-0.7,-0.9,-1.5,-1.8c-0.8,-0.9,-1.5,-1.7,-1.5,-1.8c0.0,-0.1,-0.4,-0.6,-0.8,-1.1c-0.4,-0.5,-1.2,-1.7,-1.6,-2.6c-0.5,-0.9,-1.1,-1.9,-1.3,-2.2c-0.3,-0.3,-0.5,-0.7,-0.5,-1.2c0.0,-0.4,-0.1,-0.7,-0.3,-0.8c-0.2,-0.1,-0.3,-0.3,-0.3,-0.4c0.0,-0.2,-0.3,-0.8,-0.6,-1.4c-0.3,-0.6,-0.6,-1.3,-0.6,-1.7c0.0,-0.3,-0.1,-0.7,-0.3,-0.8c-0.2,-0.1,-0.3,-0.5,-0.3,-0.8c0.0,-0.3,-0.1,-0.7,-0.3,-0.9c-0.2,-0.2,-0.3,-0.8,-0.3,-1.3c0.0,-0.6,-0.1,-1.0,-0.3,-1.2c-0.2,-0.2,-0.3,-0.6,-0.3,-1.5c0.0,-0.8,-0.1,-1.3,-0.3,-1.5c-0.2,-0.2,-0.3,-1.3,-0.3,-6.1c0.0,-4.9,0.1,-5.9,0.3,-6.1c0.2,-0.2,0.3,-0.7,0.3,-1.8c0.0,-1.1,0.1,-1.6,0.3,-1.8c0.2,-0.2,0.3,-0.6,0.3,-1.2c0.0,-0.6,0.1,-1.0,0.3,-1.2c0.2,-0.2,0.3,-0.6,0.3,-1.2c0.0,-0.6,0.1,-1.0,0.3,-1.2c0.2,-0.1,0.3,-0.6,0.3,-1.0c0.0,-0.5,0.1,-0.8,0.3,-0.9c0.2,-0.1,0.3,-0.4,0.3,-0.8c0.0,-0.4,0.1,-0.8,0.3,-0.9c0.2,-0.1,0.3,-0.5,0.3,-0.8c0.0,-0.6,0.7,-2.1,1.0,-2.3c0.1,-0.1,0.2,-0.3,0.2,-0.5c0.0,-0.2,0.1,-0.5,0.3,-0.6c0.2,-0.1,0.3,-0.5,0.3,-0.7c0.0,-0.3,0.1,-0.5,0.3,-0.6c0.2,-0.1,0.3,-0.3,0.3,-0.6c0.0,-0.3,0.1,-0.5,0.2,-0.6c0.1,-0.1,0.4,-0.6,0.7,-1.2c0.3,-0.6,0.7,-1.3,1.0,-1.6c0.2,-0.3,0.5,-0.7,0.5,-0.9c0.2,-0.7,0.5,-0.4,0.6,0.4c0.0,0.4,0.2,0.9,0.4,1.0c0.4,0.4,0.4,8.8,-0.0,9.2c-0.2,0.2,-0.3,0.6,-0.3,1.5c0.0,0.8,-0.1,1.4,-0.3,1.6c-0.2,0.2,-0.3,0.6,-0.3,0.9c0.0,0.3,-0.1,0.7,-0.3,0.9c-0.2,0.2,-0.3,0.6,-0.3,0.9c0.0,0.3,-0.1,0.7,-0.3,0.9c-0.2,0.2,-0.3,0.6,-0.3,0.9c0.0,0.3,-0.1,0.7,-0.3,0.9c-0.2,0.2,-0.3,0.8,-0.3,1.2c0.0,0.5,-0.1,0.9,-0.3,1.1c-0.2,0.2,-0.3,0.7,-0.3,2.4c0.0,1.7,-0.1,2.2,-0.3,2.4c-0.4,0.4,-0.4,4.8,0.0,5.2c0.2,0.2,0.3,0.6,0.3,1.5c0.0,0.9,0.1,1.3,0.3,1.4c0.2,0.1,0.3,0.3,0.3,0.5c0.0,0.2,0.3,0.7,0.6,1.0c0.3,0.4,0.6,0.8,0.6,0.9c0.0,0.4,0.9,1.1,1.3,1.1c0.2,0.0,1.1,-0.7,1.9,-1.6c1.1,-1.1,1.5,-1.7,1.5,-2.1c0.0,-0.3,-0.1,-0.6,-0.2,-0.6c-0.1,-0.0,-0.4,-0.4,-0.6,-0.9c-0.4,-0.8,-0.4,-1.1,-0.4,-4.8c0.0,-3.3,0.1,-4.0,0.3,-4.2c0.2,-0.2,0.3,-0.6,0.3,-1.5c0.0,-0.8,0.1,-1.4,0.3,-1.6c0.2,-0.2,0.3,-0.6,0.3,-0.9c0.0,-0.3,0.1,-0.7,0.3,-0.9c0.2,-0.2,0.3,-0.6,0.3,-0.9c0.0,-0.3,0.1,-0.7,0.3,-0.9c0.2,-0.2,0.3,-0.6,0.3,-0.9c0.0,-0.3,0.1,-0.7,0.3,-0.9c0.2,-0.2,0.3,-0.8,0.3,-1.2c0.0,-0.5,0.1,-0.9,0.3,-1.1c0.2,-0.2,0.3,-0.8,0.3,-2.7c0.0,-1.9,0.1,-2.5,0.3,-2.7c0.2,-0.1,0.3,-0.5,0.3,-0.8c0.0,-0.3,-0.1,-0.7,-0.3,-0.8c-0.2,-0.2,-0.3,-0.9,-0.3,-3.6c0.0,-2.7,-0.1,-3.4,-0.3,-3.6c-0.2,-0.2,-0.3,-0.7,-0.3,-2.1c0.0,-1.4,-0.1,-1.9,-0.3,-2.1c-0.2,-0.2,-0.3,-0.6,-0.3,-1.5c0.0,-0.9,-0.1,-1.3,-0.3,-1.5c-0.2,-0.2,-0.3,-0.6,-0.3,-1.5c0.0,-0.9,-0.1,-1.3,-0.3,-1.5c-0.2,-0.2,-0.3,-0.7,-0.3,-1.8c0.0,-1.1,-0.1,-1.6,-0.3,-1.8c-0.2,-0.2,-0.3,-0.7,-0.3,-2.2c0.0,-1.5,0.1,-2.0,0.3,-2.2c0.2,-0.2,0.3,-0.7,0.3,-2.1c0.0,-1.3,0.1,-2.0,0.3,-2.2c0.2,-0.2,0.3,-0.6,0.3,-0.9c0.0,-0.3,0.1,-0.6,0.3,-0.8c0.2,-0.1,0.3,-0.5,0.3,-0.8c0.0,-0.3,0.2,-1.0,0.4,-1.4c0.5,-1.1,2.8,-3.4,3.3,-3.4c0.2,0.0,0.4,-0.1,0.5,-0.2c0.1,-0.3,3.0,-1.6,3.5,-1.6c0.3,0.0,0.6,-0.1,0.8,-0.3c0.2,-0.2,0.6,-0.3,0.9,-0.3c0.3,0.0,0.7,-0.1,0.9,-0.3c0.2,-0.2,0.6,-0.3,1.0,-0.3c0.4,0.0,0.8,-0.1,0.9,-0.3c0.1,-0.2,0.5,-0.3,0.9,-0.3c0.4,0.0,0.7,-0.1,0.8,-0.2c0.1,-0.1,0.9,-0.6,1.8,-1.0c0.9,-0.5,1.9,-1.1,2.2,-1.3c0.3,-0.3,0.6,-0.5,0.7,-0.5c0.1,0.0,0.5,-0.3,0.9,-0.6c0.4,-0.3,0.8,-0.6,1.0,-0.6c0.3,0.0,2.3,-1.9,2.3,-2.3c0.0,-0.1,0.4,-0.6,0.8,-1.1c0.9,-1.0,2.2,-3.5,2.2,-4.1c0.0,-0.2,0.1,-0.6,0.3,-0.8c0.2,-0.2,0.3,-0.9,0.3,-1.8c0.0,-0.9,0.1,-1.6,0.3,-1.8c0.2,-0.3,0.2,-0.4,0.0,-0.8c-0.2,-0.2,-0.3,-0.6,-0.3,-0.9c0.0,-0.3,-0.3,-0.9,-0.6,-1.4c-0.6,-0.9,-0.6,-1.0,-0.6,-3.1c0.0,-2.5,0.1,-2.9,0.6,-2.9c0.2,0.0,0.5,-0.1,0.6,-0.3c0.1,-0.2,0.5,-0.3,0.7,-0.3c0.3,0.0,0.5,-0.1,0.6,-0.3c0.1,-0.2,0.3,-0.3,0.5,-0.3c0.2,0.0,0.5,-0.1,0.7,-0.3c0.2,-0.2,0.6,-0.3,0.9,-0.3c0.3,0.0,0.6,-0.1,0.8,-0.3c0.1,-0.2,0.4,-0.3,0.5,-0.3c0.1,0.0,0.5,-0.1,0.8,-0.3c0.3,-0.2,0.7,-0.3,1.0,-0.2l0.6,0.1l0.1,2.4c0.1,1.3,0.1,3.3,0.0,4.5c-0.1,2.5,-0.1,2.6,1.7,2.6l1.2,-0.1l0.1,-5.0l0.1,-5.0l0.9,-0.1c0.5,-0.0,0.8,-0.1,0.8,-0.2c0.0,-0.1,0.4,-0.2,1.0,-0.2c0.5,-0.0,1.9,-0.1,3.1,-0.1c1.3,-0.1,2.2,-0.1,2.3,0.0c0.2,0.2,0.2,1.9,0.1,8.6c0.0,1.4,0.1,1.5,1.5,1.5c0.8,0.0,1.4,-0.1,1.5,-0.2c0.1,-0.2,0.2,-2.1,0.2,-5.0c0.0,-2.6,0.0,-4.8,0.0,-4.8c0.0,-0.3,2.3,-0.2,2.6,0.2c0.3,0.3,0.8,0.3,2.6,0.3c1.2,0.0,2.2,0.1,2.3,0.2c0.1,0.1,0.1,2.3,0.1,4.8c0.0,2.7,0.1,4.8,0.2,4.9c0.3,0.3,2.5,0.3,2.7,-0.0c0.1,-0.1,0.2,-2.3,0.2,-4.7l0.0,-4.5l0.8,0.0c1.5,0.1,2.0,0.2,3.7,0.8c1.3,0.4,1.8,0.7,2.2,1.3c0.3,0.4,0.8,0.8,1.1,0.9l0.6,0.2l0.0,2.5c0.0,2.4,-0.0,2.5,-0.6,3.5c-0.5,0.9,-0.6,1.3,-0.6,2.5c0.0,1.0,0.1,1.5,0.3,1.7c0.2,0.2,0.3,0.6,0.3,1.5c0.0,0.9,0.1,1.3,0.3,1.5c0.2,0.1,0.3,0.6,0.3,0.9c0.0,0.4,0.1,0.7,0.3,0.8c0.2,0.1,0.3,0.3,0.3,0.5c0.0,0.2,0.3,0.7,0.6,1.0c0.3,0.3,0.6,0.7,0.6,0.9c0.0,0.3,3.2,3.5,3.5,3.5c0.1,0.0,0.6,0.3,0.9,0.6c0.4,0.3,0.8,0.6,0.9,0.6c0.1,0.0,0.6,0.4,1.1,0.9c0.7,0.7,1.1,0.9,1.5,0.9c0.4,0.0,0.8,0.2,1.2,0.6c0.4,0.4,0.8,0.6,1.2,0.6c0.3,0.0,0.8,0.1,1.0,0.3c0.2,0.2,0.6,0.3,0.9,0.3c0.3,0.0,0.7,0.1,0.9,0.3c0.2,0.2,0.6,0.3,0.9,0.3c0.7,0.0,1.9,0.5,2.0,0.9c0.1,0.2,0.4,0.3,0.7,0.3c0.6,0.0,2.3,0.7,2.4,1.0c0.0,0.1,0.2,0.2,0.5,0.2c0.2,0.0,0.6,0.3,0.9,0.6c0.3,0.3,0.7,0.6,0.9,0.6c0.7,0.0,2.6,3.0,2.6,4.2c0.0,0.3,0.1,0.7,0.3,0.8c0.2,0.1,0.3,0.5,0.3,0.8c0.0,0.3,0.1,0.7,0.3,0.9c0.2,0.2,0.3,0.8,0.3,2.8c0.0,2.0,0.1,2.5,0.3,2.7c0.4,0.3,0.4,1.1,0.0,1.4c-0.2,0.2,-0.3,0.7,-0.3,2.1c0.0,1.4,-0.1,1.9,-0.3,2.1c-0.2,0.2,-0.3,0.7,-0.3,1.8c0.0,1.1,-0.1,1.6,-0.3,1.8c-0.2,0.2,-0.3,0.6,-0.3,1.5c0.0,0.9,-0.1,1.3,-0.3,1.5c-0.2,0.2,-0.3,0.7,-0.3,1.8c0.0,1.1,-0.1,1.6,-0.3,1.8c-0.2,0.2,-0.3,0.8,-0.3,2.7c0.0,1.9,-0.1,2.5,-0.3,2.7c-0.2,0.2,-0.3,0.8,-0.3,2.6c0.0,1.8,0.1,2.4,0.3,2.6c0.2,0.2,0.3,0.7,0.3,2.4c0.0,1.7,0.1,2.2,0.3,2.4c0.2,0.1,0.3,0.6,0.3,1.1c0.0,0.4,0.1,1.0,0.3,1.2c0.2,0.2,0.3,0.6,0.3,0.9c0.0,0.3,0.1,0.7,0.3,0.9c0.2,0.2,0.3,0.6,0.3,0.9c0.0,0.3,0.1,0.7,0.3,0.9c0.2,0.2,0.3,0.7,0.3,1.0c0.0,0.3,0.1,0.7,0.3,0.9c0.2,0.2,0.3,0.6,0.3,1.5c0.0,0.9,0.1,1.3,0.3,1.5c0.2,0.2,0.3,0.9,0.3,4.0c0.0,3.1,-0.1,3.8,-0.3,4.1c-0.2,0.2,-0.3,0.4,-0.3,0.6c0.0,0.2,-0.3,0.6,-0.6,0.9c-0.3,0.3,-0.6,0.6,-0.6,0.7c0.0,0.2,3.8,3.9,3.9,3.9c0.2,0.0,2.1,-2.0,2.1,-2.3c0.0,-0.1,0.1,-0.4,0.3,-0.7c0.2,-0.2,0.3,-0.5,0.3,-0.7c0.0,-0.2,0.1,-0.4,0.3,-0.5c0.3,-0.1,0.3,-1.0,0.3,-6.1c0.0,-5.1,-0.0,-6.0,-0.3,-6.2c-0.2,-0.2,-0.3,-0.6,-0.3,-1.5c0.0,-0.9,-0.1,-1.3,-0.3,-1.5c-0.2,-0.1,-0.3,-0.6,-0.3,-0.9c0.0,-0.4,-0.1,-0.7,-0.3,-0.8c-0.2,-0.1,-0.3,-0.3,-0.3,-0.5c0.0,-0.2,-0.1,-0.5,-0.3,-0.7c-0.2,-0.2,-0.3,-0.6,-0.3,-0.9c0.0,-0.3,-0.1,-0.7,-0.3,-0.9c-0.2,-0.3,-0.3,-0.9,-0.3,-1.6c0.0,-0.9,-0.1,-1.3,-0.3,-1.5c-0.3,-0.2,-0.3,-1.0,-0.3,-5.3c0.1,-4.4,0.1,-5.0,0.4,-5.2c0.3,-0.2,0.4,-0.1,0.9,0.4c0.3,0.3,0.5,0.7,0.5,0.8c0.0,0.1,0.2,0.4,0.5,0.7c0.5,0.6,1.3,2.0,1.3,2.4c0.0,0.1,0.2,0.4,0.5,0.7c0.5,0.4,1.3,1.9,1.3,2.3c0.0,0.1,0.1,0.3,0.3,0.5c0.2,0.2,0.3,0.6,0.3,1.0c0.0,0.4,0.1,0.7,0.2,0.8c0.3,0.2,1.0,1.7,1.0,2.2c0.0,0.2,0.1,0.6,0.3,0.8c0.2,0.2,0.3,0.8,0.3,1.3c0.0,0.6,0.1,1.0,0.3,1.2c0.2,0.2,0.3,0.6,0.3,1.2c0.0,0.6,0.1,1.0,0.3,1.2c0.2,0.2,0.3,0.8,0.3,2.7c0.0,1.9,0.1,2.5,0.3,2.7c0.2,0.2,0.3,0.7,0.3,2.5c0.0,1.8,-0.1,2.3,-0.3,2.5c-0.2,0.2,-0.3,0.8,-0.3,3.0c0.0,2.2,-0.1,2.8,-0.3,3.1c-0.2,0.2,-0.3,0.7,-0.3,1.5c0.0,0.8,-0.1,1.3,-0.3,1.5c-0.2,0.2,-0.3,0.6,-0.3,0.9c0.0,0.3,-0.1,0.7,-0.3,0.8c-0.2,0.1,-0.3,0.6,-0.3,1.0c0.0,0.5,-0.1,0.8,-0.3,0.9c-0.2,0.1,-0.3,0.4,-0.3,1.0c0.0,0.7,-0.3,1.6,-1.6,4.2c-0.9,1.8,-1.8,3.5,-2.1,3.7c-0.3,0.2,-0.5,0.5,-0.5,0.7c0.0,0.5,-0.9,1.9,-1.6,2.7c-0.4,0.4,-0.8,0.9,-0.8,1.1c0.0,0.4,-7.5,7.9,-7.9,7.9c-0.2,0.0,-0.7,0.4,-1.2,0.9c-0.5,0.5,-1.1,0.9,-1.2,0.9c-0.2,0.0,-0.5,0.2,-0.7,0.5c-0.6,0.6,-3.2,1.9,-3.9,1.9c-0.3,0.0,-0.6,0.1,-0.7,0.2c-0.2,0.3,-1.7,1.0,-2.3,1.0c-0.3,0.0,-0.7,0.1,-0.8,0.3c-0.1,0.2,-0.5,0.3,-0.9,0.3c-0.4,0.0,-0.8,0.1,-0.9,0.3c-0.1,0.2,-0.5,0.3,-0.9,0.3c-0.4,0.0,-0.8,0.1,-0.9,0.3c-0.1,0.2,-0.5,0.3,-0.8,0.3c-0.3,0.0,-0.7,0.1,-0.9,0.3c-0.2,0.2,-0.7,0.3,-1.3,0.3c-0.6,0.0,-1.1,0.1,-1.2,0.3c-0.2,0.2,-0.6,0.3,-1.2,0.3c-0.6,0.0,-1.0,0.1,-1.2,0.3c-0.2,0.2,-0.6,0.3,-1.2,0.3c-0.6,0.0,-1.0,0.1,-1.2,0.3c-0.2,0.2,-0.6,0.3,-1.5,0.3c-0.9,0.0,-1.3,0.1,-1.5,0.3c-0.2,0.2,-0.6,0.3,-1.5,0.3c-0.9,0.0,-1.3,0.1,-1.5,0.3c-0.2,0.2,-0.7,0.3,-2.4,0.3c-1.6,0.0,-2.2,0.1,-2.4,0.3c-0.2,0.2,-1.6,0.3,-7.9,0.3c-6.3,0.0,-7.7,-0.1,-7.9,-0.3zm-5.8,-65.4c1.2,-0.6,2.4,-1.9,3.2,-3.6c0.4,-0.9,0.8,-1.8,0.8,-2.0c0.0,-0.2,0.1,-0.5,0.2,-0.6c0.3,-0.2,0.2,-5.3,-0.1,-5.8c-0.2,-0.2,-0.3,-0.6,-0.3,-0.8c0.0,-0.5,-1.3,-3.1,-1.7,-3.5c-0.2,-0.1,-0.4,-0.6,-0.6,-0.9c-0.1,-0.4,-0.4,-0.8,-0.6,-1.0c-0.2,-0.2,-0.5,-0.7,-0.8,-1.1c-0.2,-0.4,-0.5,-0.8,-0.6,-0.9c-0.1,-0.1,-0.3,-0.2,-0.3,-0.4c0.0,-0.1,-0.3,-0.6,-0.6,-0.9c-0.3,-0.4,-0.6,-0.8,-0.7,-1.1c-0.1,-0.2,-0.8,-1.1,-1.5,-1.9c-0.8,-0.8,-1.4,-1.6,-1.4,-1.7c0.0,-0.3,-1.4,-1.8,-1.8,-1.9c-0.2,-0.1,-0.7,-0.5,-1.2,-0.9c-0.5,-0.5,-1.0,-0.8,-1.4,-0.8c-0.3,0.0,-0.7,-0.1,-0.9,-0.3c-0.5,-0.4,-5.4,-0.4,-6.0,0.0c-0.2,0.2,-0.6,0.3,-0.8,0.3c-0.2,0.0,-1.0,0.3,-1.8,0.7c-1.0,0.5,-1.8,1.1,-3.2,2.6c-1.0,1.0,-1.9,2.0,-1.9,2.2c0.0,0.2,-0.1,0.3,-0.3,0.4c-0.3,0.1,-1.3,2.1,-1.3,2.6c0.0,0.2,-0.3,0.9,-0.6,1.5c-0.3,0.6,-0.6,1.3,-0.6,1.5c0.0,0.2,-0.3,0.9,-0.6,1.4c-0.9,1.6,-1.1,3.1,-1.0,6.4c0.1,2.5,0.2,3.0,0.5,3.6c0.3,0.4,0.5,0.7,0.6,0.7c0.1,0.0,0.2,0.1,0.2,0.3c0.0,0.1,0.3,0.7,0.8,1.2c0.5,0.7,1.2,1.2,2.5,1.8c1.0,0.5,2.0,0.9,2.2,0.9c0.3,0.0,0.5,0.1,0.6,0.2c0.1,0.1,0.8,0.2,1.7,0.3c0.9,0.1,1.7,0.2,1.9,0.3c0.1,0.1,1.1,0.2,2.1,0.3c1.0,0.1,2.0,0.2,2.1,0.3c0.1,0.1,1.2,0.2,2.4,0.3c1.2,0.1,2.3,0.2,2.4,0.3c0.3,0.2,2.9,0.4,5.6,0.3c1.4,-0.0,2.2,-0.2,2.7,-0.4zm33.9,0.1c0.1,-0.1,1.3,-0.2,2.7,-0.3c1.4,-0.1,2.6,-0.2,2.7,-0.3c0.1,-0.1,0.9,-0.2,1.8,-0.3c0.9,-0.1,1.7,-0.2,1.8,-0.3c0.1,-0.1,1.1,-0.2,2.1,-0.3c1.0,-0.1,2.0,-0.2,2.3,-0.4c0.2,-0.2,0.6,-0.3,0.9,-0.3c0.3,0.0,0.8,-0.2,1.0,-0.5c0.3,-0.3,0.7,-0.6,1.0,-0.6c0.6,-0.2,3.1,-2.8,3.6,-3.8c0.2,-0.4,0.4,-1.2,0.5,-1.8c0.1,-0.5,0.2,-1.0,0.3,-1.1c0.2,-0.1,0.2,-3.0,-0.0,-3.2c-0.1,-0.1,-0.2,-0.4,-0.2,-0.7c0.0,-0.3,-0.2,-0.8,-0.4,-1.1c-0.2,-0.3,-0.4,-0.8,-0.4,-1.0c0.0,-0.3,-0.3,-1.0,-0.6,-1.6c-0.3,-0.6,-0.6,-1.3,-0.6,-1.5c0.0,-0.2,-0.3,-0.9,-0.6,-1.5c-0.3,-0.6,-0.6,-1.3,-0.6,-1.5c0.0,-0.8,-0.9,-2.1,-2.9,-4.2c-1.8,-1.8,-2.4,-2.4,-3.6,-3.0c-0.8,-0.4,-1.7,-0.7,-1.9,-0.7c-0.2,0.0,-0.6,-0.1,-0.8,-0.3c-0.3,-0.2,-1.0,-0.3,-2.9,-0.3c-2.5,0.0,-2.5,0.0,-4.0,0.7c-1.2,0.6,-1.9,1.1,-3.7,3.0c-1.2,1.3,-2.3,2.5,-2.4,2.7c-0.1,0.2,-0.5,0.8,-0.9,1.2c-0.4,0.5,-0.8,1.0,-0.9,1.2c-0.1,0.2,-0.3,0.6,-0.6,0.9c-0.3,0.3,-0.5,0.7,-0.6,1.0c-0.1,0.2,-0.4,0.7,-0.7,1.1c-0.3,0.4,-0.6,0.8,-0.6,0.9c0.0,0.1,-0.2,0.4,-0.4,0.6c-0.2,0.2,-0.9,1.3,-1.4,2.5l-1.0,2.1l0.0,3.7c0.0,4.5,0.1,4.8,2.6,7.3c1.5,1.5,1.8,1.7,2.6,1.8c1.3,0.1,6.8,-0.1,7.1,-0.3zm-18.8,-24.5c0.4,-0.2,0.8,-0.4,0.8,-0.6c0.1,-0.2,0.3,-0.3,0.4,-0.3c0.4,0.0,3.6,-3.1,3.8,-3.6c0.1,-0.2,0.4,-0.7,0.8,-1.1c0.8,-0.8,2.1,-3.3,2.1,-3.9c0.0,-0.2,0.2,-0.7,0.4,-1.0c0.2,-0.3,0.4,-0.8,0.4,-1.1c0.0,-0.3,0.1,-0.6,0.2,-0.6c0.1,-0.1,0.2,-0.7,0.3,-1.5c0.1,-0.8,0.2,-1.4,0.3,-1.5c0.1,-0.1,0.2,-1.7,0.2,-3.7c-0.0,-2.8,-0.1,-3.6,-0.3,-3.9c-0.2,-0.2,-0.3,-0.7,-0.3,-1.1c0.0,-0.4,-0.1,-1.0,-0.3,-1.4c-0.4,-0.8,-1.7,-2.2,-2.0,-2.2c-0.1,0.0,-0.4,-0.1,-0.7,-0.2c-0.3,-0.2,-0.4,-0.2,-0.6,0.0c-0.1,0.1,-0.5,0.2,-0.8,0.2c-0.6,0.0,-1.5,0.7,-3.7,2.9c-1.8,1.8,-2.8,2.5,-3.7,2.5c-0.5,0.0,-1.0,-0.4,-3.2,-2.6l-2.6,-2.6l-1.5,-0.0c-1.7,-0.0,-2.3,0.2,-2.5,1.3c-0.1,0.3,-0.2,0.5,-0.3,0.5c-0.1,0.0,-0.2,0.2,-0.2,0.5c0.0,0.3,-0.2,0.6,-0.3,0.7c-0.3,0.2,-0.4,0.7,-0.3,6.0c0.0,5.3,0.0,5.9,0.3,6.0c0.2,0.1,0.3,0.4,0.3,0.9c0.0,0.5,0.1,0.8,0.3,0.9c0.2,0.1,0.3,0.3,0.3,0.5c0.0,0.2,0.1,0.6,0.3,0.7c0.2,0.2,0.3,0.5,0.3,0.7c0.0,0.2,0.1,0.4,0.3,0.5c0.2,0.1,0.3,0.3,0.3,0.6c0.0,0.3,0.1,0.5,0.2,0.5c0.1,0.0,0.3,0.2,0.3,0.5c0.1,0.3,0.4,0.8,0.7,1.1c0.3,0.3,0.6,0.7,0.6,0.9c0.0,0.4,2.5,2.9,2.9,2.9c0.1,0.0,0.7,0.4,1.2,0.9c0.5,0.5,1.1,0.9,1.4,1.0c1.4,0.2,3.3,0.1,4.0,-0.2zm28.1,-39.6l-0.9,-0.2l-0.1,-1.0c-0.0,-0.6,-0.2,-1.1,-0.3,-1.3c-0.2,-0.2,-0.3,-0.7,-0.3,-2.1c0.0,-1.4,-0.1,-1.9,-0.3,-2.1c-0.2,-0.2,-0.3,-0.7,-0.3,-1.8c0.0,-1.5,-0.0,-1.6,-0.6,-2.1c-0.3,-0.3,-0.6,-0.7,-0.6,-0.8c0.0,-0.4,-3.7,-4.1,-4.1,-4.1c-0.2,0.0,-0.5,-0.1,-0.7,-0.2c-0.6,-0.4,-0.8,0.1,-0.7,1.6c0.1,0.9,0.0,1.7,-0.2,2.5c-0.2,0.6,-0.3,1.9,-0.3,2.7c0.0,1.2,-0.1,1.6,-0.3,1.7c-0.3,0.1,-2.6,-0.9,-2.7,-1.2c-0.0,-0.1,-0.4,-0.4,-0.8,-0.6c-0.6,-0.3,-1.1,-0.5,-2.1,-0.5c-0.9,-0.0,-1.5,-0.2,-1.9,-0.4l-0.6,-0.4l0.1,-4.2c0.1,-4.2,0.0,-5.1,-0.5,-5.1c-0.1,0.0,-0.4,-0.1,-0.5,-0.3c-0.2,-0.2,-0.6,-0.3,-1.3,-0.3l-1.0,0.1l0.0,0.9c0.2,3.7,0.3,8.4,0.1,8.4c-0.8,0.1,-2.4,-0.0,-3.2,-0.2c-0.8,-0.2,-1.1,-0.2,-1.4,0.0c-0.5,0.4,-2.0,0.3,-2.5,-0.2c-0.4,-0.4,-0.4,-0.5,-0.3,-3.6c0.1,-1.7,0.2,-3.8,0.2,-4.6l0.1,-1.4l-1.7,0.0l-1.7,0.0l-0.0,2.0c0.0,1.1,-0.0,3.2,-0.0,4.6l-0.0,2.6l-1.4,0.2c-0.8,0.1,-2.1,0.2,-2.8,0.1c-1.0,-0.1,-1.4,-0.0,-1.8,0.2c-0.3,0.2,-0.8,0.3,-1.4,0.3l-0.9,-0.1l0.1,-3.2c0.1,-4.7,0.1,-5.6,-0.2,-6.0c-0.3,-0.4,-1.1,-0.4,-1.3,-0.1c-0.1,0.1,-0.3,0.3,-0.6,0.4c-0.4,0.2,-0.5,0.3,-0.6,3.1c-0.2,4.1,-0.5,6.1,-1.0,6.5c-0.3,0.3,-0.8,0.4,-1.7,0.5c-1.1,0.1,-1.5,0.2,-2.2,0.7c-0.5,0.3,-0.9,0.6,-1.0,0.6c-0.1,0.0,-0.6,0.3,-1.3,0.6c-1.9,0.9,-1.8,1.0,-1.7,-4.0c0.1,-4.0,0.1,-4.2,-0.3,-4.2c-0.2,0.0,-0.5,0.1,-0.5,0.2c-0.1,0.1,-0.3,0.2,-0.5,0.2c-0.2,0.0,-0.6,0.3,-1.0,0.6c-0.4,0.3,-0.8,0.6,-1.0,0.6c-0.3,0.0,-3.5,3.1,-3.5,3.5c0.0,0.1,-0.1,0.4,-0.3,0.6c-0.2,0.2,-0.3,0.8,-0.3,1.5c0.0,0.8,-0.1,1.2,-0.3,1.4c-0.2,0.2,-0.3,0.7,-0.3,2.1c0.0,1.4,-0.1,1.9,-0.3,2.1c-0.2,0.2,-0.3,0.6,-0.3,1.3c0.0,0.6,-0.1,1.1,-0.1,1.1c-0.1,0.1,-0.6,0.0,-1.2,0.0l-1.1,-0.1l0.0,-0.7c0.0,-0.4,-0.1,-0.9,-0.3,-1.0c-0.4,-0.4,-0.4,-9.4,0.0,-9.8c0.2,-0.2,0.3,-0.6,0.3,-1.5c0.0,-0.9,0.1,-1.3,0.3,-1.5c0.2,-0.2,0.3,-0.6,0.3,-1.1c0.0,-0.8,0.6,-2.3,1.0,-2.6c0.1,-0.1,0.2,-0.3,0.2,-0.6c0.0,-0.2,0.1,-0.5,0.3,-0.6c0.2,-0.1,0.3,-0.3,0.3,-0.6c0.0,-0.3,0.1,-0.5,0.2,-0.6c0.1,-0.1,0.4,-0.6,0.7,-1.2c0.3,-0.6,0.9,-1.4,1.3,-1.9c0.5,-0.5,0.8,-1.0,0.8,-1.1c0.0,-0.3,3.5,-3.7,3.8,-3.7c0.1,0.0,0.6,-0.3,1.0,-0.8c0.8,-0.8,4.6,-2.8,5.3,-2.8c0.2,0.0,0.6,-0.1,0.8,-0.3c0.2,-0.2,0.8,-0.3,1.3,-0.3c0.6,0.0,1.0,-0.1,1.2,-0.3c0.2,-0.2,0.6,-0.3,1.2,-0.3c0.6,0.0,1.0,-0.1,1.2,-0.3c0.2,-0.2,0.7,-0.3,1.8,-0.3c1.1,0.0,1.6,-0.1,1.8,-0.3c0.4,-0.5,13.6,-0.5,14.0,0.0c0.2,0.2,0.7,0.3,1.8,0.3c1.1,0.0,1.6,0.1,1.8,0.3c0.2,0.2,0.6,0.3,1.2,0.3c0.6,0.0,1.0,0.1,1.2,0.3c0.1,0.2,0.5,0.3,0.9,0.3c0.4,0.0,0.8,0.1,1.0,0.3c0.2,0.2,0.6,0.3,0.8,0.3c0.5,0.0,2.0,0.7,2.2,1.0c0.1,0.1,0.3,0.2,0.6,0.2c0.2,0.0,0.5,0.1,0.6,0.3c0.1,0.2,0.2,0.3,0.4,0.3c0.5,0.0,2.0,0.9,2.8,1.6c0.4,0.4,0.9,0.8,1.0,0.8c0.3,0.0,3.1,2.8,3.1,3.1c0.0,0.1,0.4,0.7,0.9,1.2c0.5,0.6,0.9,1.1,0.9,1.2c0.0,0.1,0.2,0.4,0.5,0.7c0.7,0.7,1.9,3.3,1.9,4.0c0.0,0.3,0.1,0.7,0.3,0.8c0.2,0.1,0.3,0.5,0.3,0.9c0.0,0.4,0.1,0.8,0.3,0.9c0.2,0.2,0.3,0.6,0.3,1.5c0.0,0.9,0.1,1.3,0.3,1.5c0.4,0.4,0.4,10.6,0.0,11.0c-0.2,0.1,-0.3,0.6,-0.4,1.2c-0.0,0.5,-0.1,0.9,-0.3,1.0c-0.1,0.0,-0.6,-0.1,-1.1,-0.2z',
-  });</span>
+  });</b>
 
   [...animation code]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-11/08.png" alt="Screen capture of the Chrome browser console displaying the navigation elements created by Scrawl-canvas in the canvas shadow DOM." /></p>
+<p><img src="/assets/lesson-11/08.png" alt="Screen capture of the Chrome browser console displaying the navigation elements created by Scrawl-canvas in the canvas shadow DOM." /></p>
 
 <p>One last thing. If you play with the demo you might notice that when you stop the animation playing, you also halt the updates to the links when you hover over them, or tab through to them on the keyboard. The links still remain active, as can be proved by clicking on them.</p>
 
-<p>One way to overcome this issue is to invoke a render() on the canvas as part of each link entity's <code class="text-sm text-red-800">onEnter()</code> and <code class="text-sm text-red-800">onLeave()</code> functions &mdash; if the animation is not currently playing. Another approach is to stop the delta animation on the Picture entity but keep the animation itself running.</p>
+<p>One way to overcome this issue is to invoke a render() on the canvas as part of each link entity's <code><b>onEnter()</b></code> and <code><b>onLeave()</b></code> functions &ndash; if the animation is not currently playing. Another approach is to stop the delta animation on the Picture entity but keep the animation itself running.</p>
 
 <p>Like everything in the Javascript world, there's many different ways to make something happen!</p>
 
-<h3>Over to you...</h3>
+<h3 tabindex="0">Over to you...</h3>
 
 <p>The complete code for this demo can be found in the embedded CodePen below, or see the demo on CodePen at this link: <a href="https://codepen.io/kaliedarik/pen/jOLqPvd">https://codepen.io/kaliedarik/pen/jOLqPvd</a></p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">Try adding some more links to Shakespeare plays.</li>
-  <li class="mb-2">Can you make the color of the &lt;canvas> element background, and of the links, change dependent on the value for the <code class="text-sm text-red-800">prefers-color-scheme</code> user preference?</li>
-  <li class="mb-2">Refactor the code so that when the user halts the animation (by any method) the image stops revolving but the links remain animated.</li>
+<ul class="disc">
+  <li>Try adding some more links to Shakespeare plays.</li>
+  <li>Can you make the color of the ‹canvas› element background, and of the links, change dependent on the value for the <code><b>prefers-color-scheme</b></code> user preference?</li>
+  <li>Refactor the code so that when the user halts the animation (by any method) the image stops revolving but the links remain animated.</li>
 </ul>
 
 <iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas v8 - how to make the canvas element accessible" src="https://codepen.io/kaliedarik/embed/jOLqPvd?default-tab=result&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">

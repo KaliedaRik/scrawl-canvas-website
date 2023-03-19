@@ -1,38 +1,40 @@
 <h2>Issue</h2>
 
-<p>We need to design a canvas animation or infographic which we can adapt to display in a range of differently shaped containers &mdash; from wide "banner" displays to tall "skyscraper" scenes.</p>
+<p>We need to design a canvas animation or infographic which we can adapt to display in a range of differently shaped containers &ndash; from wide "banner" displays to tall "skyscraper" scenes.</p>
 
 <h2>Solution</h2>
 
-<p>Scrawl-canvas includes functionality to check the current dimensions of a &lt;canvas> element and, if needed, run hook functions whenever the shape of the element changes.</p>
+<p>Scrawl-canvas includes functionality to check the current dimensions of a ‹canvas> element and, if needed, run hook functions whenever the shape of the element changes.</p>
 
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script type="module">
+<pre><code>‹script type="module"›
 
   import * as scrawl from [... wherever ...];
+
+  <ins>// Namespacing boilerplate</ins>
+  const namespace = 'sizing-demo';
+  const name = n => `${namespace}-${n}`
 
   let canvas = scrawl.library.canvas['canvas-id-value'];
 
   canvas.set({
-    isComponent: true,
-    checkForResize: true,
 
-    <span class="italic text-xs text-gray-700">// (width &divide; height) ratio breakpoints</span>
-    <span class="text-red-800">breakToBanner: 3,
+    <ins>// (width &divide; height) ratio breakpoints</ins>
+    <b>breakToBanner: 3,
     breakToLandscape: 1.5,
     breakToPortrait: 0.65,
-    breakToSkyscraper: 0.35,</span>
+    breakToSkyscraper: 0.35,</b>
 
-    <span class="italic text-xs text-gray-700">// (width &times; height) area breakpoints</span>
-    <span class="text-red-800">breakToSmallest: 100000,
+    <ins>// (width &times; height) area breakpoints</ins>
+    <b>breakToSmallest: 100000,
     breakToSmaller: 150000,
     breakToLarger: 200000,
-    breakToLargest: 300000,</span>
+    breakToLargest: 300000,</b>
   });
 
   // Create a Phrase entity
   const mytext = scrawl.makePhrase({
 
-    name: 'display-shape-text',
+    name: name('my-text'),
 
     start: ['center', 'center'],
     handle: ['center', 'center'],
@@ -44,10 +46,10 @@
     fillStyle: 'black',
   });
 
-  <span class="italic text-xs text-gray-700">// Set and/or update shape and area functions via the set() function:</span>
+  <ins>// Set and/or update shape and area functions via the set() function:</ins>
   canvas.set({
 
-    <span class="text-red-800">actionBannerShape: () => {
+    <b>actionBannerShape: () => {
       mytext.set({
         text: `Canvas display shape: ${canvas.get('displayShape')}`,
         roll: 0,
@@ -72,11 +74,11 @@
 
     actionRegularArea: () =>  mytext.set({ size: '28px' }),
 
-    actionSmallestArea: () =>  mytext.set({ size: '16px' }),</span>
+    actionSmallestArea: () =>  mytext.set({ size: '16px' }),</b>
   });
 
-  <span class="italic text-xs text-gray-700">// We can also set them using dedicated functions:</span>
-  <span class="text-red-800">canvas.setActionPortraitShape(() => {
+  <ins>// We can also set them using dedicated functions:</ins>
+  <b>canvas.setActionPortraitShape(() => {
     mytext.set({
       text: `Canvas display shape: ${canvas.get('displayShape')}`,
       roll: -67.5,
@@ -92,45 +94,44 @@
 
   canvas.setActionLargerArea(() => mytext.set({ size: '34px' }));
 
-  canvas.setActionSmallerArea(() => mytext.set({ size: '22px' }));</span>
+  canvas.setActionSmallerArea(() => mytext.set({ size: '22px' }));</b>
 
-  <span class="italic text-xs text-gray-700">// Create the Display cycle animation</span>
+  <ins>// Create the Display cycle animation</ins>
   const demoAnimation = scrawl.makeRender({
 
-    name: "demo-animation",
+    name: name('animation'),
     target: canvas,
-
-    <span class="italic text-xs text-gray-700">// Manually trigger the display shape functionality after the first render cycle completes.</span>
-    <span class="text-red-800">afterCreated: () => canvas.updateDisplay(),</span>
   });
-&lt;/script></code></pre>
+‹/script›
+</code></pre>
 
 <h2>Discussion</h2>
 
-<p>There are some common situations, for instance when developing adverts for a marketing campaign, where the campaign assets &mdash; such as a &lt;canvas>-generated infographic &mdash; cannot know ahead of time the sort of environment in which it will be displayed to the user. At one extreme, it may need to appear in a slot four times wider than it is high; at the other extreme the space given to it might be four times higher than it is wider.</p>
+<p>There are some common situations, for instance when developing adverts for a marketing campaign, where the campaign assets &ndash; such as a ‹canvas›-generated infographic &ndash; cannot know ahead of time the sort of environment in which it will be displayed to the user. At one extreme, it may need to appear in a slot four times wider than it is high; at the other extreme the space given to it might be four times higher than it is wider.</p>
 
 <p>Scrawl-canvas understands the concepts of:</p> 
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800">display shape</code>, essentially, the ratio of the &lt;canvas> element's width to its height; we can use five different shapes &mdash; 'banner', 'landscape', 'rectangle', 'portrait', and 'skyscraper'</li>
-  <li class="mb-2"><code class="text-sm text-red-800">display area</code>, which is the &lt;canvas> element's area (width * height) &mdash; 'largest', 'larger', 'regular', 'smaller', and 'smallest'</li>
+<ul class="disc">
+  <li><code><b>display shape</b></code>, essentially, the ratio of the ‹canvas› element's width to its height; we can use five different shapes &ndash; 'banner', 'landscape', 'rectangle', 'portrait', and 'skyscraper'</li>
+  <li><code><b>display area</b></code>, which is the ‹canvas› element's area (width * height) &ndash; 'largest', 'larger', 'regular', 'smaller', and 'smallest'</li>
 </ul>
 
-<p><img class="mx-auto" src="/assets/handle-advert-sizes/scrawl-canvas-shapes.jpg" /></p>
+<p><img src="/assets/handle-advert-sizes/scrawl-canvas-shapes.jpg" /></p>
 
-<p>Once set up, Scrawl-canvas will check a &lt;canvas> element's dimensions whenever they change and, if the elements dimensions or area change sufficiently, it will invoke functions detailing the changes required to adapt the displayed scene to meet the needs of its new environment. Changes can be anything, for instance:</p>
+<p>Once set up, Scrawl-canvas will check a ‹canvas> element's dimensions whenever they change and, if the elements dimensions or area change sufficiently, it will invoke functions detailing the changes required to adapt the displayed scene to meet the needs of its new environment. Changes can be anything, for instance:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">moving entitys into new positions</li>
-  <li class="mb-2">loading different image assets to be used by Picture entitys</li>
-  <li class="mb-2">changing entity attributes, such as increasing or decreasing Phrase entity font sizes</li>
-  <li class="mb-2">replacing one set of entitys with another set</li>
-  <li class="mb-2">setting up and/or running different ticker/tween animations</li>
+<ul class="disc">
+  <li>moving entitys into new positions</li>
+  <li>loading different image assets to be used by Picture entitys</li>
+  <li>changing entity attributes, such as increasing or decreasing Phrase entity font sizes</li>
+  <li>replacing one set of entitys with another set</li>
+  <li>setting up and/or running different ticker/tween animations</li>
 </ul>
 
 <h3>Live demos</h3>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><a href="../demo/canvas-034.html" target="_blank">Demo Canvas-034</a> - Determine the displayed shape of the visible canvas; react to changes in the displayed shape</li>
-  <li class="mb-2"><a href="../demo/dom-016.html" target="_blank">Demo DOM-016</a> - Determine the displayed shape of the visible stack; react to changes in the displayed shape</li>
+<ul class="disc">
+  <li>Demo Canvas-034 - Determine the displayed shape of the visible canvas; react to changes in the displayed shape</li>
+  <li>Demo DOM-016 - Determine the displayed shape of the visible stack; react to changes in the displayed shape</li>
+  <li>Demo Modules-006 - Animation observer; Scrollytelling</li>
 </ul>

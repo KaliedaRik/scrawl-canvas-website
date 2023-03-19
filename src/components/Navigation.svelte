@@ -15,6 +15,7 @@
         margin: 1rem auto;
         width: 60%;
         min-width: 300px;
+        border: 0;
     }
     a {
         @apply w-full;

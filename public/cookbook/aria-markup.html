@@ -6,49 +6,51 @@
 
 <h2>Solution</h2>
 
-<p>Set the Scrawl-canvas <code class="text-sm text-red-800">Canvas object</code> wrapper's <code class="text-sm text-red-800">title</code>, <code class="text-sm text-red-800">label</code> and <code class="text-sm text-red-800">description</code> attributes to values which accurately describe the canvas scene or animation.</p>
+<p>Set the Scrawl-canvas <code><b>Canvas object</b></code> wrapper's <code><b>title</b></code>, <code><b>label</b></code> and <code><b>description</b></code> attributes to values which accurately describe the canvas scene or animation.</p>
 
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script type="module">
+<pre><code>‹script type="module"›
 
   import * as scrawl from [... wherever ...];
 
   let canvas = scrawl.library.canvas['canvas-id-value'];
 
-  <span class="text-red-800">canvas.set({
+  <b>canvas.set({
 
     label: 'An animated canvas banner',
 
     description: 'The banner includes the company name [NAME] and rotating logo over an animated star scene. Clicking on the logo will navigate the user back to the landing page.',
 
     title: 'Company [NAME] welcome banner',
-  });</span>
-&lt;/script></code></pre>
+  });</b>
+‹/script›
+</code></pre>
 
 <h2>Discussion</h2>
 
-<p>Scrawl-canvas performs extensive preparation on every &lt;canvas> element it encounters. This includes generating a shadow-DOM between the element's opening and closing tags, and supplying ARIA-labelled &lt;div> elements to store <code class="text-sm text-red-800">label</code> and <code class="text-sm text-red-800">description</code> attribute text.</p>
+<p>Scrawl-canvas performs extensive preparation on every ‹canvas› element it encounters. This includes generating a shadow-DOM between the element's opening and closing tags, and supplying ARIA-labelled ‹div> elements to store <code><b>label</b></code> and <code><b>description</b></code> attribute text.</p>
 
-<p>The content of the ARIA attributes can be set on the &lt;canvas> element, as follows:</p>
+<p>The content of the ARIA attributes can be set on the ‹canvas› element, as follows:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><b>label</b> - applied to an (offscreen) &lt;div> element, which is referenced by the &lt;canvas> element using the <code class="text-sm text-red-800">aria-labelledby</code> attribute.</li>
-  <li class="mb-2"><b>description</b> - applied to an (offscreen) &lt;div> element, which is referenced by the &lt;canvas> element using the <code class="text-sm text-red-800">aria-describedby</code> attribute.</li>
-  <li class="mb-2"><b>title</b> - applied to the &lt;canvas> element's <code class="text-sm text-red-800">title</code> attribute, which in some browsers will appear as a tooltip when the user hovers the mouse/pointer cursor over the canvas scene.</li>
+<ul class="disc">
+  <li><b>label</b> - applied to an (offscreen) ‹div> element, which is referenced by the ‹canvas› element using the <code><b>aria-labelledby</b></code> attribute.</li>
+  <li><b>description</b> - applied to an (offscreen) ‹div> element, which is referenced by the ‹canvas› element using the <code><b>aria-describedby</b></code> attribute.</li>
+  <li><b>title</b> - applied to the ‹canvas› element's <code><b>title</b></code> attribute, which in some browsers will appear as a tooltip when the user hovers the mouse/pointer cursor over the canvas scene.</li>
 </ul>
 
 <h3>Alternative methods</h3>
 
 <p>Another approach is to supply details of the canvas display directly between its opening and closing tags. The content can be (almost) any valid HTML markup. In situations where the user's browser or device declines to display the canvas, this content will be displayed as an alternative.</p>
 
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;canvas id="mycanvas" title="Welcome banner">
+<pre><code>‹canvas id="mycanvas" data-scrawl-canvas title="Welcome banner"›
 
-  &lt;p>
+  ‹p›
     An animated canvas banner. The banner includes the company name [NAME] 
     and rotating logo over an animated star scene. Clicking on the logo will 
     navigate the user back to the landing page.
-  &lt;/p>
+  ‹/p›
 
-&lt;/canvas></code></pre>
+‹/canvas›
+</code></pre>
 
 <p>Scrawl-canvas will never overwrite pre-existing shadow-DOM content. However, taking this approach means that developers will need to add the ARIA markup manually.</p>
 
@@ -56,8 +58,6 @@
 
 <p class="font-bold">Always review web pages for accessibility using real devices and (where possible) users who routinely access web pages using non-visual devices.</p>
 
-<p>Scrawl-canvas includes functionality to make adding ARIA content to &lt;canvas> elements easier. It does not solve the problem of making that content easy to understand and navigate.</p>
+<p>Scrawl-canvas includes functionality to make adding ARIA content to ‹canvas› elements easier. It does not solve the problem of making that content easy to understand and navigate.</p>
 
 <p>Remember: supplying too much information is as bad as supplying too little information! Always test the generated content before releasing the code to production.</p>
-
-<p class="italic text-red-800">Failing to take the needs of disabled users into account whe designing and deploying websites and apps is against the law in many juristictions. Non-compliance can lead to damages being awarded against the company that owns the site, and the developers/designers who built it.</p>

@@ -1,192 +1,187 @@
 <h2>Issue</h2>
-<p>We need to add Scrawl-canvas functionality to a <a href="https://reactjs.org/">React-based</a> project.</p>
+<p>We need to add Scrawl-canvas ‹canvas› components to a <a href="https://reactjs.org/">React</a> project.</p>
 
 <h2>Solution</h2>
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm"><span class="italic text-xs text-gray-700">... Create a new React project:</span>
 
-$> npx create-react-app react-scrawl-test
+<p>Use the React <code><b>useEffect</b></code> hook to build and manage our Scrawl-canvas animations and infographics.</p>
+
+<p>To demonstrate: in a code terminal of your choice, create a new React project ...</p>
+
+<pre><code><ins>Create new project using Vite:</ins>
+$> yarn create vite react-scrawl-test --template react-ts
 $> cd react-scrawl-test
 
-<span class="italic text-xs text-gray-700">... Add Scrawl-canvas using NPM or Yarn:</span>
+<ins>Add Scrawl-canvas using NPM, Yarn, etc:</ins>
+$> <b>yarn add scrawl-canvas</b>
 
-$> <span class="text-red-800">npm install scrawl-canvas</span>
-
-<span class="italic text-xs text-gray-700">... Then in any component which defines a Scrawl-canvas canvas:</span>
-
-import React, { useEffect } from 'react';
-
-<span class="text-red-800">import * as scrawl from 'scrawl-canvas';</span>
-
-function ComponentName (props) {
-
-    <span class="text-red-800">useEffect(() => {
-
-        let namespace = props.namespace;
-
-        let canvas = scrawl.getCanvas(`#${namespace}`);
-
-        <i>[other setup code here]</i>
-
-        return function cleanup() {
-
-            <i>[other takedown code here]</i>
-
-            canvas.kill();
-        };
-    }, []);</span>
-
-    return (
-        &lt;canvas id={props.namespace}>&lt;/canvas>
-    );
-}
-
-export default ComponentName;
+<ins>Build and run the new project:</ins>
+$> yarn
+$> yarn dev
 </code></pre>
 
-<h2>Discussion</h2>
+<p>To create the demo, we will update a couple of files. This is not necessary in your React application:</p>
 
-<p>Scrawl-canvas plays well with <a href="https://webpack.js.org/">Webpack</a>, which <a href="https://create-react-app.dev/">create-react-app</a> uses out of the box.</p>
+<pre><code><ins>/index.html</ins>
+‹!DOCTYPE html›
+‹html lang="en"›
+  ‹head›
+    ‹meta charset="UTF-8" /›
+    ‹meta name="viewport" content="width=device-width, initial-scale=1.0" /›
+    ‹title›React + Scrawl-canvas‹/title›
+  ‹/head›
+  ‹body›
+    ‹div id="root"›‹/div›
+    ‹script type="module" src="/src/main.tsx"›‹/script›
+  ‹/body›
+‹/html›
 
-<p>Once installed in the project (using NPM or Yarn), Scrawl-canvas can be added to any component using the <code class="text-sm text-red-800">import * as scrawl from 'scrawl-canvas';</code> statement. Scrawl-canvas will initialize itself the first time this statement is encountered; thereafter the statement will return the scrawl object.</p>
+<ins>/src/main.tsx</ins>
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
 
-<p>The <b>scrawl object</b> should be treated as 'global', thus artefacts and assets created for a particular canvas display should be namespaced to minimize potential naming conflicts and to make debugging the code a bit easier.</p>
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  ‹React.StrictMode›
+    ‹App /›
+  ‹/React.StrictMode›,
+)
 
-<p>Inside the component, use the <code class="text-sm text-red-800">useEffect</code> <a href="https://reactjs.org/docs/hooks-effect.html">React hook</a> to build the canvas display. This hook returns a function which will be run immediately before the component unmounts; code to clean up the scrawl object should be placed here.</p>
+<ins>/src/App.tsx</ins>
+import { useState } from 'react';
+<b>import { Square, Circle } from './SimpleCanvases';</b>
 
-<h3>Common questions</h3>
+const App = () => {
 
-<p><b>My React project doesn't use Webpack - can I still use Scrawl-canvas?</b>
-	<br />Scrawl-canvas has been tested against the Webpack and <a href="https://rollupjs.org/guide/en/">Rollup</a> bundlers. Use with other bundlers (<a href="https://github.com/google/closure-compiler/wiki">Google Closure</a>, <a href="https://parceljs.org/">Parcel</a>, <a href="http://browserify.org/">Browserify</a>, <a href="https://fuse-box.org/">FuseBox</a>, etc) is a country still waiting to be explored.</p>
+  const [showSquare, setShowSquare] = useState(true);
 
-<h3>Example</h3>
+  const changeCanvas = () => setShowSquare(!showSquare);
 
-<p>App.js</p>
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">import React from 'react';
+  return (
+    ‹div className="App"›
 
-import TestCanvas from './TestCanvas';
+      ‹div style={{width: '100%', marginBottom: '1em'}}›
+        ‹button onClick={changeCanvas}›Swap canvas‹/button›
+      ‹/div›
 
-const gridStyle = {
-    display: 'grid',
-
-    gridTemplateColumns: '1fr 1fr',
-    gridColumnGap: '1rem',
-
-    gridTemplateRows: 'auto',
-    gridRowGap: '1rem',
-
-    justifyItems: 'stretch',
-    alignItems: 'stretch',
-
-    padding: '0.5rem',
-
-    border: '1px solid black',
-
-    backgroundColor: 'lemonchiffon',
-    overflow: 'hidden',
-    resize: 'horizontal',
-
-    width: '60%',
-    height: '440px',
-    minWidth: '300px',
-
-    margin: '1rem',
+      {showSquare ? (
+        <b>‹Square namespace="square-canvas" /›</b>
+      ) : (
+        <b>‹Circle namespace="circle-canvas" /›</b>
+      )}
+    ‹/div›
+  )
 }
 
-function App() {
-
-    return (
-        &lt;div className="App">
-
-            &lt;div style={gridStyle}>
-                &lt;TestCanvas namespace="mycanvas-1" fit="cover" />
-                &lt;TestCanvas namespace="mycanvas-2" fit="contain" />
-                &lt;TestCanvas namespace="mycanvas-3" fit="fill" />
-                &lt;TestCanvas namespace="mycanvas-4" fit="none" />
-            &lt;/div>
-
-        &lt;/div>
-    );
-}
-
-export default App;
+export default App
 </code></pre>
 
-<p>TestCanvas.js</p>
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">import React, { useEffect } from 'react';
+<p>For the purposes of this demo, we will create two ‹canvas› components. It is important that each component has a unique namespace &ndash; <b>failure to properly namespace Scrawl-canvas components can lead to memory leaks!</b></p>
 
-import * as scrawl from 'scrawl-canvas';
+<p>Note also that React will, by intention, remount components during development. This, too, can lead to (apparent) memory leaks &ndash; by generating multiple copies of SC objects and storing them in the SC library &ndash; which we have to guard against. For more information on this behaviour see this <a href="https://stackoverflow.com/questions/72238175/why-useeffect-running-twice-and-how-to-handle-it-well-in-react">StackOverflow answer</a> and this explanation in the <a href="https://beta.reactjs.org/learn/synchronizing-with-effects">React documentation</a>.</p>
 
-const canvasStyle = {
-    borderRadius: '0.5rem',
-    backgroundColor: 'black',
-    width: '100%',
-    height: '100%',
-    maxHeight: '200px',
-    border: '1px solid red',
+<p>Scrawl-canvas infographics and animations should always be built inside a React <code><b>useEffect</b></code> hook:</p>
+
+<pre><code><ins>/src/SimpleCanvases.tsx</ins>
+import { useEffect } from 'react';
+
+<b>import {
+  getCanvas,
+  library,
+  makeBlock,
+  makeWheel,
+  makeRender,
+} from 'scrawl-canvas';</b>
+
+interface SimpleCanvasProps {
+  namespace: string;
 };
 
-function TestCanvas (props) {
+export const Square = (props: SimpleCanvasProps) => {
 
-    useEffect(() => {
+  <ins>// Namespace boilerplate - required to help prevent memory leaks</ins>
+  const { namespace } = props;
+  const name = (n: string) => `${namespace}-${n}`;
 
-        let canvas, animation,
-            group = scrawl.library.group;
+  useEffect(() => {
 
-        let namespace = props.namespace,
-            fit = props.fit || 'none';
+    <ins>// Retrieve our canvas element once it has rendered</ins>
+    <b>const canvas = getCanvas(namespace);</b>
 
-        canvas = scrawl.getCanvas(`#${namespace}`);
+    <ins>// Prevent polluting the SC library by checking if objects already exist</ins>
+    if (canvas && !library.entity[name('block')]) {
 
-        canvas.set({
-            backgroundColor: 'honeydew',
-            fit: fit,
-            checkForResize: true,
-        });
+      <b>makeBlock({
+        name: name('block'),
+        start: ['center', 'center'],
+        handle: ['center', 'center'],
+        dimensions: ['50%', '50%'],
+        delta: {
+          roll: 0.4,
+        },
+      });
 
-        canvas.setBase({
-            width: 600,
-            height: 300,
-        });
+      makeRender({
+        name: name('animation'),
+        target: canvas,
+      });</b>
+    }
+  }, []);
 
-        scrawl.makePhrase({
+  <b>return (
+    ‹canvas 
+      id={namespace}
+      width="400"
+      height="400"
+      data-base-background-color="aliceblue"
+    ›‹/canvas›
+  );</b>
+};
 
-            name: `${namespace}-phrase`,
+export const Circle = (props: SimpleCanvasProps) => {
 
-            text: `Fit: ${fit}`,
+  const { namespace } = props;
+  const name = (n: string) => `${namespace}-${n}`;
 
-            width: "80%",
-            justify: 'center',
+  useEffect(() => {
 
-            startX: 'center',
-            startY: '60%',
+    const canvas = getCanvas(namespace);
 
-            handleX: 'center',
-            handleY: 'center',
+    if (canvas && !library.animation[name('animation')]) {
 
-            font: '7em Garamond, sans-serif',
-        });
+      makeWheel({
+        name: name('wheel'),
+        start: ['center', 'center'],
+        handle: ['center', 'center'],
+        radius: '25%',
+        startAngle: 30,
+        endAngle: -30,
+        delta: {
+          roll: -0.6,
+        },
+        includeCenter: true,
+      });
 
-        animation = scrawl.makeRender({
+      makeRender({
+        name: name('animation'),
+        target: canvas,
+      });
+    }
+  }, []);
 
-            name: `${namespace}-render`,
-            target: canvas,
-        });
+  return (
+    ‹canvas 
+      id={namespace}
+      width="400"
+      height="400"
+      data-base-background-color="aliceblue"
+    ›‹/canvas›
+  );
+};
 
-        return function cleanup() {
-
-            animation.kill();
-            group[canvas.base.name].kill(true);
-            canvas.kill();
-        };
-    }, []);
-
-    return (
-        &lt;div>
-            &lt;canvas id={props.namespace} style={canvasStyle}>&lt;/canvas>
-        &lt;/div>
-    );
-}
-
-// Exports
-export default TestCanvas;
+<ins>// To help us debug SC memory leaks, console.log the SC library</ins>
+<b>console.log(library);</b>
 </code></pre>
+
+<p>Click on the <code>Swap canvas</code> button several times to check that the code is not causing memory leaks. The console output should look something like this:</p>
+
+<p><img src="/assets/add-to-react/01.png" /></p>

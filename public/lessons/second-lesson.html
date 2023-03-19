@@ -1,52 +1,17 @@
-<style>
-  .code-block {
-    border-color: #e2e8f0;
-    background-color: #f7fafc;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    margin-bottom: 1rem;
-    overflow-x: auto;
-    padding: 1rem;
-  }
-  .code-block code {
-    line-height: 1.25;
-    color: #4a5568;
-    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-    font-size: 0.875rem;
-  }
-  .code-block .redcode {
-    color: #9b2c2c;
-  }
-  .code-block .heavycode {
-    font-weight: 700;
-    color: #9b2c2c;
-  }
-  .code-block .comment {
-    color: #4a5568;
-    font-size: 0.75rem;
-  }
-  .image-grid {
-    margin: 0;
-    margin-bottom: 1rem;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));  
-  }
-  .small-lists {
-    font-size: 0.875rem;
-  }
-</style>
+<h3 tabindex="0">Images in canvases</h3>
 
-<p>The &lt;canvas> element comes into its own when dealing with images. It can take image data from a variety of sources &mdash; &lt;img> elements, &lt;video> elements, even other &lt;canvas> elements &mdash; then manipulate that data and and display it in its own Display graphic.</p>
+<p>The ‹canvas› element comes into its own when dealing with images. It can take image data from a variety of sources &ndash; ‹img› elements, ‹video› elements, even other ‹canvas› elements &ndash; then manipulate that data and and display it in its own Display graphic.</p>
 
-<p>However the native Canvas API code for managing all this magic can be very difficult to work with &mdash; especially when it comes to working with <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images">responsive images</a>.</p>
+<p>However the native Canvas API code for managing all this magic can be very difficult to work with &ndash; especially when it comes to working with <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images">responsive images</a>.</p>
 
 <p>In this lesson we will briefly discuss the following:</p>
 
-<ol class="list-decimal list-outside ml-4 mb-4">
-  <li class="mb-2">Make the &lt;canvas> element responsive</li>
-  <li class="mb-2">Display an image in the canvas</li>
-  <li class="mb-2">Include existing images from the web page in the canvas</li>
-  <li class="mb-2">Handle responsive images</li>
+<ol class="ordered">
+  <li>Make the ‹canvas› element responsive</li>
+  <li>Display an image in the canvas</li>
+  <li>Include existing images from the web page in the canvas</li>
+  <li>Handle responsive images</li>
+  <li><a href="https://en.wikipedia.org/wiki/Progressive_enhancement">Progressive enhancement</a> considerations</li>
 </ol>
 
 <p>This Codepen demonstrates the final results of the lesson:</p>
@@ -56,19 +21,21 @@
   (<a href='https://codepen.io/kaliedarik'>@kaliedarik</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
-<h2>Make the canvas element responsive</h2>
+<h3 tabindex="0">Make the canvas element responsive</h3>
 
-<p>One of the major drawbacks of using &lt;canvas> elements in a webpage is that they are, by definition, static images with a defined drawing area. Let's examine the following code:</p>
+<p>One of the major drawbacks of using ‹canvas› elements in a webpage is that they are, by definition, static images with a defined drawing area. Let's examine the following code:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
-  &lt;meta charset='utf-8'>
-  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+<p><ins><b>To note:</b> if you're tempted to copy-paste the following code, be aware that we've replaced all the <code><</code> characters with <code>‹</code> (single left-pointing angle quotation) characters; similarly <code>›</code> replaces <code>></code>. Typing the code out by hand is often the easiest way to learn about it.</ins></p>
 
-  &lt;title>Scrawl-canvas lesson 2&lt;/title>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
+  ‹meta charset='utf-8'›
+  ‹meta name='viewport' content='width=device-width,initial-scale=1'›
 
-  &lt;style>
+  ‹title›Scrawl-canvas lesson 2‹/title›
+
+  ‹style›
     .canvas-host {
       overflow: hidden;
       resize: both;
@@ -85,22 +52,22 @@
     canvas {
       background-color: lemonchiffon;
     }
-  &lt;/style>
-&lt;/head>
+  ‹/style›
+‹/head›
 
-&lt;body>
+‹body›
 
-  &lt;div class="canvas-host">
-    &lt;canvas 
+  ‹div class="canvas-host"›
+    ‹canvas 
       id="my-canvas"
       data-scrawl-canvas
-    >&lt;/canvas>
-  &lt;/div>
+    ›‹/canvas›
+  ‹/div›
 
-  &lt;script type="module">
-    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.9.10";
+  ‹script type="module"›
+    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.10.0";
 
-    <i class="comment">// Setup scene</i>
+    <ins>// Setup scene</ins>
     const canvas = scrawl.library.canvas["my-canvas"];
     const namespace = 'lesson-2';
     const name = (n) => `${namespace}-${n}`;
@@ -122,73 +89,73 @@
       method: 'fillThenDraw',
     });
 
-    <i class="comment">// Display cycle animation</i>
+    <ins>// Display cycle animation</ins>
     scrawl.makeRender({
       name: name('render'),
       target: canvas
     });
-  &lt;/script>
+  ‹/script›
 
-&lt;/body>
-&lt;/html>
+‹/body›
+‹/html›
 </code></pre>
 
 <p>The above code, when we run it (see Lesson 1 for details on how to run the code), shows us a user-resizable container (with the dark background) containing a canvas element which displays a "Hello, world!" message.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-02/01.png" /></p>
+<p><img src="/assets/lesson-02/01.png" alt="An unresponsively-sized canvas" /></p>
 
 <p>If we resize the canvas container, we can see that the canvas sticks firmly to the top-left corner of the container. What we need to do is get the canvas element to resize alongside the container.</p>
 
-<p class="text-sm text-gray-700"><i><b>Known issue:</b> we're using a user-resizable &lt;div> element as our canvas container in this code, for demonstration purposes. While Chrome and Firefox browsers are happy with this trick, Safari (currently) refuses to allow the user to resize the container, for reasons unknown and unknowable.</i></p>
+<p><ins><b>Known issue:</b> we're using a user-resizable ‹div› element as our canvas container in this code, for demonstration purposes. While Chrome and Firefox browsers are happy with this trick, Safari (currently) refuses to allow the user to resize the container, for reasons unknown and unknowable.</ins></p>
 
 <p>Let's try to do this using CSS:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
   [...]
 
-  &lt;style>
+  ‹style›
     .canvas-host {
       [...]
     }
     canvas {
       background-color: lemonchiffon;
-      <span class="redcode">width: 100%;
-      height: 100%;</span>
+      <b>width: 100%;
+      height: 100%;</b>
     }
-  &lt;/style>
-&lt;/head>
+  ‹/style›
+‹/head›
 
-&lt;body>
+‹body›
 
-  &lt;div class="canvas-host">
-    &lt;canvas 
+  ‹div class="canvas-host"›
+    ‹canvas 
       id="my-canvas"
       data-scrawl-canvas
-    >&lt;/canvas>
-  &lt;/div>
+    ›‹/canvas›
+  ‹/div›
 
-  &lt;script type="module">
+  ‹script type="module"›
     [...]
-  &lt;/script>
+  ‹/script›
 
-&lt;/body>
-&lt;/html>
+‹/body›
+‹/html›
 </code></pre>
 
 <p>The result? Nothing changes.</p>
 
-<p>If we were doing this to a normal canvas element, not being controlled by Scrawl-canvas, the result would be a canvas that stretches to match the container's dimensions &mdash; which in turn leads to the canvas display becoming distorted ... not the result we want!</p>
+<p>If we were doing this to a raw ‹canvas› element, not being controlled by Scrawl-canvas, the above CSS code would give us a canvas that stretches to match the ‹div› container's dimensions &ndash; which in turn leads to the canvas display becoming distorted ... not the result we want!</p>
 
-<p>Instead, Scrawl-canvas includes functionality to create responsive canvas elements which act more like the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit">object-fit</a> CSS property. We can invoke this functionality by adding a <code class="text-sm text-red-800">data-</code> attribute to the canvas element, like this:</p>
+<p>Instead, Scrawl-canvas includes functionality to create responsive canvas elements which act more like the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit">object-fit</a> CSS property. We can invoke this functionality by adding a <code><b>data-</b></code> attribute to the ‹canvas› element, like this:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
   [...]
 
-  &lt;style>
+  ‹style›
     .canvas-host {
       [...]
     }
@@ -197,61 +164,61 @@
 <s>      width: 100%;
       height: 100%;</s>
     }
-  &lt;/style>
-&lt;/head>
+  ‹/style›
+‹/head›
 
-&lt;body>
+‹body>
 
-  &lt;div class="canvas-host">
-    &lt;canvas 
+  ‹div class="canvas-host"›
+    ‹canvas 
       id="my-canvas"
       data-scrawl-canvas
-      <span class="redcode">data-is-responsive="true"</span>
-    >&lt;/canvas>
-  &lt;/div>
+      <b>data-is-responsive="true"</b>
+    ›‹/canvas›
+  ‹/div›
 
-  &lt;script type="module">
+  ‹script type="module"›
     [...]
-  &lt;/script>
+  ‹/script›
 
-&lt;/body>
-&lt;/html>
+‹/body›
+‹/html›
 </code></pre>
 
 <p>This gives us a canvas element which fills its container's entire space, and does not distort when the container's dimensions change.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-02/02.png" /></p>
+<p><img src="/assets/lesson-02/02.png" alt="A basic, responsively-sized canvas" /></p>
 
-<p>Our canvas is responsive. However this may not be what we want &mdash; particularly if we are using a mix of absolutely, and relatively, dimensioned and positioned entitys in the canvas scene.</p>
+<p>Our canvas is responsive. However this may not be what we want &ndash; particularly if we are using a mix of absolutely, and relatively, dimensioned and positioned entitys in the canvas scene.</p>
 
-<p>To solve this problem, we could code our scene using only relative values. A better solution is to set the canvas's internal dimensions to known, fixed px values and <b>fit</b> the result into the canvas display:</p>
+<p>To solve this problem, we could code our scene using only relative values. A better solution would be to set the canvas's internal dimensions to known, fixed px values and <b>fit</b> the result into the ‹canvas› display:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
   [...]
 
-  &lt;style>
+  ‹style›
     [...]
-  &lt;/style>
-&lt;/head>
+  ‹/style›
+‹/head›
 
-&lt;body>
+‹body›
 
-  &lt;div class="canvas-host">
-    &lt;canvas 
+  ‹div class="canvas-host"›
+    ‹canvas 
       id="my-canvas"
       data-scrawl-canvas
       data-is-responsive="true"
-      <span class="redcode">data-base-width="600" 
+      <b>data-base-width="600" 
       data-base-height="300" 
 
-      <i class="comment">Allowable values are: 'none', 'cover', 'contain' and 'fill'</i>
-      data-fit="contain"</span>
-    >&lt;/canvas>
-  &lt;/div>
+      <ins>‹!-- Allowable values are: 'none', 'cover', 'contain' and 'fill' --›</ins>
+      data-fit="contain"</b>
+    ›‹/canvas›
+  ‹/div›
 
-  &lt;script type="module">
+  ‹script type="module"›
     [...]
 
     scrawl.makePhrase({
@@ -262,155 +229,137 @@
       width: '100%',
 
 <s>      font: '2em bold Garamond, sans-serif',</s>
-      <span class="redcode">font: '4.5em bold Garamond, sans-serif',</span>
+      <b>font: '4.5em bold Garamond, sans-serif',</b>
       text: 'Hello, world!',
       justify: 'center',
 
       fillStyle: 'lightblue',
 <s>      lineWidth: 1,</s>
-      <span class="redcode">lineWidth: 2,</span>
+      <b>lineWidth: 2,</b>
       strokeStyle: 'blue',
       method: 'fillThenDraw',
     });
 
     [...]
-  &lt;/script>
+  ‹/script›
 
-&lt;/body>
-&lt;/html>
+‹/body›
+‹/html›
 </code></pre>
 
 <p>Now that we have a fixed-dimensions internal canvas we can design our scene with that in mind. We increased our Phrase entity's font size and line width to make it larger and clearer. The result is a properly responsive canvas that will automatically adapt to the web page environment in which it lives.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-02/03.png" /></p>
+<p><img src="/assets/lesson-02/03.png" alt="A canvas whose base cell has a fixed size" /></p>
 
-<h2>Display an image in the canvas</h2>
+<h3 tabindex="0">Display an image in the canvas: the Picture entity</h3>
 
-<p>For the following code we can use a set of related images available to us via the CodePen site. You can see these images in action in the CodePen demo above. The full URLs of the images are:</p>
+<p>(Please feel free to use your own sets of images stored on your local device for the following code. Or, alternatively, <a download href="/downloads/SC-lesson-2-assets.zip">download the lesson's assets from this link</a> - <small>10.6MB</small>.)</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-300.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-600.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-900.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-1200.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-1600.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-2000.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-2400.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-2800.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-3200.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-3600.jpg</li>
-  <li class="mb-2 small-lists">https://s3-us-west-2.amazonaws.com/s.cdpn.io/128723/river-4000.jpg</li>
-</ul>
-
-<p><b><i>Please feel free to use your own sets of images stored on your local device</i></b> &mdash; the code will run a lot quicker!</p>
-
-<h3>The Picture entity</h3>
-
-<p>Images are handled by a Scrawl-canvas entity called a <b>Picture</b>. This entity is similar to the Block entity we met in Lesson 1 &mdash; it requires a width and height value, and we can position it on the canvas in a similar way.</p>
+<p>Images are handled by a Scrawl-canvas entity called a <b>Picture</b>. This entity is similar to the Block entity we met in Lesson 1 &ndash; it requires a width and height value, and we can position it on the canvas in a similar way.</p>
 
 <p>The main difference is that instead of displaying a color or gradient, the Picture entity displays image data.</p>
 
-<p>We define a Picture entity using the <code class="text-sm text-red-800">makePicture</code> factory function. We tell the entity where to get its image data by supplying an url to the image file in the <code class="text-sm text-red-800">imageSource</code> attribute:</p>
+<p>We define a Picture entity using the <code><b>makePicture</b></code> factory function. We tell the entity where to get its image data by supplying an url to the image file in the <code><b>imageSource</b></code> attribute:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [...]
 
-  <span class="text-red-800">scrawl.makePicture({
+  <b>scrawl.makePicture({
 
     name: name('image'),
-    imageSource: 'path/to/river-4000.jpg',
+    imageSource: 'path/to/river.webp',
 
     start: ['center', 'center'],
     handle: ['center', 'center'],
     dimensions: [600, 450],
-  });</span>
+  });</b>
 
   [...]
-&lt;/script>
+‹/script›
 </code></pre>
 
 <p>The result is ... unexpected:</p>
 
-<p><img class="mx-auto" src="/assets/lesson-02/04.png" /></p>
+<p><img src="/assets/lesson-02/04.png" alt="A canvas dispalying the top-left pixel of an image asset in a picture entity" /></p>
 
-<p>When we define the Picture entity, it is not enough to give it <b>start</b> (<code class="text-sm text-red-800">startX, startY</code>) and <b>dimensions</b> (<code class="text-sm text-red-800">width, height</code>) values. We also need to tell it <i>which part of the image</i> we want to copy over to the canvas.</p>
+<p>When we define the Picture entity, it is not enough to give it <b>start</b> (<code><b>startX, startY</b></code>) and <b>dimensions</b> (<code><b>width, height</b></code>) values. We also need to tell it <i>which part of the image</i> we want to copy over to the canvas.</p>
 
-<p>We do this using a set of <b>copy</b> attributes: <code class="text-sm text-red-800">copyStartX, copyStartY, copyWidth, copyHeight</code> &mdash; which take the same types of values as the start and dimensions attributes.</p>
+<p>We do this using a set of <b>copy</b> attributes: <code><b>copyStartX, copyStartY, copyWidth, copyHeight</b></code> &ndash; which take the same types of values as the start and dimensions attributes.</p>
 
-<p>By default the <b>copyStart</b> values are set to <code class="text-sm text-red-800">0</code>, while the <b>copyDimensions</b> values are set to <code class="text-sm text-red-800">1</code> &mdash; what we are seeing above is the top-left pixel of our image, spread over a 600px &times; 450px rectangle on the canvas.</p>
+<p>By default the <b>copyStart</b> values are set to <code><b>0</b></code>, while the <b>copyDimensions</b> values are set to <code><b>1</b></code> &ndash; what we are seeing above is the top-left pixel of our image, spread over a 600px &times; 450px rectangle on the canvas.</p>
 
 <p>Let's fix this now:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [...]
 
   scrawl.makePicture({
 
     name: name('image'),
-    imageSource: 'path/to/river-4000.jpg',
+    imageSource: 'path/to/river.webp',
 
     start: ['center', 'center'],
     handle: ['center', 'center'],
     dimensions: [600, 450],
-    <span class="text-red-800">copyDimensions: ['100%', '100%'],</span>
+    <b>copyDimensions: ['100%', '100%'],</b>
   });
 
   [...]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-02/05.png" /></p>
+<p><img src="/assets/lesson-02/05.png" alt="A canvas dispalying a very large image asset in a picture entity" /></p>
 
-<h2>Include existing images from the web page in the canvas</h2>
+<h3 tabindex="0">Include existing images from the web page in the canvas</h3>
 
-<p>While importing an image when defining the Picture entity is useful, it is not the best approach to take. Image data properly belongs in an &lt;img> element, preferably defined in the <b>html</b> file.</p>
+<p>While importing an image when defining the Picture entity is useful, it is not the best approach to take. Image data properly belongs in an ‹img› element, preferably defined in the <b>html</b> file.</p>
 
-<p>Scrawl-canvas uses the <code class="text-sm text-red-800">scrawl.importDomImage</code> function to get image data from &lt;img> elements. Let's update our code to make this happen:</p>
+<p>Scrawl-canvas uses the <code><b>scrawl.importDomImage</b></code> function to get image data from ‹img› elements. Let's update our code to make this happen:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
   [...]
 
-  &lt;style>
+  ‹style›
     [...]
 
-    <i class="comment">/* To hide the &lt;img> element on the page */</i>
-    <span class="redcode">.image-hold {
+    <ins>/* To hide the ‹img› element on the page */</ins>
+    <b>.image-hold {
       height: 0;
       overflow: hidden;
-    }</span>
-  &lt;/style>
-&lt;/head>
+    }</b>
+  ‹/style›
+‹/head›
 
-&lt;body>
+‹body›
 
   [... canvas]
 
-  <span class="redcode">&lt;div class="image-hold">
-    <i class="comment">&lt;!-- Each image should be given its own unique ID value --></i>
-    &lt;img 
+  <b>‹div class="image-hold"›
+    <ins>‹!-- Each image should be given its own unique ID value --></ins>
+    ‹img 
       <b>id="river" 
       class="my-demo-images" </b>
       alt="Image used in canvas element" 
-      src="path/to/river-4000.jpg" />
-  &lt;/div></span>
+      src="path/to/river.webp" /›
+  ‹/div›</b>
 
-  &lt;script type="module">
+  ‹script type="module"›
     [...]
 
-    <i class="comment">// Argument is any valid CSS selector string</i>
-    <span class="redcode">scrawl.importDomImage(<b>'.my-demo-images'</b>);</span>
+    <ins>// Argument is any valid CSS selector string</ins>
+    <b>scrawl.importDomImage(<strong>'.my-demo-images'</strong>);</b>
 
     scrawl.makePicture({
 
       name: name('image'),
-<s>      imageSource: 'path/to/river-4000.jpg',</s>
+<s>      imageSource: 'path/to/river.webp',</s>
 
-      <i class="comment">// Value is the ID we gave to the image in the HTML code</i>
-      <span class="redcode">asset: <b>'river'</b>,</span>
+      <ins>// Value is the ID we gave to the image in the HTML code</ins>
+      <b>asset: <strong>'river'</strong>,</b>
 
       start: ['center', 'center'],
       handle: ['center', 'center'],
@@ -419,95 +368,154 @@
     });
 
     [...]
-  &lt;/script>
+  ‹/script›
 
-&lt;/body>
-&lt;/html>
+‹/body›
+‹/html›
 </code></pre>
 
-<p>One advantage of using <code class="text-sm text-red-800">scrawl.importDomImage</code> is that it allows us to import many images at once. The function's argument is a normal <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">CSS selector string</a>.</p>
+<p>One advantage of using <code><b>scrawl.importDomImage</b></code> is that it allows us to import many images at once. The function's argument is a normal <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">CSS selector string</a>.</p>
 
-<p>When the function completes, each of the images captured by the selector string will be wrapped in a Scrawl-canvas <b>ImageAsset</b> object, and stored in the Scrawl-canvas library in the <code class="text-sm text-red-800">scrawl.library.asset</code> section, keyed by either the &lt;img> element's id value, or its name value, or the file's name if no id or name attribute was supplied for the element.</p>
+<p>When the function completes, each of the images captured by the selector string will be wrapped in a Scrawl-canvas <b>ImageAsset</b> object, and stored in the Scrawl-canvas library in the <code><b>scrawl.library.asset</b></code> section, keyed by either the ‹img› element's id value, or its name value, or the file's name if no id or name attribute was supplied for the element.</p>
 
-<p>We can now assign the image data to our Picture entity using the <code class="text-sm text-red-800">asset</code> attribute, which will accept the ImageAsset object's name String (or the object itself).</p>
+<p>We can now assign the image data to our Picture entity using the <code><b>asset</b></code> attribute, which will accept the ImageAsset object's name String (or the object itself).</p>
 
-<h3>How big is that image in the window?</h3>
+<h3 tabindex="0">How big is that image in the window?</h3>
 
-<p>If we open the browser's console, we can check to see how big our image is. The <code class="text-sm text-red-800">river-4000.jpg</code> file weighs in at <b>6.3 MB</b>, and has dimensions of <b>width: 4160px, height: 3120px</b> &mdash; while this may be exactly what is needed for a user with a large, high definition monitor, it is less than satisfactory for the vast majority of users.</p>
+<p>If we open the browser's console, we can check to see how big our image is. The <code><b>river.webp</b></code> file weighs in at <b>2.9 MB</b>, and has dimensions of <b>width: 4160px, height: 3120px</b> &ndash; while this may be exactly what is needed for a user with a large, high definition monitor, it is less than satisfactory for the vast majority of users.</p>
 
-<p>We need to fix this. The best approach is to make our &lt;img> element responsive by giving it a range of image files to choose from, via the element's <code class="text-sm text-red-800">srcset</code> attribute:</p>
+<p>We need to fix this. The best approach is to make our ‹img› element responsive by giving it a range of image files to choose from, via the element's <code><b>srcset</b></code> attribute:</p>
 
-<pre class="code-block"><code>&lt;div class="image-hold">
-  &lt;img 
+<pre><code>‹div class="image-hold"›
+  ‹img 
     id="river" 
     class="my-demo-images" </b>
     alt="Image used in canvas element" 
-    src="path/to/river-4000.jpg"
-    <span class="redcode">srcset="path/to/river-300.jpg 300w,
-      path/to/river-600.jpg 600w,
-      path/to/river-900.jpg 900w,
-      path/to/river-1200.jpg 1200w,
-      path/to/river-1600.jpg 1600w,
-      path/to/river-2000.jpg 2000w,
-      path/to/river-2400.jpg 2400w,
-      path/to/river-2800.jpg 2800w,
-      path/to/river-3200.jpg 3200w,
-      path/to/river-3600.jpg 3600w,
-      path/to/river-4000.jpg 4000w"</span>
-  />
-&lt;/div>
+    src="path/to/river.webp"
+    <b>srcset="path/to/river-300.webp 300w,
+      path/to/river-600.webp 600w,
+      path/to/river-900.webp 900w,
+      path/to/river-1200.webp 1200w,
+      path/to/river-1600.webp 1600w,
+      path/to/river-2000.webp 2000w,
+      path/to/river-2400.webp 2400w,
+      path/to/river-2800.webp 2800w,
+      path/to/river-3200.webp 3200w,
+      path/to/river-3600.webp 3600w,
+      path/to/river-4000.webp 4000w"</b>
+  /›
+‹/div›
 </code></pre>
 
 <p>We don't need to do anything special in our Javascript code to handle responsive images. When we run the code the most appropriate image from the set will load. If we adjust the size of the browser's viewport (window) then larger images will automatically load as the browser fetches them and makes them available.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-02/06.png" /></p>
+<p><img src="/assets/lesson-02/06.png" alt="A canvas dispalying a responsive image asset in a picture entity" /></p>
 
 <p>There is, however an issue with the current code. You may notice a zoom-like effect when changing the viewport width.</p>
 
-<p>We do not want a "zoom" effect. We need 100% of the image to display in our canvas &mdash; whatever the viewport size may be, or may change to.</p>
+<p>We do not want a "zoom" effect. We need 100% of the image to display in our canvas &ndash; whatever the viewport size may be, or may change to.</p>
 
-<p>The reason why this is happening is because the &lt;img> element's read-only <code class="text-sm text-red-800">naturalWidth</code> and <code class="text-sm text-red-800">naturalHeight</code> attributes are supplying incorrect information about the current image file's image data dimensions. While these attributes can be relied on in most situations, the calculations behind them behave differently with <b>srcset</b> image files.</p>
+<p>The reason why this is happening is because the ‹img› element's read-only <code><b>naturalWidth</b></code> and <code><b>naturalHeight</b></code> attributes are supplying incorrect information about the current image file's image data dimensions. While these attributes can be relied on in most situations, the calculations behind them behave differently with <b>srcset</b> image files.</p>
 
-<p>We can't fix this browser behaviour (because it is mandated in the HTML standards). So instead, for these situations, Scrawl-canvas resorts to a different approach: <b><i>we tell it what each image's dimensions will be</i></b>.</p> 
+<p>We can't fix this browser behaviour (because it is mandated in the HTML standards). So instead, for these situations, Scrawl-canvas resorts to a different approach: <b><i>we tell it what each image file's dimensions will be</i></b>.</p> 
 
-<p>The simplest way to do this by adding a <code class="text-sm text-red-800">data-dimensions</code> attribute to the element. The attribute expects to be given a JSON string containing each image's natural (real) dimensions &mdash; like this:</p>
+<p>The simplest way to do this by adding a <code><b>data-dimensions</b></code> attribute to the element. The attribute expects to be given a JSON string containing each image's natural (real) dimensions &ndash; like this:</p>
 
-<pre class="code-block"><code>&lt;div class="image-hold">
-  &lt;img 
+<pre><code>‹div class="image-hold"›
+  ‹img 
     id="river" 
     class="my-demo-images" </b>
     alt="Image used in canvas element" 
-    src="path/to/river-4000.jpg"
-    srcset="path/to/river-300.jpg 300w,
-      path/to/river-600.jpg 600w,
-      path/to/river-900.jpg 900w,
-      path/to/river-1200.jpg 1200w,
-      path/to/river-1600.jpg 1600w,
-      path/to/river-2000.jpg 2000w,
-      path/to/river-2400.jpg 2400w,
-      path/to/river-2800.jpg 2800w,
-      path/to/river-3200.jpg 3200w,
-      path/to/river-3600.jpg 3600w,
-      path/to/river-4000.jpg 4000w"
-    <span class="redcode">data-dimensions='{
-      "river-300.jpg": [300, 225],
-      "river-600.jpg": [600, 450],
-      "river-900.jpg": [900, 675],
-      "river-1200.jpg": [1200, 900],
-      "river-1600.jpg": [1600, 1200],
-      "river-2000.jpg": [2000, 1500],
-      "river-2400.jpg": [2400, 1800],
-      "river-2800.jpg": [2800, 2100],
-      "river-3200.jpg": [3200, 2400],
-      "river-3600.jpg": [3600, 2700],
-      "river-4000.jpg": [4000, 3000]
-    }'</span>
-  />
-&lt;/div>
+    src="path/to/river.webp"
+    srcset="path/to/river-300.webp 300w,
+      path/to/river-600.webp 600w,
+      path/to/river-900.webp 900w,
+      path/to/river-1200.webp 1200w,
+      path/to/river-1600.webp 1600w,
+      path/to/river-2000.webp 2000w,
+      path/to/river-2400.webp 2400w,
+      path/to/river-2800.webp 2800w,
+      path/to/river-3200.webp 3200w,
+      path/to/river-3600.webp 3600w,
+      path/to/river-4000.webp 4000w"
+    <b>data-dimensions='{
+      "river-300.webp": [300, 225],
+      "river-600.webp": [600, 450],
+      "river-900.webp": [900, 675],
+      "river-1200.webp": [1200, 900],
+      "river-1600.webp": [1600, 1200],
+      "river-2000.webp": [2000, 1500],
+      "river-2400.webp": [2400, 1800],
+      "river-2800.webp": [2800, 2100],
+      "river-3200.webp": [3200, 2400],
+      "river-3600.webp": [3600, 2700],
+      "river-4000.webp": [4000, 3000]
+    }'</b>
+  /›
+‹/div›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-02/07.png" /></p>
+<p><img src="/assets/lesson-02/07.png" alt="A canvas dispalying a responsive image asset in a picture entity that works as expected" /></p>
 
-<h2>In the next lesson ...</h2>
+<h3 tabindex="0">A word about progressive enhancement</h3>
+
+<p>The ‹canvas› element is unique among HTML elements in that it requires Javascript code to work. If we build a web page which includes one or more ‹canvas› elements, and that web page is viewed by a visitor who has disabled Javascript in their browser they will see ... no canvases!</p>
+
+<p>What they will see instead is whatever HTML markup code we have included between the opening and closing ‹canvas› element tags. This area of the web page is known as the <a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/hh968259(v=vs.85)">Canvas Shadow DOM</a> and is important not only for users who prefer to disable Javascript in their browser, but also for anybody who uses a <a href="https://en.wikipedia.org/wiki/Screen_reader">screen reader</a> to help them browse the web.</p>
+
+<p>For our purposes, we want people to see/know <i>something</i> when they encounter a ‹canvas› element. Thus it makes sense that we include at least an ‹img› or ‹figure› element in the Canvas Shadow DOM to handle these situations. People with Javascript enabled in their browsers will never see the contents of the Canvas Shadow DOM displayed. This is the essence of <a href="https://en.wikipedia.org/wiki/Progressive_enhancement">progressive enhancement</a>.</p>
+
+<p>We can make this happen in our code simply by moving the ‹img› element into the ‹canvas› element:</p>
+
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
+  [...]
+
+  ‹style›
+    [...]
+
+<s>    .image-hold {
+      height: 0;
+      overflow: hidden;
+    }</s>
+  ‹/style›
+‹/head›
+
+‹body›
+
+  ‹div class="canvas-host"›
+    ‹canvas 
+      id="my-canvas"
+      data-scrawl-canvas
+      data-is-responsive="true"
+      data-base-width="600" 
+      data-base-height="300" 
+      data-fit="contain"
+    ›
+      <b>‹img 
+        id="river" 
+        class="my-demo-images" 
+        alt="Image used in canvas element" 
+        src="path/to/river.webp"
+        srcset=" [...] "
+        data-dimensions=' [...] '
+      /›</b>
+    ‹/canvas›
+  ‹/div›
+
+<s>  ‹div class="image-hold"›
+    ‹img [...] /›
+  ‹/div›</s>
+
+  ‹script type="module"›
+    [...]
+  ‹/script›
+
+‹/body›
+‹/html›
+</code></pre>
+
+<h3 tabindex="0">In the next lesson ...</h3>
 
 <p>In the next lesson we will look at <b>user interactions</b> like drag-and-drop, and we'll learn how to position Scrawl-canvas artifacts <b>by reference</b> to other artifacts.</p>

@@ -13,7 +13,7 @@
 
         scrawl.importDomImage('.myimage');
 
-        canvas = scrawl.getCanvas(`#${namespace}`);
+        canvas = scrawl.getCanvas(`${namespace}`);
 
         canvas.set({
             label: 'A banner animation.',
@@ -245,21 +245,11 @@
 </style>
 
 <div class="canvas-container">
-  <canvas id={namespace} data-is-responsive="true" data-base-width="2000" data-base-height="1000" data-fit="cover"></canvas>
-  <div class="animation-controls">
-    <button id="play" title="Play animation">
-      <span class="material-icons">play_circle</span>
-    </button>
-    <button id="pause" title="Pause animation">
-      <span class="material-icons">pause_circle</span>
-    </button>
-  </div>
-</div>
-
-<div class="image-container">
-    <img id="{namespace}-background-image" class="myimage" alt="Hello world banner - background image"
-        src="assets/seedhead-1200.webp"
-        srcset="assets/seedhead-400.webp 400w,
+  <canvas id={namespace} data-is-responsive="true" data-base-width="2000" data-base-height="1000" data-fit="cover">
+    <div class="image-container">
+      <img id="{namespace}-background-image" class="myimage" alt="Hello world banner - background image"
+          src="assets/seedhead-1200.webp"
+          srcset="assets/seedhead-400.webp 400w,
             assets/seedhead-800.webp 800w,
             assets/seedhead-1200.webp 1200w,
             assets/seedhead-1600.webp 1600w,
@@ -274,9 +264,9 @@
 
 
 
-    <img id="{namespace}-foreground-image" class="myimage" alt="Hello world banner - foreground image"
-        src="assets/seedhead-partial-1200.webp"
-        srcset="assets/seedhead-partial-400.webp 400w,
+      <img id="{namespace}-foreground-image" class="myimage" alt="Hello world banner - foreground image"
+          src="assets/seedhead-partial-1200.webp"
+          srcset="assets/seedhead-partial-400.webp 400w,
             assets/seedhead-partial-800.webp 800w,
             assets/seedhead-partial-1200.webp 1200w,
             assets/seedhead-partial-1600.webp 1600w,
@@ -288,4 +278,14 @@
             assets/seedhead-partial-1600.png 1600w,
             assets/seedhead-partial-2400.png 2400w,
             assets/seedhead-partial-3600.png 3600w" />    
+    </div>
+  </canvas>
+  <div class="animation-controls">
+    <button id="play" title="Play animation">
+      <span class="material-icons">play_circle</span>
+    </button>
+    <button id="pause" title="Pause animation">
+      <span class="material-icons">pause_circle</span>
+    </button>
+  </div>
 </div>

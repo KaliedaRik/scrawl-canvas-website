@@ -18,7 +18,7 @@
 
     onMount(() => {
 
-        canvas = scrawl.getCanvas(`#${namespace}`);
+        canvas = scrawl.getCanvas(`${namespace}`);
 
         backgroundAsset = scrawl.library.asset[`${namespace}-background-image`];
 
@@ -465,17 +465,9 @@
     img {
         height: 0;
     }
-
-    div {
-        height: 0;
-    }
 </style>
 
-<canvas id={namespace} data-is-responsive="true" data-base-width="1200" data-base-height="600" data-fit="fill"></canvas>
-
-<p>Hover over pins to reveal labels; click to visit relevant wikipedia page. Can also use the tab and enter keys to navigate links</p>
-
-<div>
+<canvas id={namespace} data-is-responsive="true" data-base-width="1200" data-base-height="600" data-fit="fill">
     <img id="{namespace}-background-image" class="myimage" alt="Kitchen scene - background image"
         src="assets/kitchenLarge-800.webp"
         srcset="assets/kitchenLarge-400.webp 400w,
@@ -490,4 +482,6 @@
             assets/kitchenLarge-1600.png 1600w,
             assets/kitchenLarge-2400.png 2400w,
             assets/kitchenLarge-3600.png 3600w" />    
-</div>
+</canvas>
+
+<p>Hover over pins to reveal labels; click to visit relevant wikipedia page. Can also use the tab and enter keys to navigate links</p>

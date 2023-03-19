@@ -1,213 +1,182 @@
-<style>
-  .code-block {
-    border-color: #e2e8f0;
-    background-color: #f7fafc;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    margin-bottom: 1rem;
-    overflow-x: auto;
-    padding: 1rem;
-  }
-  .code-block code {
-    line-height: 1.25;
-    color: #4a5568;
-    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-    font-size: 0.875rem;
-  }
-  .code-block .redcode {
-    color: #9b2c2c;
-  }
-  .code-block .heavycode {
-    font-weight: 700;
-    color: #9b2c2c;
-  }
-  .code-block .comment {
-    color: #4a5568;
-    font-size: 0.75rem;
-  }
-  img.mx-auto {
-    border: 2px dashed gray;
-  }
-  iframe {
-    margin-bottom: 1rem;
-  }
-</style>
+<h3 tabindex="0">Introducing Scrawl-canvas</h3>
 
 <p>The main purpose of Scrawl-canvas is to make building responsive canvas displays and animations easier. In this lesson we will briefly discuss the following:</p>
 
-<ol class="list-decimal list-outside ml-4 mb-4">
-	<li class="mb-2">Setup an html file for our code</li>
-	<li class="mb-2">Include the scrawl-canvas code in a web page</li>
-	<li class="mb-2">Build and display a Block entity on the canvas</li>
-	<li class="mb-2">Style the Block entity when we create it</li>
-	<li class="mb-2">Add some text to the canvas display using a Phrase entity</li>
+<ol class="ordered">
+  <li>Setup an html file for our code</li>
+  <li>Include the scrawl-canvas code in a web page</li>
+  <li>Build and display a Block entity on the canvas</li>
+  <li>Style the Block entity when we create it</li>
+  <li>Add some text to the canvas display using a Phrase entity</li>
 </ol>
 
-<h2>Setup an html file for our code</h2>
+<h3 tabindex="0">Setup an html file for our code</h3>
 
 <p>We start with a minimal HTML5 file. All the code we need will go into this file. Javascript and CSS code can be broken into separate files (as normal) as the page grows more complicated.</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
-  &lt;meta charset='utf-8'>
-  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+<p><ins><b>To note:</b> if you're tempted to copy-paste the following code, be aware that we've replaced all the <code><</code> characters with <code>‹</code> (single left-pointing angle quotation) characters; similarly <code>›</code> replaces <code>></code>. Typing the code out by hand is often the easiest way to learn about it.</ins></p>
 
-  &lt;title>Hello world&lt;/title>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
+  ‹meta charset='utf-8'›
+  ‹meta name='viewport' content='width=device-width,initial-scale=1'›
 
-  &lt;style type="text/css">
+  ‹title›Hello world‹/title›
 
-    <span class="comment">/*
-      This canvas background-color is not controlled by Scrawl-canvas
-      &mdash; We will hide it in due course
-    */</span>
-    <span class="redcode">canvas {
+  ‹style type="text/css"›
+
+    <ins>/*
+       This canvas background-color is not controlled by Scrawl-canvas
+       &ndash; We will hide it in due course
+    */</ins>
+    <b>canvas {
       background-color: yellow;
-    }</span>
-  &lt;/style>
-&lt;/head>
+    }</b>
+  ‹/style›
+‹/head›
 
-&lt;body>
+‹body›
 
-  &lt;h2>Scrawl-canvas: Lesson 1&lt;/h2>
+  ‹h2›Scrawl-canvas: Lesson 1‹/h2›
 
-  <span class="comment">&lt;!--
-    We always give each canvas on the page its own unique <b>id</b> value
-    &mdash; We use it to find the canvas (in the Javascript code) in the next step
+  <ins>‹!--
+     We always give each canvas on the page its own unique <b>id</b> value
+     &ndash; We use it to find the canvas (in the Javascript code) in the next step
 
-    We set the canvas dimensions using <b>width</b> and <b>height</b> attributes:
-    &mdash; Use plain numbers as values &mdash; <b>"400"</b>, not "400px".
-    &mdash; Never set the canvas dimensions using CSS. Bad things happen!
+     We set the canvas dimensions using <b>width</b> and <b>height</b> attributes:
+     &ndash; Use plain numbers as values &ndash; <b>"400"</b>, not "400px".
+     &ndash; Never set the canvas dimensions using CSS. Bad things happen!
 
-    We <b><i>must</i></b> include the <b>data-scrawl-canvas</b> attribute in the &lt;canvas> element markup! 
-  --></span>
-  <span class="redcode">&lt;canvas 
+     We <b><i>must</i></b> include the <b>data-scrawl-canvas</b> attribute in the ‹canvas› element markup! 
+  --›</ins>
+  <b>‹canvas 
     id="my-canvas"
     width="400"
     height="400"
-    <b>data-scrawl-canvas</b>
-  >&lt;/canvas></span>
+    <strong>data-scrawl-canvas</strong>
+  ›‹/canvas›</b>
 
-  <span class="comment">&lt;!--
-    Scrawl-canvas uses modular Javascript code
-    &mdash; We load it into a &lt;script> element that accepts JS modules
-  --></span>
-  <span class="redcode">&lt;script <b>type="module"</b>>
-  &lt;/script></span>
+  <ins>‹!--
+     Scrawl-canvas uses modular Javascript code
+     &ndash; We load it into a ‹script› element that accepts JS modules
+  --›</ins>
+  <b>‹script <strong>type="module"</strong>›
+  ‹/script›</b>
 
-&lt;/body>
-&lt;/html>
+‹/body›
+‹/html›
 </code></pre>
 
-<h2>Include the scrawl-canvas code in a web page</h2>
+<h3 tabindex="0">Include the scrawl-canvas code in a web page</h3>
 
 <p>There's several ways to include Scrawl-canvas in a website or project:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">Use NPM or Yarn to add the library to a project &mdash; <code class="text-sm text-red-800">"npm install scrawl-canvas"</code>, or <code class="text-sm text-red-800">"yarn add scrawl-canvas"</code></li>
-  <li class="mb-2">Download the files from GitHub (or from the link in the footer of this website) and add them to your project manually.</li>
-  <li class="mb-2">Use a Content Distribution Network solution such as <a href="https://unpkg.com">unpkg.com</a> &mdash; this is the solution we shall use here.</li>
+<ul class="disc">
+  <li>Use NPM or Yarn to add the library to a project &ndash; <code><b>"npm install scrawl-canvas"</b></code>, or <code><b>"yarn add scrawl-canvas"</b></code></li>
+  <li>Download the files from GitHub (or from the link in the footer of this website) and add them to your project manually.</li>
+  <li>Use a Content Distribution Network solution such as <a href="https://unpkg.com">unpkg.com</a> &ndash; this is the solution we shall use here.</li>
 </ul>
 
-<p>Scrawl-canvas is entirely modular: it has to be <b>imported</b> into your code inside a &lt;script> tag which has been marked as a module:</p>
+<p>Scrawl-canvas is entirely modular: it has to be <b>imported</b> into your code inside a ‹script› tag which has been marked as a module:</p>
 
-<pre class="code-block"><code>[... canvas setup]
+<pre><code>[... canvas setup]
 
-&lt;script type="module">
-  <span class="redcode">import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';</span>
-&lt;/script>
+‹script type="module"›
+  <b>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';</b>
+‹/script›
 </code></pre>
 
 <p>Scrawl-canvas initializes itself the first time it is loaded into a web page. Subsequent imports return the scrawl object generated by that initial run. All the functionality we need is attached to the scrawl object.</p>
 
-<p>As part of its initialization, Scrawl-canvas checks through the existing page structure and wraps any &lt;canvas> elements it finds &mdash; if they include the <code class="text-sm text-red-800">data-scrawl-canvas</code> data attribute &mdash; in objects, ready for further work.</p>
+<p>As part of its initialization, Scrawl-canvas checks through the existing page structure and wraps any ‹canvas› elements it finds &ndash; if they include the <code><b>data-scrawl-canvas</b></code> data attribute &ndash; in objects, ready for further work.</p>
 
-<p>We defined one canvas element in our HTML and gave it an id of "my-canvas". We can use that id value to get a handle on the canvas wrapper object in our code:</p>
+<p>We defined one canvas element in our HTML and gave it an id of <code>"my-canvas"</code>. We can use that id value to get a handle on the canvas wrapper object in our code:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
+<pre><code>‹script type="module"›
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';
 
-  <i class="comment">// Get a handle to our canvas element's wrapper object</i>
-  <span class="redcode">const canvas = scrawl.library.canvas['my-canvas'];</span>
-&lt;/script>
+  <ins>// Get a handle to our canvas element's wrapper object</ins>
+  <b>const canvas = scrawl.library.canvas['my-canvas'];</b>
+‹/script›
 </code></pre>
 
-<p>Because there is only one Scrawl-canvas object per web page, while there may be many &lt;canvas> elements, it makes sense to <b>namespace</b> all the artefacts and other Scrawl-canvas objects that we are about to create &mdash; not only to prevent name clashes between canvas entitys, but also to make identifying and debugging this canvas's objects in the Scrawl-canvas library a bit easier.</p>
+<p>Because there is only one Scrawl-canvas object per web page, while there may be many ‹canvas› elements, it makes sense to <b>namespace</b> all the artefacts and other Scrawl-canvas objects that we are about to create &ndash; not only to prevent name clashes between canvas entitys, but also to make identifying and debugging this canvas's objects in the Scrawl-canvas library a bit easier.</p>
 
-<p>Also, if there's more than one canvas present in the page, we need to make the canvas we are about to work on the <b>current canvas</b> &mdash; it's not essential, but it saves us having to worry about assigning our artefacts to the correct groups when we create them.</p>
+<p>Also, if there's more than one canvas present in the page, we need to make the canvas we are about to work on the <b>current canvas</b> &ndash; it's not essential, but it saves us having to worry about assigning our artefacts to the correct groups when we create them.</p>
 
-<pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
+<pre><code>‹script type="module"›
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';
 
   const canvas = scrawl.library.canvas['my-canvas'];
 
-  <i class="comment">// Namespacing boilerplate</i>
-  <span class="redcode">const namespace = 'hello-world';
+  <ins>// Namespacing boilerplate</ins>
+  <b>const namespace = 'hello-world';
   const name = (n) => `${namespace}-${n}`;
 
-  canvas.setAsCurrentCanvas();</span>
-&lt;/script>
+  canvas.setAsCurrentCanvas();</b>
+‹/script›
 </code></pre>
 
-<p>One final thing we can do, before we move on, is get rid of that horrid yellow background we gave the &lt;canvas> element in our CSS style declaration. Every Scrawl-canvas object can be updated using its <code class="text-sm text-red-800">.set({key:value, key:value})</code> function, which takes a single object argument.</p>
+<p>One final thing we can do, before we move on, is get rid of that horrid yellow background we gave the ‹canvas› element in our CSS style declaration. Every Scrawl-canvas object can be updated using its <code><b>.set({key:value, etc})</b></code> function, which takes a single object argument.</p>
 
 <p>Set functions always return the object, which means we can dot-chain an additional function call onto the set call:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
+<pre><code>‹script type="module"›
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';
 
   const canvas = scrawl.library.canvas['my-canvas'];
 
   const namespace = 'hello-world';
   const name = (n) => `${namespace}-${n}`;
 
-  <i class="comment">// We can chain our canvas wrapper invocations</i>
-  <span class="redcode">canvas.set({
+  <ins>// We can chain our canvas wrapper invocations</ins>
+  <b>canvas.set({
 
     backgroundColor: 'honeydew',
     
-  }).setAsCurrentCanvas();</span>
-&lt;/script>
+  }).setAsCurrentCanvas();</b>
+‹/script›
 </code></pre>
 
-<p>To see our work so far, start a server (<a href="https://github.com/http-party/http-server">http-server</a> is a good enough choice) in the same folder as our html file (saved as <code class="text-sm text-red-800">index.html</code>) and point the browser to <a href="http://localhost:8080/">localhost:8080</a>. Our canvas is still very yellow &mdash; we'll fix that in a minute.</p>
+<p>To see our work so far, start a server (<a href="https://github.com/http-party/http-server">http-server</a> is a good enough choice) in the same folder as our html file (saved as <code><b>index.html</b></code>) and point the browser to <a href="http://localhost:8080/">localhost:8080</a>. Our canvas is still very yellow &ndash; we'll fix that in a minute.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-01/01.png" /></p>
+<p><img src="/assets/lesson-01/01.png" alt="Rendered canvas with yellow background" /></p>
 
-<h2>Build and display a Block entity on the canvas</h2>
+<h3 tabindex="0">Build and display a Block entity on the canvas</h3>
 
 <p>Before we go on, some definitions:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><b>&lt;canvas> element</b> &mdash; this is the canvas element in the web page's HTML markup.</li>
-  <li class="mb-2"><b>canvas wrapper</b> &mdash; the object that Scrawl-canvas creates to wrap the &lt;canvas> element. These objects are stored in the Scrawl-canvas library at <code class="text-sm text-red-800">scrawl.library.canvas[canvas-element-id-value]</code>.</li>
-  <li class="mb-2">An <b>artefact</b> is any graphical or other object that Scrawl-canvas can position, manipulate and animate. The canvas wrapper is also an artefact, because we can position it in a Scrawl-canvas stack element.</li>
-  <li class="mb-2">An <b>entity</b> is a graphical object which we create to display in a canvas element. All entitys (the mis-spelling is deliberate) are also artefacts. These objects are stored in the Scrawl-canvas library at <code class="text-sm text-red-800">scrawl.library.entity[entity-name-value]</code>.</li>
+<ul class="disc">
+  <li><b>‹canvas› element</b> &ndash; this is the canvas element in the web page's HTML markup.</li>
+  <li><b>canvas wrapper</b> &ndash; the object that Scrawl-canvas creates to wrap the ‹canvas› element. These objects are stored in the Scrawl-canvas library at <code><b>scrawl.library.canvas[canvas-element-id-value]</b></code>.</li>
+  <li>An <b>artefact</b> is any graphical or other object that Scrawl-canvas can position, manipulate and animate. The canvas wrapper is also an artefact, because we can position it in a Scrawl-canvas stack element.</li>
+  <li>An <b>entity</b> is a graphical object which we create to display in a canvas element. All entitys (the mis-spelling is deliberate) are also artefacts. These objects are stored in the Scrawl-canvas library at <code><b>scrawl.library.entity[entity-name-value]</b></code>.</li>
 </ul>
 
-<p>Scrawl-canvas supplies a number of <b>factory functions</b> for generating entitys such as Blocks, Wheels, Pictures, Phrases, Shapes, Looms, etc. The factory we shall use for generating our Block entity is <code class="text-sm text-red-800">scrawl.makeBlock()</code>.</p>
+<p>Scrawl-canvas supplies a number of <b>factory functions</b> for generating entitys such as Blocks, Wheels, Pictures, Phrases, Shapes, Looms, etc. The factory we shall use for generating our Block entity is <code><b>scrawl.makeBlock()</b></code>.</p>
 
-<p>The <b>Block entity</b> is the simplest of the entitys &mdash; a rectangle, with width and height dimensions:</p>
+<p>The <b>Block entity</b> is the simplest of the entitys &ndash; a rectangle, with width and height dimensions:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
-  <span class="redcode">scrawl.makeBlock({
+  <b>scrawl.makeBlock({
 
     name: name('box'),
 
     width: 100,
     height: 100,
-  });</span>
-&lt;/script>
+  });</b>
+‹/script›
 </code></pre>
 
 <p>If we refresh our web page ... nothing changes. This is because we need to <b>render</b> our scene before we can see the changes.</p>
 
-<p>To render the scene <b>once</b>, we can use the <code class="text-sm text-red-800">canvas.render()</code> function:</p>
+<p>To render the scene <b>once</b>, we can use the <code><b>canvas.render()</b></code> function:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
@@ -219,28 +188,28 @@
     height: 100,
   });
 
-  <span class="heavycode">canvas.render();</span>
-&lt;/script>
+  <strong>canvas.render();</strong>
+‹/script›
 </code></pre>
 
 <p>After rendering, the canvas is no longer yellow, and we can see a black square (our Block entity) in the top-left corner.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-01/02.png" /></p>
+<p><img src="/assets/lesson-01/02.png" alt="Canvas with black block on a green background" /></p>
 
-<h3>Absolute and relative positioning</h3>
+<h3 tabindex="0">Absolute and relative positioning</h3>
 
-<p>We can position our Block entity by setting two additional attributes when we create it: <code class="text-sm text-red-800">startX</code> and <code class="text-sm text-red-800">startY</code>. Like the width and height attributes, the start attributes can accept Numbers, which represent pixel values:</p>
+<p>We can position our Block entity by setting two additional attributes when we create it: <code><b>startX</b></code> and <code><b>startY</b></code>. Like the width and height attributes, the start attributes can accept Numbers, which represent pixel values:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800">startX: 200,</code> &mdash; the Block will be positioned 200px rightwards from the left edge of the canvas element</li>
-  <li class="mb-2"><code class="text-sm text-red-800">startY: 200,</code> &mdash; the Block will be positioned 200px downwards from the top edge of the canvas element</li>
-  <li class="mb-2"><code class="text-sm text-red-800">width: 100,</code> &mdash; the Block will be 100px wide</li>
-  <li class="mb-2"><code class="text-sm text-red-800">height: 100,</code> &mdash; the Block will be 100px tall</li>
+<ul class="disc">
+  <li><code><b>startX: 200,</b></code> &ndash; the Block will be positioned 200px rightwards from the left edge of the canvas element</li>
+  <li><code><b>startY: 200,</b></code> &ndash; the Block will be positioned 200px downwards from the top edge of the canvas element</li>
+  <li><code><b>width: 100,</b></code> &ndash; the Block will be 100px wide</li>
+  <li><code><b>height: 100,</b></code> &ndash; the Block will be 100px tall</li>
 </ul>
 
-<p>In Scrawl-canvas, we call the above values <b>absolute positions</b> and <b>absolute dimensions</b> because they are static: should the canvas's width and height values change, these values will not change &mdash; our Block will remain a 100px square with it's top-left corner 200px along and down from the canvas's own top-left corner.</p>
+<p>In Scrawl-canvas, we call the above values <b>absolute positions</b> and <b>absolute dimensions</b> because they are static: should the canvas's width and height values change, these values will not change &ndash; our Block will remain a 100px square with its top-left corner 200px along and down from the canvas's own top-left corner.</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre class="code-block"><code>‹script type="module"›
 
   [... canvas setup]
 
@@ -251,26 +220,26 @@
     width: 100,
     height: 100,
 
-    <span class="redcode">startX: 200,
-    startY: 200,</span>
+    <b>startX: 200,
+    startY: 200,</b>
   });
 
   [... display]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-01/03.png" /></p>
+<p><img src="/assets/lesson-01/03.png" alt="Canvas with an off-center black block" /></p>
 
 <p>Scrawl-canvas also allows us to set the Block's dimensions and starting points in a different way, known as <b>relative positions</b> and <b>relative dimensions</b>. We do this using String values instead of Number values, where the value represents a percentage of the canvas element's dimensions:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800">startX: '50%',</code> &mdash; the Block will be positioned halfway between the canvas element's left and right sides</li>
-  <li class="mb-2"><code class="text-sm text-red-800">startY: '50%',</code> &mdash; the Block will be positioned halfway between the canvas element's top and bottom sides</li>
-  <li class="mb-2"><code class="text-sm text-red-800">width: '25%',</code> &mdash; the Block will be a quarter as wide as the canvas element's width</li>
-  <li class="mb-2"><code class="text-sm text-red-800">height: '25%',</code> &mdash; the Block will be a quarter as tall as the canvas element's height</li>
+<ul class="disc">
+  <li><code><b>startX: '50%',</b></code> &ndash; the Block will be positioned halfway between the canvas element's left and right sides</li>
+  <li><code><b>startY: '50%',</b></code> &ndash; the Block will be positioned halfway between the canvas element's top and bottom sides</li>
+  <li><code><b>width: '25%',</b></code> &ndash; the Block will be a quarter as wide as the canvas element's width</li>
+  <li><code><b>height: '25%',</b></code> &ndash; the Block will be a quarter as tall as the canvas element's height</li>
 </ul>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
@@ -284,8 +253,8 @@
     startY: 200,
   });
 
-  <i class="comment">// We'll create a second Block element which uses relative values</i>
-  <span class="redcode">scrawl.makeBlock({
+  <ins>// We'll create a second Block element which uses relative values</ins>
+  <b>scrawl.makeBlock({
 
     name: name('box-relative'),
 
@@ -294,48 +263,48 @@
     startX: '50%',
     startY: '50%',
 
-    <i class="comment">// We can change the color of our block
-    // &mdash; the <b>fillStyle</b> attribute accepts any CSS color string</i>
+    <ins>// We can change the color of our block
+    // &ndash; the <b>fillStyle</b> attribute accepts any CSS color string</ins>
     fillStyle: 'red',
-  });</span>
+  });</b>
 
   [... display]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p>Reloading the page shows little change &mdash; the new Block's position and dimensions are the same as the original Block. The only thing that has changed in the display is that the square appears to have turned red:</p>
+<p>Reloading the page shows little change &ndash; the new Block's position and dimensions are the same as the original Block. The only thing that has changed in the display is that the square appears to have turned red:</p>
 
-<p><img class="mx-auto" src="/assets/lesson-01/04.png" /></p>
+<p><img src="/assets/lesson-01/04.png" alt="Canvas with an absolutely positioned/sized black block and a relatively positioned/sized red block" /></p>
 
 <p>However, if we change the canvas dimensions and reload the page we will see that there are in fact two Block entitys: the black one still has its absolute position and dimensions; while the red one is responsive to the canvas element's new dimensions:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
+<pre><code>‹!DOCTYPE html>
+‹html lang="en">
+‹head>
   [...]
-&lt;/head>
+‹/head>
 
-&lt;body>
-  &lt;canvas 
+‹body>
+  ‹canvas 
     id="my-canvas"
 <s>    width="400"
     height="400"</s>
-    <span class="redcode">width="600"
-    height="300"</span>
+    <b>width="600"
+    height="300"</b>
     data-scrawl-canvas
-  >&lt;/canvas>
+  >‹/canvas>
 
   [...]
 
-&lt;/body>
-&lt;/html>
+‹/body>
+‹/html>
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-01/05.png" /></p>
+<p><img src="/assets/lesson-01/05.png" alt="Rectangular canvas with an absolutely positioned/sized black block and a relatively positioned/sized red block" /></p>
 
-<h3>The handle attribute, and the artefact rotation-reflection point</h3>
+<h3 tabindex="0">The handle attribute, and the artefact rotation-reflection point</h3>
 
-<p>Our next task is to position one of our Blocks in the middle of the canvas. We do this by moving the Block's <b>rotation-reflection point</b> from its top-left corner to its center by setting its <code class="text-sm text-red-800">handleX</code> and <code class="text-sm text-red-800">handleY</code> attributes.</p>
+<p>Our next task is to position one of our Blocks in the middle of the canvas. We do this by moving the Block's <b>rotation-reflection point</b> from its top-left corner to its center by setting its <code><b>handleX</b></code> and <code><b>handleY</b></code> attributes.</p>
 
 <p>All Scrawl-canvas artefacts have a rotation-reflection point. When we set the Block's start coordinate, we are in fact setting the position of its rotation-reflection point, which the Block will use to determine where on the canvas it should draw itself.</p>
 
@@ -343,7 +312,7 @@
 
 <p>While we're at it, let's make the block a bit bigger:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
@@ -367,23 +336,23 @@
     height: '60%',
     startX: '50%',
     startY: '50%',
-    <span class="redcode">handleX: '50%',
-    handleY: '50%',</span>
+    <b>handleX: '50%',
+    handleY: '50%',</b>
 
     fillStyle: 'red',
-  });</span>
+  });
 
   [... display]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-01/06.png" /></p>
+<p><img src="/assets/lesson-01/06.png" alt="Rectangular canvas containing a properly centered red block" /></p>
 
-<p>Just like the <code class="text-sm text-red-800">start</code> and <code class="text-sm text-red-800">dimensions</code> attributes, the <code class="text-sm text-red-800">handle</code> attributes can take either absolute Number, or relative String, values.</p>
+<p>Just like the <code><b>start</b></code> and <code><b>dimensions</b></code> attributes, the <code><b>handle</b></code> attributes can take either absolute Number, or relative String, values.</p>
 
-<p>The difference between the <code class="text-sm text-red-800">handle</code> and other attributes is that handles measure and position themselves with reference to the Block entity's <b>local</b> position and dimensions, rather than the canvas's <b>global</b> position/dimensions. They will also take the Block's rotation (<code class="text-sm text-red-800">roll</code>), <code class="text-sm text-red-800">scale</code> and orientation (<code class="text-sm text-red-800">flipReverse</code>, <code class="text-sm text-red-800">flipUpend</code>) values into account when calculating how to draw the Block onto the canvas.</p>
+<p>The difference between the <code><b>handle</b></code> and other attributes is that handles measure and position themselves with reference to the Block entity's <b>local</b> position and dimensions, rather than the canvas's <b>global</b> position/dimensions. They will also take the Block's rotation (<code><b>roll</b></code>), <code><b>scale</b></code> and orientation (<code><b>flipReverse</b></code>, <code><b>flipUpend</b></code>) values into account when calculating how to draw the Block onto the canvas.</p>
 
-<p>The interplay between absolute and relative start, handle and dimension values &mdash; alongside rotation, scale and orientation &mdash; may seem a bit overwhelming at first. Use this CodePen demo to see how they work together to position the Block entity around its rotation-reflection point (shown by the yellow circle):</p>
+<p>The interplay between absolute and relative start, handle and dimension values &ndash; alongside rotation, scale and orientation &ndash; may seem a bit overwhelming at first. Use this CodePen demo to see how they work together to position the Block entity around its rotation-reflection point (shown by the yellow circle):</p>
 
 <iframe height="1000" style="width: 100%;" scrolling="no" title="Untitled" src="https://codepen.io/kaliedarik/embed/ZErjLvd?default-tab=result&theme-id=26779" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/kaliedarik/pen/ZErjLvd">
@@ -391,27 +360,27 @@
   on <a href="https://codepen.io">CodePen</a>.
 </iframe>
 
-<h2>The Display cycle</h2>
+<h3 tabindex="0">The Display cycle</h3>
 
 <p>You may have noticed that the CodePen demo is animated. Currently in our code we are generating a static scene. Let's change that by making our Block spin around by adding a <b>Display cycle</b> to our code.</p>
 
-<p>&lt;canvas> elements work by drawing a static bitmap graphic onto an area of a web page. To animate a canvas scene, we need to repeatedly update and redraw that bitmap quickly enough to fool the human brain into seeing the scene move.</p>
+<p>‹canvas› elements work by drawing a static bitmap graphic onto an area of a web page. To animate a canvas scene, we need to repeatedly update and redraw that bitmap quickly enough to fool the human brain into seeing the scene move.</p>
 
 <p>We create a Display cycle in this way:</p>
 
-<ol class="list-decimal list-outside ml-4 mb-4">
-  <li class="mb-2"><b>Clear</b> the &lt;canvas> element &mdash; the <code class="text-sm text-red-800">canvas.clear()</code> operation.</li>
-  <li class="mb-2"><b>Recalculate</b> the position and display of all the graphical objects &mdash; the <code class="text-sm text-red-800">canvas.compile()</code> operation.</li>
-  <li class="mb-2"><b>Paint</b> them all &mdash; one by one, in the correct order &mdash; back onto the canvas. This is the <code class="text-sm text-red-800">canvas.show()</code> operation.</li>
+<ol class="ordered">
+  <li><b>Clear</b> the ‹canvas› element &ndash; the <code><b>canvas.clear()</b></code> operation.</li>
+  <li><b>Recalculate</b> the position and display of all the graphical objects &ndash; the <code><b>canvas.compile()</b></code> operation.</li>
+  <li><b>Paint</b> them all &ndash; one by one, in the correct order &ndash; back onto the canvas. This is the <code><b>canvas.show()</b></code> operation.</li>
 </ol>
 
 <p>Ideally, we need to <b><i>complete all this work in less than 16 milliseconds</i></b>, as most browsers update their display 60 times a second.</p>
 
-<p>Our code above creates a static scene because we are only performing these actions once, when we invoke <code class="text-sm text-red-800">canvas.render()</code>. What we need is an animation loop function, which will call the render operation every time the browser checks whether it needs to perform a repaint.</p>
+<p>Our code above creates a static scene because we are only performing these actions once, when we invoke <code><b>canvas.render()</b></code>. What we need is an animation loop function, which will call the render operation every time the browser checks whether it needs to perform a repaint.</p>
 
-<p>So let's build one, using the <code class="text-sm text-red-800">canvas.makeRender()</code> factory function:</p>
+<p>So let's build one, using the <code><b>canvas.makeRender()</b></code> factory function:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
@@ -419,54 +388,54 @@
 
     name: name('box-relative'),
 
-    <i class="comment">// To save typing we can pass position and dimension values as arrays</i>
+    <ins>// To save typing we can pass position and dimension values as arrays</ins>
 <s>    width: '60%',
     height: '60%',
     startX: '50%',
     startY: '50%',
     handleX: '50%',
     handleY: '50%',</s>
-    <span class="redcode">dimensions: ['60%', '60%'],
+    <b>dimensions: ['60%', '60%'],
     start: ['50%', '50%'],
-    handle: ['50%', '50%'],</span>
+    handle: ['50%', '50%'],</b>
 
-    <i class="comment">// We can use <b>delta animation</b> to make our Block spin
-    // &mdash; the Block will rotate 0.5&deg; every Display cycle iteration</i>
-    <span class="redcode">delta: {
+    <ins>// We can use <b>delta animation</b> to make our Block spin
+    // &ndash; the Block will rotate 0.5&deg; every Display cycle iteration</ins>
+    <b>delta: {
       roll: 0.5,
-    },</span>
+    },</b>
 
     fillStyle: 'red',
-  });</span>
+  });
 
-  <i class="comment">// Replace our render invocation with a RenderAnimation object</i>
+  <ins>// Replace our render invocation with a RenderAnimation object</ins>
 <s>  canvas.render();</s>
-  <span class="redcode">canvas.makeRender({
+  <b>canvas.makeRender({
     name: name('animation'),
     target: canvas,
-  });</span>
-&lt;/script>
+  });</b>
+‹/script›
 </code></pre>
 
-<p>The <b>makeRender</b> factory generates a highly versatile Scrawl-canvas <code class="text-sm text-red-800">RenderAnimation</code> object which invokes the clear, compile and show operations for us. It also allows us to target it onto one or more specified canvas wrappers &mdash; each canvas can have its own RenderAnimation object, if the web page design calls for it.</p>
+<p>The <b>makeRender</b> factory generates a highly versatile Scrawl-canvas <code><b>RenderAnimation</b></code> object which invokes the clear, compile and show operations for us. It also allows us to target it onto one or more specified canvas wrappers &ndash; each canvas can have its own RenderAnimation object, if the web page design calls for it.</p>
 
 <p>Furthermore, each RenderAnimation object comes with a set of <b>Display cycle function hooks</b>, giving us fine control over how the canvas scene animates, how users interact with it, etc. We'll investigate these hooks in a later lesson.</p>
 
-<h2>Styling the Block entity</h2>
+<h3 tabindex="0">Styling the Block entity</h3>
 
 <p>As rectangles go, our Block is not very entertaining. The Block used in the CodePen demo above is much more colorful: rather than a solid color, it is displaying a gradient.</p>
 
-<p>We'll discuss how to create and use gradients in a later lesson <i>(Lesson 12: All the World's a Stage &mdash; gradients and patterns)</i>. For now, let's concentrate on giving our Block a border.</p>
+<p>We'll discuss how to create and use gradients in a later lesson <i>(Lesson 12: All the World's a Stage &ndash; gradients and patterns)</i>. For now, let's concentrate on giving our Block a border.</p>
 
 <p>All Scrawl-canvas entitys can be styled using a range of common attributes. The ones we are interested in for this exercise are:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">The <b>fillStyle</b> attribute takes a CSS color String, which then gets used to flood the entity.</li>
-  <li class="mb-2">The <b>lineWidth</b> attribute is a Number representing the width of a border around the entity</li>
-  <li class="mb-2">The <b>strokeStyle</b> attribute, like fillStyle, uses a CSS color to stroke the border</li>
+<ul class="disc">
+  <li >The <code><b>fillStyle</b></code> attribute takes a CSS color String, which then gets used to flood the entity.</li>
+  <li >The <code><b>lineWidth</b></code> attribute is a Number representing the width of a border around the entity</li>
+  <li >The <code><b>strokeStyle</b></code> attribute, like fillStyle, uses a CSS color to stroke the border</li>
 </ul>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
@@ -475,28 +444,28 @@
     [... Block definition values]
 
 <s>    fillStyle: 'red',</s>
-    <span class="redcode">fillStyle: 'linen',
+    <b>fillStyle: 'linen',
 
     lineWidth: 25,
-    strokeStyle: 'moccasin',</span>
+    strokeStyle: 'moccasin',</b>
   });
 
   [... canvas render]
 
-&lt;/script>
+‹/script›
 </code></pre>
 
 <p>The result ... is not quite what we expected it to be:</p>
 
-<p><img class="mx-auto" src="/assets/lesson-01/07.png" /></p>
+<p><img src="/assets/lesson-01/07.png" alt="Canvas with  a styled, rotated block" /></p>
 
 <p>The reason the Block is missing its moccasin border is because we have not told the entity to include it!</p>
 
 <p>There are, in fact, a number of different ways in which we can <b>stamp</b> an entity onto the canvas: fill only, stroke only, fill followed by stroke, etc.</p>
 
-<p>The attribute that sets the stamp method is called <b>method</b>. It can accept the following String values: <code class="text-sm text-red-800">'fill', 'draw', 'fillAndDraw', 'drawAndFill', 'fillThenDraw', 'drawThenFill', 'clip', 'clear', 'none'</code>:</p>
+<p>The attribute that sets the stamp method is called <b>method</b>. It can accept the following String values: <code><b>'fill', 'draw', 'fillAndDraw', 'drawAndFill', 'fillThenDraw', 'drawThenFill', 'clip', 'clear', 'none'</b></code>:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
@@ -509,54 +478,54 @@
     lineWidth: 25,
     strokeStyle: 'moccasin',
 
-    <span class="redcode">method: 'fillThenDraw',</span>
+    <b>method: 'fillThenDraw',</b>
   });
 
   [... canvas render]
 
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-01/08.png" /></p>
+<p><img src="/assets/lesson-01/08.png" alt="Canvas with  a styled, rotated block, including border" /></p>
 
 <p>We are not limited to colors for our fills and strokes: we can define and use gradients (linear, radial, conic) for both. We can also use images, via Pattern objects.</p>
 
-<p>More, we can change the appearance of the stroke line &mdash; the way lines join together, the pointiness of angles and the shape of line ends. We can make the line solid, or dashed. Dashed lines can even be animated (the "marching ants" effect).</p>
+<p>More, we can change the appearance of the stroke line &ndash; the way lines join together, the pointiness of angles and the shape of line ends. We can make the line solid, or dashed. Dashed lines can even be animated (the "marching ants" effect).</p>
 
-<h2>Add some text to the canvas display using a Phrase entity</h2>
+<h3 tabindex="0">Add some text to the canvas display using a Phrase entity</h3>
 
-<p>&lt;canvas> elements support graphic text &mdash; though text rendered in a canvas will never look as sharp as text displayed in a normal DOM element.</p>
+<p>‹canvas› elements support graphic text &ndash; though text rendered in a canvas will never look as sharp as text displayed in a normal DOM element.</p>
 
 <p>Another reason to avoid graphical text is because it is entirely graphical: it cannot be 'seen' by assistive technology; it is not accessible to non-visual users.</p>
 
-<p><i>The Scrawl-canvas <b>Phrase entity</b> solves the accessibility issue</i> by making sure its text gets added to both the &lt;canvas> element's display and the web page document. This allows us to use graphical text with a bit more confidence that we won't be breaking any accessibility rules or laws.</p>
+<p><i>The Scrawl-canvas <b>Phrase entity</b> solves the accessibility issue</i> by making sure its text gets added to both the ‹canvas› element's display and the web page document. This allows us to use graphical text with a bit more confidence that we won't be breaking any accessibility rules or laws.</p>
 
-<p>The factory function for creating a Phrase entity is <code class="text-sm text-red-800">scrawl.makePhrase()</code>:</p>
+<p>The factory function for creating a Phrase entity is <code><b>scrawl.makePhrase()</b></code>:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
   [... define Block]
 
-  <span class="redcode">scrawl.makePhrase({
+  <b>scrawl.makePhrase({
 
     name: name('label'),
     text: 'Hello, world!',
-  });</span>
+  });</b>
 
   [... canvas render]
 
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-01/09.png" /></p>
+<p><img src="/assets/lesson-01/09.png" alt="Canvas with an unformatted, default position phrase" /></p>
 
-<p>The first thing to notice about our new Phrase (after you spot it, in the top left-hand corner) is that it is very small: the Scrawl-canvas default font is <code class="text-red-800">10px Arial, sans-serif</code>.</p>
+<p>The first thing to notice about our new Phrase (after you spot it, in the top left-hand corner) is that it is very small: the Scrawl-canvas default font is <code><b>10px Arial, sans-serif</b></code>.</p>
 
 <p>Let's make the text a lot bigger, and center it:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
@@ -567,28 +536,28 @@
     name: name('label'),
     text: 'Hello, world!',
 
-    <i class="comment">// The font value can be any valid CSS font String (within reason)</i>
-    <span class="redcode">font: '4.5em bold Garamond, sans-serif',</span>
+    <ins>// The font value can be any valid CSS font String (within reason)</ins>
+    <b>font: '4.5em bold Garamond, sans-serif',</b>
 
-    <i class="comment">// We can define width using Number or percentage String values</i>
-    <span class="redcode">width: '100%',</span>
+    <ins>// We can define width using Number or percentage String values</ins>
+    <b>width: '100%',</b>
 
-    <i class="comment">// The <b>justify</b> attribute can be set to: 
-    // &mdash; 'left', 'center', 'right', or 'full'</i>
-    <span class="redcode">justify: 'center',</span>
+    <ins>// The <b>justify</b> attribute can be set to: 
+    // &ndash; 'left', 'center', 'right', or 'full'</ins>
+    <b>justify: 'center',</b>
 
   });
 
   [... canvas render]
 
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-01/10.png" /></p>
+<p><img src="/assets/lesson-01/10.png" alt="Canvas with a large sized font phrase" /></p>
 
 <p>Let's try to position the Phrase in the middle of the canvas, just like we did with the Block entity. We'll also give it a bit of color:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [...]
 
@@ -596,8 +565,8 @@
 
     [... define Phrase]
 
-    <i class="comment">// We can use <b>'center'</b> as an alternative to '50%'</i>
-    <span class="redcode">start: ['center', 'center'],
+    <ins>// We can use <b>'center'</b> as an alternative to '50%'</ins>
+    <b>start: ['center', 'center'],
     handle: ['center', 'center'],
 
     fillStyle: 'lightblue',
@@ -605,16 +574,16 @@
     lineWidth: 2,
     strokeStyle: 'blue',
 
-    method: 'fillThenDraw',</span>
+    method: 'fillThenDraw',</b>
   });
 
   [...]
 
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-01/11.png" /></p>
+<p><img src="/assets/lesson-01/11.png" alt="Canvas with a centered, styled and outlined phrase" /></p>
 
-<h2>In the next lesson ...</h2>
+<h3 tabindex="0">In the next lesson ...</h3>
 
 <p>In the next lesson we will look at how to add images to our canvases, and how we can make our canvas elements adapt to their wider webpage environment by making them responsive.</p>

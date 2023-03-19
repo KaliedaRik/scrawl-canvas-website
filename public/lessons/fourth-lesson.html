@@ -1,59 +1,32 @@
-<style>
-  .code-block {
-    border-color: #e2e8f0;
-    background-color: #f7fafc;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    margin-bottom: 1rem;
-    overflow-x: auto;
-    padding: 1rem;
-  }
-  .code-block code {
-    line-height: 1.25;
-    color: #4a5568;
-    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-    font-size: 0.875rem;
-  }
-  .code-block .redcode {
-    color: #9b2c2c;
-  }
-  .code-block .heavycode {
-    font-weight: 700;
-    color: #9b2c2c;
-  }
-  .code-block .comment {
-    color: #4a5568;
-    font-size: 0.75rem;
-  }
-</style>
+<h3 tabindex="0">Videos in web pages</h3>
 
-<p>Video has become a key component of modern web design &mdash; used judiciously, video content can help increase visitor numbers and conversions.</p>
+<p>Video has become a key component of modern web design &ndash; used judiciously, video content can help increase visitor numbers and conversions.</p>
 
-<p>Adding video to a website has become a lot easier since HTML5 introduced the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video">&lt;video> element</a>. And <a href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Responsive/responsive_design_building_blocks#Responsive_imagesvideo">making video more responsive</a> is fairly simple to achieve through good CSS and HTML coding.</p>
+<p>Adding video to a website has become a lot easier since HTML5 introduced the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video">‹video› element</a>. And <a href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Responsive/responsive_design_building_blocks#Responsive_imagesvideo">making video more responsive</a> is fairly simple to achieve through good CSS and HTML coding.</p>
 
-<p>Even so, getting video right in a web page can be tricky &mdash; especially when the page needs to cater to users accessing the site with very different hardware. For instance, some smartphone-based browsers will prevent a video playing until the user directly interacts with it, or break the video out of the page to make it fullscreen as soon as it starts playing.</p>
+<p>Even so, getting video right in a web page can be tricky &ndash; especially when the page needs to cater to users accessing the site with very different hardware. For instance, some smartphone-based browsers will prevent a video playing until the user directly interacts with it, or break the video out of the page to make it fullscreen as soon as it starts playing.</p>
 
-<p>The &lt;canvas> element has had functionality to display image data from &lt;video> elements since it was first introduced, in the same way as it can access data from &lt;img> elements.</p>
+<p>The ‹canvas› element has had functionality to display image data from ‹video› elements since it was first introduced, in the same way as it can access data from ‹img› elements.</p>
 
-<p>The reasons for displaying video in a canvas are many and varied, but also come at a cost: <b><i>when we display a video in a canvas, we abandon the &lt;video> element's inbuilt playback control panel.</i></b> If we want to give the user control over how they watch the video, we need to replicate those controls &mdash; either with graphical control buttons as part of the canvas display, or through a linked set of DOM-based controls.</p>
+<p>The reasons for displaying video in a canvas are many and varied, but also come at a cost: <b><i>when we display a video in a canvas, we abandon the ‹video› element's inbuilt playback control panel.</i></b> If we want to give the user control over how they watch the video, we need to replicate those controls &ndash; either with graphical control buttons as part of the canvas display, or through a linked set of DOM-based controls.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-04/01.png" /></p>
+<p><img src="/assets/lesson-04/01.png" alt="A canvas dispalying the results of the final code - a video plays, showing swans and geese swimming in the river; the swans have been highlighted" /></p>
 
-<h2>Scrawl-canvas and videos</h2>
+<h3 tabindex="0">Scrawl-canvas and videos</h3>
 
-<p>Just as for images, Scrawl-canvas uses the <b>Picture entity</b> to display video output in a &lt;canvas> element. We investigated the Picture entity in some detail in a previous lesson <i>("Using images in Scrawl-canvas")</i>.</p>
+<p>Just as for images, Scrawl-canvas uses the <b>Picture entity</b> to display video output in a ‹canvas› element. We investigated the Picture entity in some detail in a previous lesson <i>("Using images in Scrawl-canvas")</i>.</p>
 
-<p>As usual, we'll start with a very basic html page, containing a responsive &lt;canvas> element (the user can change the element's dimensions by dragging its bottom-right corner):</p>
+<p>As usual, we'll start with a very basic html page, containing a responsive ‹canvas› element (the user can change the element's dimensions by dragging its bottom-right corner):</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
-  &lt;meta charset='utf-8'>
-  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
+  ‹meta charset='utf-8'›
+  ‹meta name='viewport' content='width=device-width,initial-scale=1'›
 
-  &lt;title>Fun with video&lt;/title>
+  ‹title›Fun with video‹/title›
 
-  &lt;style type="text/css">
+  ‹style type="text/css"›
     canvas {
       background-color: lemonchiffon;
     }
@@ -68,27 +41,27 @@
       max-height: 400px;
       max-width: 800px;
     }
-  &lt;/style>
-&lt;/head>
+  ‹/style›
+‹/head›
 
-&lt;body>
-  &lt;div class="canvas-container">
-    <span class="comment">&lt;!-- 
-      data-fit="fill" is not ideal; it will distort the video output
-      - We use it here for demonstration purposes (hit zones, described later)
-    --></span>
-    &lt;canvas 
+‹body›
+  ‹div class="canvas-container"›
+    <ins>‹!-- 
+       data-fit="fill" is not ideal; it will distort the video output
+       - We use it here for demonstration purposes (hit zones, described later)
+     --›</ins>
+    ‹canvas 
       id="mycanvas"
       data-scrawl-canvas
       data-is-responsive="true"
       data-base-width="640"
       data-base-height="360"
       data-fit="fill"
-    >&lt;/canvas>
-  &lt;/div>
+    ›‹/canvas›
+  ‹/div›
 
-  &lt;script type="module">
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
+  ‹script type="module"›
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';
 
     const canvas = scrawl.library.canvas.mycanvas;
     const namespace = 'video-example';
@@ -97,45 +70,47 @@
     canvas.setAsCurrentCanvas();
 
     scrawl.makeRender({
-      name: name('animation',
+      name: name('animation'),
       target: canvas,
     });
-  &lt;/script>
-&lt;body>
-&lt;/html>
+  ‹/script›
+‹body›
+‹/html›
 </code></pre>
 
-<p>Just as for images, Scrawl-canvas can import video files either from the DOM (the recommended method, as it allows us to define the &lt;video> element in more detail, for example different source files), or programmatically in the Javascript code.</p>
+<p>Just as for images, Scrawl-canvas can import video files either from the DOM (the recommended method, as it allows us to define the ‹video› element in more detail, for example different source files), or programmatically in the Javascript code.</p>
 
 <p>For this project, we'll use the second method:</p>
 
-<p class="italic text-sm">Note: video downloaded from <a href="https://pixabay.com/videos/swans-ducks-water-white-bird-1287/">Pixabay</a>. Originally uploaded by <a href="https://pixabay.com/users/inspiredimages-57296/?tab=videos">InspiredImages</a>.</p>
+<p><ins>Note: video downloaded from <a href="https://pixabay.com/videos/swans-ducks-water-white-bird-1287/">Pixabay</a>. Originally uploaded by <a href="https://pixabay.com/users/inspiredimages-57296/?tab=videos">InspiredImages</a>.</ins></p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
+
   [... canvas setup]
 
-  <span class="redcode">const myvideo = scrawl.makePicture({
+  <b>const myvideo = scrawl.makePicture({
 
     name: name('video'),
 
-    <b>videoSource: './swans.mp4',</b>
+    <strong>videoSource: './swans.mp4',</strong>
 
     width: '100%',
     height: '100%',
 
     copyWidth: '100%',
     copyHeight: '100%',
-  });</span>
+  });</b>
 
   [... render animation]
-&lt;/script>
+
+‹/script›
 </code></pre>
 
-<p>The key difference between loading an image and a video is that we assign the video file to a different attribute: <code class="text-sm text-red-800">videoSource</code> rather than <code class="text-sm text-red-800">imageSource</code>.</p>
+<p>The key difference between loading an image and a video is that we assign the video file to a different attribute: <code><b>videoSource</b></code> rather than <code><b>imageSource</b></code>.</p>
 
-<p>Beyond that change, videos and images are much the same, using <code class="text-sm text-red-800">copyStartX, copyStartY, copyWidth, copyHeight</code> attributes to define which parts of the video we copy over to the canvas.</p>
+<p>Beyond that change, videos and images are much the same, using <code><b>copyStartX, copyStartY, copyWidth, copyHeight</b></code> attributes to define which parts of the video we copy over to the canvas.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-04/02.png" /></p>
+<p><img src="/assets/lesson-04/02.png" alt="A canvas dispalying the first frame of a video" /></p>
 
 <p>The big difference is that videos can be played and paused. They also come with audio soundtracks and (sometimes) subtitles which makes accessing the video a lot easier for non visual/audio-centered users.</p>
 
@@ -143,55 +118,55 @@
 
 <p>The Picture entity includes a number of functions we can use to trigger video functionality, and access video attributes. These include:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800">video_muted</code> &mdash; a Boolean value which switches audio playback on and off.</li>
-  <li class="mb-2"><code class="text-sm text-red-800">video_loop</code> &mdash; another Boolean; when set this will cause the video to loop its playback instead of stopping when it reaches the final frame of its playback</li>
-  <li class="mb-2"><code class="text-sm text-red-800">videoPlay()</code> &mdash; start video playback.</li>
-  <li class="mb-2"><code class="text-sm text-red-800">videoPause()</code> &mdash; pause video playback.</li>
-  <li class="mb-2"><code class="text-sm text-red-800">video_duration</code> &mdash; retrieve the video's playback length (in seconds).</li>
-  <li class="mb-2"><code class="text-sm text-red-800">video_currentTime</code> &mdash; the current point in the video's playback (whether playing or paused).</li>
+<ul class="disc">
+  <li><code><b>video_muted</b></code> &ndash; a Boolean value which switches audio playback on and off.</li>
+  <li><code><b>video_loop</b></code> &ndash; another Boolean; when set this will cause the video to loop its playback instead of stopping when it reaches the final frame of its playback</li>
+  <li><code><b>videoPlay()</b></code> &ndash; start video playback.</li>
+  <li><code><b>videoPause()</b></code> &ndash; pause video playback.</li>
+  <li><code><b>video_duration</b></code> &ndash; retrieve the video's playback length (in seconds).</li>
+  <li><code><b>video_currentTime</b></code> &ndash; the current point in the video's playback (whether playing or paused).</li>
 </ul>
 
 <p>Let's try to start our video playing as soon as it loads:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [... canvas setup]
 
   const myvideo = scrawl.makePicture({
 
     [...]
 
-  })<span class="redcode">.videoPlay()</span>;
+  })<b>.videoPlay()</b>;
 
   [... render animation]
-&lt;/script>
+‹/script›
 </code></pre>
 
 <p>... Oops?</p>
 
-<p><img class="mx-auto" src="/assets/lesson-04/03.png" /></p>
+<p><img src="/assets/lesson-04/03.png" alt="An image of the console error message after attempting to autoplay the video" /></p>
 
-<p>The <a href="https://developers.google.com/web/updates/2017/09/autoplay-policy-changes">link supplied in the error message</a> tells us that the Chrome browser blocks many attempts to autoplay videos on page load. They do this to save user bandwidth (which costs users money) being wasted on videos the user doesn't want to watch.</p>
+<p>The <a href="https://developers.google.com/web/updates/2017/09/autoplay-policy-changes">link supplied in the error message</a> tells us that the Chrome browser blocks many attempts to autoplay videos on page load. They do this to save user bandwidth (which costs users money) being wasted on videos which the user doesn't want to watch.</p>
 
 <p>Some browsers may still allow videos to autoplay on load, but this is not a good user experience!</p>
 
 <p>We need to find a better way to trigger video playback.</p>
 
-<h2>Scrawl-canvas event listeners</h2>
+<h3 tabindex="0">Scrawl-canvas event listeners</h3>
 
 <p>In the previous lesson <i>("Build the Tower of Hanoi game")</i> we met some Scrawl-canvas event listeners. To recap, Scrawl-canvas only needs to worry about 5 user interactions, and does work behind the scenes to gather all these different event types into clusters for each interaction type:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><b>enter</b> &mdash; for <code class="text-sm text-red-800">mouseenter, touchenter, pointerenter</code> events</li>
-  <li class="mb-2"><b>move</b> &mdash; for <code class="text-sm text-red-800">mousemove, touchmove, touchfollow, pointermove</code> events</li>
-  <li class="mb-2"><b>down</b> &mdash; for <code class="text-sm text-red-800">mousedown, touchstart, pointerdown</code> events</li>
-  <li class="mb-2"><b>up</b> &mdash; for <code class="text-sm text-red-800">mouseup, touchend, pointerup</code> events (which can also be interpreted as user click events)</li>
-  <li class="mb-2"><b>leave</b> &mdash; for <code class="text-sm text-red-800">mouseleave, touchleave, pointerleave</code> events</li>
+<ul class="disc">
+  <li><b>enter</b> &ndash; for <code><b>mouseenter, touchenter, pointerenter</b></code> events</li>
+  <li><b>move</b> &ndash; for <code><b>mousemove, touchmove, touchfollow, pointermove</b></code> events</li>
+  <li><b>down</b> &ndash; for <code><b>mousedown, touchstart, pointerdown</b></code> events</li>
+  <li><b>up</b> &ndash; for <code><b>mouseup, touchend, pointerup</b></code> events (which can also be interpreted as user click events)</li>
+  <li><b>leave</b> &ndash; for <code><b>mouseleave, touchleave, pointerleave</b></code> events</li>
 </ul>
 
-<p>We'll add an event listener to the code to trigger our playback when the user clicks on the &lt;canvas> element:</p>
+<p>We'll add an event listener to the code to trigger our playback when the user clicks on the ‹canvas› element:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [... canvas setup]
 
   const myvideo = scrawl.makePicture({
@@ -200,56 +175,56 @@
 
   });
 
-  <span class="redcode">const initialVideoStart = scrawl.addListener('up', () => {
+  <b>const initialVideoStart = scrawl.addListener('up', () => {
 
     myvideo.set({
 
-      <i class="comment">// Mute and loop the video before we start playback</i>
+      <ins>// Mute and loop the video before we start playback</ins>
       video_muted: true,
       video_loop: true,
       
     })<b>.videoPlay()</b>;
 
-    <i class="comment">// Get rid of the event listener after invocation - it's a one-time-only action</i>
-    <i class="comment">// - The addListener factory function returns a function, not an object</i>
-    <i class="comment">// - Invoking that function removes the event listener(s) from the &lt;canvas> element</i>
+    <ins>// Get rid of the event listener after invocation - it's a one-time-only action
+     // - The addListener factory function returns a function, not an object
+     // - Invoking that function removes the event listener(s) from the ‹canvas› element</ins>
     initialVideoStart();
 
-  }, canvas.domElement);</span>
+  }, canvas.domElement);</b>
 
   [... render animation]
-&lt;/script>
+‹/script›
 </code></pre>
 
 <p>Now when we load the page, the error has gone. Clicking (or tapping) on the canvas starts the video playback. Further clicks do nothing because we remove the event listeners after they run.</p>
 
-<p>This deals with our initial problem &mdash; getting the video to display in the canvas as it plays &mdash; but it is not a good user experience. How does the user know that they need to click on the canvas to get things going?</p>
+<p>This deals with our initial problem &ndash; getting the video to display in the canvas as it plays &ndash; but it is not a good user experience. How does the user know that they need to click on the canvas to get things going?</p>
 
-<p>Native &lt;video> elements can include controls. But switching on those controls for our video will do no good; the &lt;canvas> element captures only the image data: it ignores all the <i>chrome</i> surrounding the video.</p>
+<p>Native ‹video› elements can include controls. But switching on those controls for our video will do no good; the ‹canvas› element captures only the image data: it ignores all the <i>chrome</i> surrounding the video.</p>
 
 <p>We need to build some controls. We'll do this using Phrase entitys.</p>
 
-<p class="italic text-sm">(Note: building the controls using regular HTML + CSS, and attaching that control bar to the canvas element, is a far better solution. Scrawl-canvas includes functionality for capturing user interaction with DOM elements and forms &mdash; see the Demo pages for numerous examples.)</p>
+<p><ins>(Note: building the controls using regular HTML + CSS, and attaching that control bar to the canvas element, is a far better solution. Scrawl-canvas includes functionality for capturing user interaction with DOM elements and forms &ndash; see the Demo pages for numerous examples.)</ins></p>
 
-<h3>Artefact event functions</h3>
+<h3 tabindex="0">Artefact event functions</h3>
 
 <p>We met the <b>Phrase entity</b> in the first lesson. We'll add two to our canvas: one to control video play/pause functionality; the other to switch the video's audio track on and off.</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [... canvas setup]
 
   [... video Picture entity]
 
   [... initialization event listener]
 
-  <span class="redcode">scrawl.makePhrase({
+  <b>scrawl.makePhrase({
 
     name: name('button-play-pause'),
     order: 2,
 
     text: 'PLAY',
 
-    <i class="comment">// We can define our font by its parts, rather than using the <b>font</b> attribute</i>
+    <ins>// We can define our font by its parts, rather than using the <b>font</b> attribute</ins>
     family: 'sans-serif',
     size: '2rem',
 
@@ -266,13 +241,13 @@
     name: name('button-listen-mute'),
     text: 'LISTEN',
     startX: '25%',
-  });</span>
+  });</b>
 
   [... render animation]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-04/04.png" /></p>
+<p><img src="/assets/lesson-04/04.png" alt="A canvas dispalying the first frame of a video, with play and pause phrase entitys at the bottom" /></p>
 
 <p>As they currently stand, our Phrase entitys are just pixels on the screen. The user cannot interact with them.</p>
 
@@ -284,41 +259,41 @@
 
 <p>Every artefact object includes four attributes to which we can attach functions (which can be changed at any time). These are:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800">onEnter</code> &mdash; will trigger when the user moves the mouse cursor over the artefact</li>
-  <li class="mb-2"><code class="text-sm text-red-800">onDown</code> &mdash; will trigger when the user presses the main mouse button while hovering over the artefact</li>
-  <li class="mb-2"><code class="text-sm text-red-800">onUp</code> &mdash; will trigger when the user releases the main mouse button while hovering over the artefact</li>
-  <li class="mb-2"><code class="text-sm text-red-800">onLeave</code> &mdash; will trigger when the user moves the mouse cursor away from the artefact</li>
+<ul class="disc">
+  <li><code><b>onEnter</b></code> &ndash; will trigger when the user moves the mouse cursor over the artefact</li>
+  <li><code><b>onDown</b></code> &ndash; will trigger when the user presses the main mouse button while hovering over the artefact</li>
+  <li><code><b>onUp</b></code> &ndash; will trigger when the user releases the main mouse button while hovering over the artefact</li>
+  <li><code><b>onLeave</b></code> &ndash; will trigger when the user moves the mouse cursor away from the artefact</li>
 </ul>
 
 <p>Let's change the mouse cursor to a pointer when the user hovers over our Phrase entitys, and add an underline to the text:</p>
 
-<pre class="code-block"><code><span class="redcode">scrawl.makePhrase({
+<pre><code>scrawl.makePhrase({
 
   [...]
 
-  <b>underlineStyle: 'yellow',</b>
+  <b>underlineStyle: 'yellow',
 
-  <i class="comment">// These changes get applied when user starts hovering over the Phrase entity</i>
+  <ins>// These changes get applied when user starts hovering over the Phrase entity</ins>
   onEnter: function () {
 
-    <i class="comment">// We can change the &lt;canvas> element's cursor style</i>
-    <i class="comment">// - by updating its inline CSS cursor value</i>
+    <ins>// We can change the ‹canvas› element's cursor style
+     // - by updating its inline CSS cursor value</ins>
     canvas.set({
       css: {
         cursor: 'pointer',
       }
     });
 
-    <i class="comment">// We can add an underline to our Phrase entity text</i>
-    <i class="comment">// - By setting a <b>section style</b> on it</i>
-    <i class="comment">// - All Phrases have some pre-defined styles included, such as <b>UNDERLINE</b></i>
+    <ins>// We can add an underline to our Phrase entity text
+     // - By setting a <b>section style</b> on it
+     // - All Phrases have some pre-defined styles included, such as <b>UNDERLINE</b></ins>
     this.set({
       text: `§UNDERLINE§${this.text}`,
     });
   },
 
-  <i class="comment">// When user stops hovering over the Phrase entity, we reverse the changes</i>
+  <ins>// When user stops hovering over the Phrase entity, we reverse the changes</ins>
   onLeave: function () {
 
     canvas.set({
@@ -330,21 +305,21 @@
     this.set({
       text: this.text.replace('§UNDERLINE§', ''),
     });
-  },
+  },</b>
 
 }).clone({
 
-  <i class="comment">// The artefact event functions will be copied over automatically</i>
+  <ins>// The artefact event functions will be copied over automatically</ins>
 
   [...]
-});</span>
+});
 </code></pre>
 
-<p>The code above is, on its own, not enough to make the magic happen. This is because our Phrase entitys are not part of the DOM event management system. They're just a set of instructions for drawing graphical text onto a &lt;canvas> element.</p>
+<p>The code above is, on its own, not enough to make the magic happen. This is because our Phrase entitys are not part of the DOM event management system. They're just a set of instructions for drawing graphical text onto a ‹canvas› element.</p>
 
-<p>The &lt;canvas> element is, however, part of the DOM event management system, because it is an element living in the web page document. To trigger our functionality, we can add an event listener to the &lt;canvas> element which invokes a function that will then cascade the event down to our Phrase entitys:</p>
+<p>The ‹canvas› element is, however, part of the DOM event management system, because it is an element living in the web page document. To trigger our functionality, we can add an event listener to the ‹canvas› element which invokes a function that will then cascade the event down to our Phrase entitys:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [... canvas setup]
 
   [... video Picture entity]
@@ -353,25 +328,25 @@
 
   [... define Phrase entitys]
 
-  <span class="redcode">scrawl.addListener(
+  <b>scrawl.addListener(
     'move', 
     () => canvas.cascadeEventAction('move'), 
     canvas.domElement 
-  );</span>
+  );</b>
 
   [... render animation]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-04/05.png" /></p>
+<p><img src="/assets/lesson-04/05.png" alt="A canvas dispalying the first frame of a video - the play button is underlined" /></p>
 
-<p>All looks good so far. Let's make our Phrase entitys interactive. We do this using the <b>onUp</b> artefact event function:</p>
+<p>All looks good so far. Let's make our Phrase entitys interactive. We do this using the <code><b>onUp</b></code> artefact event function:</p>
 
-<pre class="code-block"><code><span class="redcode">scrawl.makePhrase({
+<pre><code>scrawl.makePhrase({
 
   [...]
 
-  onUp: function () {
+  <b>onUp: function () {
 
     if (myvideo.get('video_paused')) {
 
@@ -389,13 +364,13 @@
 
       myvideo.videoPause();
     }
-  },
+  },</b>
 
 }).clone({
 
   [...]
 
-  onUp: function () {
+  <b>onUp: function () {
 
     if (myvideo.get('video_muted')) {
 
@@ -417,57 +392,55 @@
         video_muted: true,
       });
     }
-  },
-});</span>
+  },</b>
+});
 </code></pre>
 
-<p>Again, these functions won't trigger on their own. We need to tell the &lt;canvas> element that user <b>click</b> events need to be cascaded down to our entitys.</p>
+<p>Again, these functions won't trigger on their own. We need to tell the ‹canvas› element that user <b>click</b> events need to be cascaded down to our entitys.</p>
 
-<p>We could use <code class="text-sm text-red-800">scrawl.addListener</code> for this. But Scrawl events only cover mousedown and mouseup events. While a click event does indeed fire a mouseup event as part of its functionality, click events and mouseup events are not the same thing.</p>
+<p>We could use <code><b>scrawl.addListener</b></code> for this. But Scrawl events only cover mousedown and mouseup events. While a click event does indeed fire a mouseup event as part of its functionality, <b><i>click events and mouseup events are not the same thing</i></b>.</p>
 
-<p>Scrawl-canvas allows us to capture native events, like click, using its <code class="text-sm text-red-800">scrawl.addNativeListener</code> function &mdash; which follows the same usage pattern.</p>
+<p>Scrawl-canvas allows us to capture native events, like click, using its <code><b>scrawl.addNativeListener</b></code> function &ndash; which follows the same usage pattern.</p>
 
-<p>While we're at it, we'll remove the <code class="text-sm text-red-800">videoPlay</code> invocation we included in our initialization event, as that is now handled by our play/pause button:</p>
+<p>While we're at it, we'll remove the <code><b>videoPlay</b></code> invocation we included in our initialization event, as that is now handled by our play/pause button:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [... canvas setup]
 
   [... video Picture entity]
 
-  const initialVideoStart = scrawl.addListener('up', () => {
-
-    <span class="redcode">myvideo.set({
-
+<s>  const initialVideoStart = scrawl.addListener('up', () => {
+    myvideo.set({
       video_muted: true,
       video_loop: true,
-    });</span>
+    }).videoPlay();
 
     initialVideoStart();
-
-  }, canvas.domElement);
+  }, canvas.domElement);</s>
 
   [... define Phrase entitys]
 
   [... user interaction event listeners]
-  <span class="redcode">scrawl.addNativeListener(
+
+  <b>scrawl.addNativeListener(
     'click', 
     () => canvas.cascadeEventAction('up'), 
     canvas.domElement 
-  );</span>
+  );</b>
 
   [... render animation]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<h2>Tracking video playback progress</h2>
+<h3 tabindex="0">Tracking video playback progress</h3>
 
 <p>One of the joys of webpage-based videos is watching the progress bar move forwards as the video plays. It's also nice to see how many seconds of the video has played, and how long the video lasts.</p>
 
 <p>We'll add that functionality to our canvas, using <b>Block entitys</b> and a render animation <b>Display cycle hook</b>.</p>
 
-<p>There's nothing here that we haven't seen before, except for the <code class="text-sm text-red-800">myvideo.get()</code> invocations in our <code class="text-sm text-red-800">videoTimeBar</code> hook function:</p>
+<p>There's nothing here that we haven't seen before, except for the <code><b>myvideo.get()</b></code> invocations in our <code><b>videoTimeBar</b></code> hook function:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
   [... canvas setup]
 
   [... video Picture entity]
@@ -478,9 +451,9 @@
 
   [... user interaction event listeners]
 
-  <span class="redcode">const vtBackground = scrawl.makeBlock({
+  <b>const vtBackground = scrawl.makeBlock({
 
-    name: name('bvideo-time-background'),
+    name: name('video-time-background'),
 
     width: '100%',
     height: 10,
@@ -511,7 +484,7 @@
     fillStyle: 'yellow',
   });
 
-  const videoTimeBar = function () {
+  <strong>const videoTimeBar</strong> = function () {
 
     let currentVideoTime,
       videoDuration;
@@ -535,21 +508,20 @@
         });
       }
     };
-  }();</span>
+  }();</b>
 
   scrawl.makeRender({
     name: name('animation'),
     target: canvas,
-
-    <span class="redcode">commence: videoTimeBar,</span>
+    <b><strong>commence: videoTimeBar,</strong></b>
   });
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-04/06.png" /></p>
+<p><img src="/assets/lesson-04/06.png" alt="A canvas dispalying a video that is playing, with interactive phrase controls and a progress timeline" /></p>
 
-<h2>Next steps</h2>
+<h3 tabindex="0">Next steps</h3>
 
-<p>Now that we have a video playing in our responsive &lt;canvas> element, we can start to do some fun stuff with it.</p>
+<p>Now that we have a video playing in our responsive ‹canvas› element, we can start to do some fun stuff with it.</p>
 
 <p>In the next lesson we'll turn our swans pink and add an accessible, clickable link to them.</p>

@@ -1,44 +1,17 @@
-<style>
-  .code-block {
-    border-color: #e2e8f0;
-    background-color: #f7fafc;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    margin-bottom: 1rem;
-    overflow-x: auto;
-    padding: 1rem;
-  }
-  .code-block code {
-    line-height: 1.25;
-    color: #4a5568;
-    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-    font-size: 0.875rem;
-  }
-  .code-block .redcode {
-    color: #9b2c2c;
-  }
-  .code-block .heavycode {
-    font-weight: 700;
-    color: #9b2c2c;
-  }
-  .code-block .comment {
-    color: #4a5568;
-    font-size: 0.75rem;
-  }
-</style>
+<h3 tabindex="0">Compositing and blending</h3>
 
-<p>The &lt;canvas> element's 2D rendering context's <a href="https://drafts.fxtf.org/compositing/">compositing and blending</a> attributes &mdash; <b><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalAlpha">globalAlpha</a></b> and <b><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation">globalCompositeOperation</a></b> &mdash; are seriously useful tools which we can use to build complex, interactive canvas displays.</p>
+<p>The ‹canvas› element's 2D rendering context's <a href="https://drafts.fxtf.org/compositing/">compositing and blending</a> attributes &ndash; <b><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalAlpha">globalAlpha</a></b> and <b><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation">globalCompositeOperation</a></b> &ndash; are seriously useful tools which we can use to build complex, interactive canvas displays.</p>
 
 <iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas v8 - Magnifier effect over image" src="https://codepen.io/kaliedarik/embed/abvyPBb?height=600&theme-id=26779&default-tab=result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy">
   See the Pen <a href='https://codepen.io/kaliedarik/pen/abvyPBb'>Scrawl-canvas v8 - Magnifier effect over image</a> by Rik Roots
   (<a href='https://codepen.io/kaliedarik'>@kaliedarik</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
 
-<p class="mt-4">In Scrawl-canvas, every entity we define can be given its own alpha and compositing values. We can also apply alpha and composite/blending values at the Cell level, to be used when those Cells stamp themselves onto the canvas wrapper's base Cell.</p>
+<p>In Scrawl-canvas, every entity we define can be given its own alpha and compositing values. We can also apply alpha and composite/blending values at the Cell level, to be used when those Cells stamp themselves onto the canvas wrapper's base Cell.</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">The <b>globalAlpha</b> (GA) attribute is pretty simple to use: setting the value to <code class="text-sm text-red-800">0.0</code> will make the entity or Cell entirely transparent; a value of <code class="text-sm text-red-800">1.0</code> renders the object onto the canvas as-is. We don't need to explore this attribute any further.</li>
-  <li class="mb-2">The <b>globalCompositeOperation</b> (GC) attribute is more difficult to come to terms with, though using it is as easy as using <code class="text-sm text-red-800">globalAlpha</code>.</li>
+<ul class="disc">
+  <li>The <b>globalAlpha</b> (GA) attribute is pretty simple to use: setting the value to <code><b>0.0</b></code> will make the entity or Cell entirely transparent; a value of <code><b>1.0</b></code> renders the object onto the canvas as-is. We don't need to explore this attribute any further.</li>
+  <li>The <b>globalCompositeOperation</b> (GC) attribute is more difficult to come to terms with, though using it is as easy as using <code><b>globalAlpha</b></code>.</li>
 </ul>
 
 <p>The reason for the confusion is partly to do with the way the different GC operations combine both compositing and blending into their output.</p>
@@ -47,21 +20,21 @@
 
 <p>Support for the standards has improved massively in recent years, but it's always worth checking a Scrawl-canvas (or, indeed, <i>any</i> canvas) display which uses GC operations across a range of browsers and devices ... just in case.</p>
 
-<h2>The magnifier effect</h2>
+<h3 tabindex="0">The magnifier effect</h3>
 
-<p>The effect we will be building was (and maybe still is) popular on many shopping sites in the mid-2010s. The user hovers their mouse over an image and a magnified portion of that image appears &mdash; either over the image or alongside it. <a href="https://onextrapixel.com/javascript-image-magnification-plugins/">Many code libraries and plugins</a> have been developed over the years to make implementing the effect as easy as possible for developers.</p>
+<p>The effect we will be building was (and maybe still is) popular on many shopping sites in the mid-2010s. The user hovers their mouse over an image and a magnified portion of that image appears &ndash; either over the image or alongside it. <a href="https://onextrapixel.com/javascript-image-magnification-plugins/">Many code libraries and plugins</a> have been developed over the years to make implementing the effect as easy as possible for developers.</p>
 
-<p>For this project we shall use our basic html page setup, together with a couple of static images &mdash; one three times the dimensions of the other. None of this code should come as a surprise if you've worked through the previous lessons:</p>
+<p>For this project we shall use our basic html page setup, together with a couple of static images &ndash; one three times the dimensions of the other. None of this code should come as a surprise if you've worked through the previous lessons:</p>
 
-<pre class="code-block"><code>&lt;!DOCTYPE html>
-&lt;html lang="en">
-&lt;head>
-  &lt;meta charset='utf-8'>
-  &lt;meta name='viewport' content='width=device-width,initial-scale=1'>
+<pre><code>‹!DOCTYPE html›
+‹html lang="en"›
+‹head›
+  ‹meta charset='utf-8'›
+  ‹meta name='viewport' content='width=device-width,initial-scale=1'›
 
-  &lt;title>Magnifier effect&lt;/title>
+  ‹title›Magnifier effect‹/title›
 
-  <i class="comment">&lt;style type="text/css">
+  <ins>‹style type="text/css"›
     body {
       font-family: sans-serif;
       text-align: center;
@@ -106,37 +79,45 @@
       text-align: left;
       color: black;
     }
-  &lt;/style></i>
-&lt;/head>
+  ‹/style›</ins>
+‹/head›
 
-&lt;body>
-  &lt;div class="canvas-container">
-    &lt;canvas 
+‹body›
+  ‹div class="canvas-container"›
+    ‹canvas 
       id="mycanvas" 
       data-scrawl-canvas
       data-is-responsive="true" 
       data-base-width="800" 
       data-base-height="400" 
       data-fit="cover"
-    >&lt;/canvas>
-  &lt;/div>
+    ›
+      <ins>‹!-- smaller image dimensions: 800px by 400px --›</ins>
+      <b>‹img 
+        id="small-angels" 
+        class="angels" 
+        src="assets/angelsOriginal-800.webp" 
+        alt="A group of angel statues in a cemetery, Havana, Cuba" /›</b>
 
-  &lt;div id="reportmessage">&lt;/div>
+      <ins>‹!-- Hide additional images from screen readers - they are not essential information --›</ins>
+      ‹div class="image-hold" aria-hidden="true"›
 
-  <span class="redcode">&lt;div class="image-hold">
+        <ins>‹!-- bigger image dimensions: 2400px by 1200px --›</ins>
+        <b>‹img 
+          id="big-angels" 
+          class="angels" 
+          src="assets/angelsOriginal-2400.webp" /›</b>
+      ‹/div>
+    ‹/canvas›
+  ‹/div›
 
-    <i class="comment">&lt;!-- bigger image dimensions: 2400px by 1200px --></i>
-    &lt;img id="big-angels" class="angels" src="assets/angelsOriginal-2400.webp">
+  ‹div id="reportmessage"›‹/div›
 
-    <i class="comment">&lt;!-- smaller image dimensions: 800px by 400px --></i>
-    &lt;img id="small-angels" class="angels" src="assets/angelsOriginal-800.webp">
-  &lt;/div></span>
+  ‹script type="module"›
 
-  &lt;script type="module">
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';
 
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
-
-    <span class="redcode">scrawl.importDomImage('.angels');</span>
+    <b>scrawl.importDomImage('.angels');</b>
 
     const canvas = scrawl.library.canvas.mycanvas,
     const namespace = 'lesson-7';
@@ -148,29 +129,29 @@
       name: name('animation'),
       target: canvas,
     });
-  &lt;/script>
-&lt;/body>
-&lt;/html>
+  ‹/script›
+‹/body›
+‹/html›
 </code></pre>
 
-<h3>Breaking up the work</h3>
+<h3 tabindex="0">Breaking up the work</h3>
 
 <p>So ... what work do we actually need to do?</p>
 
-<ol class="list-decimal list-outside ml-8 mb-4">
-  <li class="mb-2">Two Picture entitys: one for the background using the smaller image as its source, and the second for the magnifier effect &mdash; this will use the big image for its source.</li>
-  <li class="mb-2">Magnifier Picture to track the mouse as it crosses the canvas.</li>
-  <li class="mb-2">The image in the magnifier needs to reflect its Picture entity's current position over canvas.</li>
-  <li class="mb-2">Magnifier Picture should hide itself when user's mouse is not hovering over the canvas.</li>
+<ol class="ordered">
+  <li>Two Picture entitys: one for the background using the smaller image as its source, and the second for the magnifier effect &ndash; this will use the big image for its source.</li>
+  <li>Magnifier Picture to track the mouse as it crosses the canvas.</li>
+  <li>The image in the magnifier needs to reflect its Picture entity's current position over canvas.</li>
+  <li>Magnifier Picture should hide itself when user's mouse is not hovering over the canvas.</li>
 </ol>
 
 <p>Let's code up the first two points together:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
-  <span class="redcode">scrawl.makePicture({
+  <b>scrawl.makePicture({
 
     name: name('background'),
 
@@ -197,57 +178,57 @@
     handleX: 'center',
     handleY: 'center',
 
-    <b>lockTo: 'mouse',</b>
+    <strong>lockTo: 'mouse',</strong>
 
     lineWidth: 5,
     strokeStyle: 'gold',
 
     method: 'fillThenDraw',
-  });</span>
+  });</b>
 
   [... render animation]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-07/02.png" /></p>
+<p><img src="/assets/lesson-07/02.png" alt="Canvas displaying smaller image as background, with smaller inset of the larger image which moves as the mouse moves" /></p>
 
 <p>There's nothing special here about our Picture definitions. But if we move our mouse over the canvas, we'll see our magnifier Picture center itself on the mouse cursor, tracking it as it moves.</p>
 
 <p>How are we doing this?</p>
 
-<h3>The secrets of <code class="text-red-800">lockTo</code></h3>
+<h3 tabindex="0">The secrets of 'lockTo'</h3>
 
-<p>The answer is in the magnifier entity's <code class="text-sm text-red-800">lockTo</code> attribute, which we have set to the String value <code class="text-sm text-red-800">'mouse'</code>.</p>
+<p>The answer is in the magnifier entity's <code><b>lockTo</b></code> attribute, which we have set to the String value <code><b>'mouse'</b></code>.</p>
 
-<p>The <code class="text-sm text-red-800">lockTo</code> attribute controls how an artefact/entity will position itself on the canvas. It accepts one of five different String values:</p>
+<p>The <code><b>lockTo</b></code> attribute controls how an artefact/entity will position itself on the canvas. It accepts one of five different String values:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'start'</code> &mdash; this is the default value. Artefacts will position themselves &mdash; either <i>absolutely</i> or <i>relatively</i> &mdash; in line with the values given in their <code class="text-sm text-red-800">startX, startY, handleX, handleY</code> attributes.</li>
-  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'pivot'</code> &mdash; we met pivots in the "Tower of Hanoi" lesson. This is where we tell our artefact to position itself <b>with reference to</b> another artefact's start values.</li>
-  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'mimic'</code> &mdash; is a more nuanced form of the <code class="text-sm text-red-800">pivot</code> concept. For instance we can instruct an artefact to use another artefact's <code class="text-sm text-red-800">width, height</code> attributes for its own dimensions.</li>
-  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'path'</code> &mdash; use a <b>Shape entity</b>'s path to determine our artefact's position on the canvas. We'll meet Shape entitys in a future lesson.</li>
-  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'mouse'</code> &mdash; make the artefact position itself with reference to the mouse cursor's position over the canvas.</li>
+<ul class="disc">
+  <li><code><b><strong>'start'</strong></b></code> &ndash; this is the default value. Artefacts will position themselves &ndash; either <i>absolutely</i> or <i>relatively</i> &ndash; in line with the values given in their <code><b>startX, startY, handleX, handleY</b></code> attributes.</li>
+  <li><code><b><strong>'pivot'</strong></b></code> &ndash; we met pivots in the "Tower of Hanoi" lesson. This is where we tell our artefact to position itself <b>with reference to</b> another artefact's start values.</li>
+  <li><code><b><strong>'mimic'</strong></b></code> &ndash; is a more nuanced form of the <code><b>pivot</b></code> concept. For instance we can instruct an artefact to use another artefact's <code><b>width, height</b></code> attributes for its own dimensions.</li>
+  <li><code><b><strong>'path'</strong></b></code> &ndash; use a <b>Shape entity</b>'s path to determine our artefact's position on the canvas. We'll meet Shape entitys in a future lesson.</li>
+  <li><code><b><strong>'mouse'</strong></b></code> &ndash; make the artefact position itself with reference to the mouse cursor's position over the canvas.</li>
 </ul>
 
-<p><code class="text-sm text-red-800">lockTo</code> can be updated at any time, allowing us to respond to user interaction quickly. We can also specify different lock values for the artefact's horizontal and vertical positioning using the <code class="text-sm text-red-800">lockXTo</code> and <code class="text-sm text-red-800">lockYTo</code> <i>pseudo-attributes</i> when invoking the <code class="text-sm text-red-800">set</code> function on the artefact.</p>
+<p><code><b>lockTo</b></code> can be updated at any time, allowing us to respond to user interaction quickly. We can also specify different lock values for the artefact's horizontal and vertical positioning using the <code><b>lockXTo</b></code> and <code><b>lockYTo</b></code> <i>pseudo-attributes</i> when invoking the <code><b>set</b></code> function on the artefact.</p>
 
-<h3>The mysteries of <code class="text-red-800">here</code></h3>
+<h3 tabindex="0">The mysteries of 'here'</h3>
 
-<p>We need to update the magnifier's image to magnify the background that it currently covers. This means that we need to update the entity's <code class="text-sm text-red-800">copyStartX</code> and <code class="text-sm text-red-800">copyStartY</code> attributes each time the user moves the mouse.</p>
+<p>We need to update the magnifier's image to magnify the background that it currently covers. This means that we need to update the entity's <code><b>copyStartX</b></code> and <code><b>copyStartY</b></code> attributes each time the user moves the mouse.</p>
 
 <p>Artefact event functions offer no solution to this problem because those event listeners do not track mouse coordinate changes. Instead, we need to tap into Scrawl-canvas's <b>here</b> system.</p>
 
-<p>Scrawl-canvas automatically monitors mouse movements, scroll events, and window resize events by attaching event listeners for those events to the browser's window. Each time one of those events triggers a flag gets set and, once every <a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">requestAnimationFrame</a>, Scrawl-canvas checks the flag and updates the <code class="text-sm text-red-800">here</code> objects of all subscribed canvas wrappers.</p>
+<p>Scrawl-canvas automatically monitors mouse movements, scroll events, and window resize events by attaching event listeners for those events to the browser's window. Each time one of those events triggers a flag gets set and, once every <a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">requestAnimationFrame</a>, Scrawl-canvas checks the flag and updates the <code><b>here</b></code> objects of all subscribed canvas wrappers.</p>
 
-<p>... Not that we need to know any of that. The practical outcome is that we can use our canvas's <code class="text-sm text-red-800">here</code> object to find out whether the mouse cursor is curently over the &lt;canvas> element, and where it is in the canvas relative to its top-left corner:</p>
+<p>... Not that we need to know any of that. The practical outcome is that we can use our canvas's <code><b>here</b></code> object to find out whether the mouse cursor is curently over the ‹canvas› element, and where it is in the canvas relative to its top-left corner:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
   [... define Picture entitys]
 
-  <span class="redcode">const report = function () {
+  <b>const report = function () {
 
     const <b>displayed = canvas.here,
       hidden = canvas.base.here,</b>
@@ -255,31 +236,32 @@
 
     return function () {
 
-      testMessage.textContent = `Display canvas mouse - x: ${<b>displayed.x</b>}, y: ${<b>displayed.y</b>}
-Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
+      testMessage.textContent = `
+Display canvas mouse - x: ${<strong>displayed.x</strong>}, y: ${<strong>displayed.y</strong>}
+Base canvas mouse - x: ${<strong>hidden.x</strong>}, y: ${<strong>hidden.y</strong>}`;
     };
-  }();</span>
+  }();</b>
 
   scrawl.makeRender({
     name: name('animation'),
     target: canvas,
 
-    <span class="redcode">afterShow: report,</span>
+    <b>afterShow: report,</b>
   });
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p>Running this code shows something interesting: the mouse coordinates over our &lt;canvas> element are not the same as the coordinates for its base Cell (where all the drawing takes place). Remember that a &lt;canvas> element and its base canvas do not need to be the same size; to cope with this, Scrawl-canvas takes into account the size and positioning differences between the two so that they match in <i>relative</i> terms.</p>
+<p>Running this code shows something interesting: the mouse coordinates over our ‹canvas› element are not the same as the coordinates for its base Cell (where all the drawing takes place). Remember that a ‹canvas› element and its base canvas do not need to be the same size; to cope with this, Scrawl-canvas takes into account the size and positioning differences between the two so that they match in <i>relative</i> terms.</p>
 
-<p><img class="mx-auto" src="/assets/lesson-07/03.png" /></p>
+<p><img src="/assets/lesson-07/03.png" alt="Image shows that the canvas mouse coordinates are not the same as that canvas's base cell's coordinates" /></p>
 
 <p>With this information, we're now in a position to update our magnifier's image data:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [... canvas setup]
 
-  <span class="redcode">const <b>mybackground =</b> scrawl.makePicture({
+  <b>const <b>mybackground =</b> scrawl.makePicture({
 
     name: name('background'),
 
@@ -291,69 +273,69 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
     name: name('enlarged'),
 
     [...]
-  });</span>
+  });</b>
 
   [... report function]
 
-  <span class="redcode">const <b>checkMagnifier =</b> function () {
+  <b>const <strong>checkMagnifier =</strong> function () {
 
-    let <b>display, base;</b>
+    let <strong>display, base;</strong>
 
     return function () {
 
-      if (!display) <b>display = canvas.here;</b>
-      if (!base) <b>base = canvas.base.here;</b>
+      if (!display) <strong>display = canvas.here;</strong>
+      if (!base) <strong>base = canvas.base.here;</strong>
 
       const <b>active = display.active;</b>
 
-      <i class="comment">// We can add code to display or hide our magnifier here</i>
-      <i class="comment">// - using the artefact <b>visibility</b> attribute</i>
-      <i class="comment">// - <b>canvas.here.active</b> is true when mouse cursor is over the &lt;canvas> element </i>
+      <ins>// We can add code to display or hide our magnifier here
+       // - using the artefact visibility attribute
+       // - canvas.here.active is true when mouse cursor is over the ‹canvas› element </ins>
       myMagnifierImage.set({
 
-        <b>visibility: (active) ? true : false,</b>
+        <strong>visibility: (active) ? true : false,</strong>
       });
 
-      if (<b>active</b>) {
+      if (<strong>active</strong>) {
 
         myMagnifierImage.set({
 
-          <i class="comment">// This calculation works because we know:</i>
-          <i class="comment">// - The natural sizes of the small and large images</i>
-          <i class="comment">// - The size of the base canvas</i>
-          <i class="comment">// - The dimensions of the magnifier entity</i>
-          copyStartX: (<b>base.x</b> * 3) - 80,
-          copyStartY: (<b>base.y</b> * 3) - 80,
+          <ins>// This calculation works because we know:
+           // - The natural sizes of the small and large images
+           // - The size of the base canvas
+           // - The dimensions of the magnifier entity</ins>
+          copyStartX: (<strong>base.x</strong> * 3) - 80,
+          copyStartY: (<strong>base.y</strong> * 3) - 80,
         });
       }
     };
-  }();</span>
+  }();</b>
 
   scrawl.makeRender({
     name: name('animation'),
     target: canvas,
 
-    <span class="redcode">commence: checkMagnifier,</span>
+    <b>commence: checkMagnifier,</b>
     afterShow: report,
   });
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-07/04.png" /></p>
+<p><img src="/assets/lesson-07/04.png" alt="Canvas showing final user-interactive magnifier effect" /></p>
 
-<h2>Using a round magnifier</h2>
+<h3 tabindex="0">Using a round magnifier</h3>
 
-<p>As the code stands, we've met all our objectives: we can see a zoomed image in a box when the user moves their mouse over the &lt;canvas> element.</p>
+<p>As the code stands, we've met all our objectives: we can see a zoomed image in a box when the user moves their mouse over the ‹canvas› element.</p>
 
-<p class="font-bold italic">But what if the client wants the magnifier to be a circle?</p>
+<p><strong><i>But what if the client wants the magnifier to be a circle?</i></strong></p>
 
 <p>By definition, Picture entitys have a rectangular shape: there's no way to change this.</p>
 
 <p>But this is not a barrier, because we can use GC operations to change how our Picture gets stamped onto the canvas.</p>
 
-<p>To fix this particular issue, we can set our Picture's <code class="text-sm text-red-800">globalCompositeOperation</code> attribute to <code class="text-sm text-red-800">'source-in'</code> and then stamp it on top of a Wheel entity that we create to act as a <a href="https://en.wikipedia.org/wiki/Clipping_(computer_graphics)">clip zone</a> for our magnifier:</p>
+<p>To fix this particular issue, we can set our Picture's <code><b>globalCompositeOperation</b></code> attribute to <code><b>'source-in'</b></code> and then stamp it on top of a Wheel entity that we create to act as a <a href="https://en.wikipedia.org/wiki/Clipping_(computer_graphics)">clip zone</a> for our magnifier:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
+<pre><code>‹script type="module"›
 
   [...]
 
@@ -361,24 +343,24 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
     [...]
 
-    <i class="comment">// temporarily switch off the background so we can see the effect</i>
-    <span class="redcode">visibility: false,</span>
+    <ins>// temporarily switch off the background so we can see the effect</ins>
+    <b>visibility: false,</b>
   });
 
   const myMagnifierImage = mybackground.clone({
 
     [...]
 
-    <i class="comment">// The order in which entitys get stamped is now important</i>
-    <i class="comment">// - the magnified Picture must be stamped on top of the Wheel (defined below)</i>
-    <span class="redcode"><b>order: 2,
+    <ins>// The order in which entitys get stamped is now important</i>
+     // - the magnified Picture must be stamped on top of the Wheel (defined below)</ins>
+    <b><strong>order: 2,
 
-    globalCompositeOperation: 'source-in',</b>
+    globalCompositeOperation: 'source-in',</strong>
 
-    visibility: true,</span>
+    visibility: true,</b>
   });
 
-  <span class="redcode">scrawl.makeWheel({
+  <b>scrawl.makeWheel({
 
     name: name('magnifier'),
 
@@ -389,54 +371,54 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
     handleX: 'center',
     handleY: 'center',
 
-    <b>lockTo: 'mouse',</b>
-  });</span>
+    <strong>lockTo: 'mouse',</strong>
+  });</b>
 
   [...]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p><img class="mx-auto" src="/assets/lesson-07/05.png" /></p>
+<p><img src="/assets/lesson-07/05.png" alt="Canvas showing global-composition-operation effect" /></p>
 
 <p>The effect works ... but it leaves us with some issues to fix:</p>
 
-<ol class="list-decimal list-outside ml-8 mb-4">
-  <li class="mb-2">Our Wheel entity remains visible on the canvas when we move the mouse cursor out of the &lt;canvas> element.</li>
-  <li class="mb-2">The magnifier has lost its yellow border.</li>
-  <li class="mb-2">We have no background image.</li>
+<ol class="ordered">
+  <li>Our Wheel entity remains visible on the canvas when we move the mouse cursor out of the ‹canvas› element.</li>
+  <li>The magnifier has lost its yellow border.</li>
+  <li>We have no background image.</li>
 </ol>
 
 <p>The first two issues can be fixed by adding some Group objects to the mix.</p>
 
-<p>The missing background image can be fixed by using a GC operation called <code class="text-sm text-red-800">'destination-over'</code>.</p>
+<p>The missing background image can be fixed by using a GC operation called <code><b>'destination-over'</b></code>.</p>
 
-<h3>What are <code class="text-red-800">'source-in'</code> and <code class="text-red-800">'destination-over'</code>?</h3>
+<h3 tabindex="0">What are 'source-in' and 'destination-over'?</h3>
 
 <p>The art of image compositing and blending is all about how to combine two images into one. Everything you need to know about how browsers go about the business can be found in the W3C's <a href="https://drafts.fxtf.org/compositing/">Compositing and Blending Level 2 Editor's draft</a>.</p>
 
-<p>There's plenty of examples of the range of GC operations available to us, as shown in various web pages scattered across the internet &mdash; the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Compositing/Example">MDN compositing example page</a> is one of the better ones.</p>
+<p>There's plenty of examples of the range of GC operations available to us, as shown in various web pages scattered across the internet &ndash; the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Compositing/Example">MDN compositing example page</a> is one of the better ones.</p>
 
-<p>We set a GC operation on an entity by supplying its <code class="text-sm text-red-800">globalCompositeOperation</code> attribute with a String value ... which must be entirely lowercase! The available options (as defined by W3C) are:</p>
+<p>We set a GC operation on an entity by supplying its <code><b>globalCompositeOperation</b></code> attribute with a String value ... which must be entirely lowercase! The available options (as defined by W3C) are:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800">'source-over', 'source-in', 'source-out', 'source-atop'</code></li>
-  <li class="mb-2"><code class="text-sm text-red-800">'destination-over', 'destination-in', 'destination-out', 'destination-atop'</code></li>
-  <li class="mb-2"><code class="text-sm text-red-800">'copy', 'xor', 'difference', 'exclusion'</code></li>
-  <li class="mb-2"><code class="text-sm text-red-800">'multiply', 'screen', 'overlay'</code></li>
-  <li class="mb-2"><code class="text-sm text-red-800">'lighter', 'lighten', 'darken', 'hard-light', 'soft-light'</code></li>
-  <li class="mb-2"><code class="text-sm text-red-800">'color-dodge', 'color-burn'</code></li>
-  <li class="mb-2"><code class="text-sm text-red-800">'hue', 'saturation', 'color', 'luminosity'</code></li>
+<ul class="disc">
+  <li><code>'source-over', 'source-in', 'source-out', 'source-atop'</code></li>
+  <li><code>'destination-over', 'destination-in', 'destination-out', 'destination-atop'</code></li>
+  <li><code>'copy', 'xor', 'difference', 'exclusion'</code></li>
+  <li><code>'multiply', 'screen', 'overlay'</code></li>
+  <li><code>'lighter', 'lighten', 'darken', 'hard-light', 'soft-light'</code></li>
+  <li><code>'color-dodge', 'color-burn'</code></li>
+  <li><code>'hue', 'saturation', 'color', 'luminosity'</code></li>
 </ul>
 
 <p>... Finding the exact effect required for the canvas display may need a bit of experimentation. However for our project we only need to worry about a few of the simpler GC operations:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'source-over'</code> &mdash; this is the default setting. Our entity gets stamped onto the canvas, covering any other entitys already stamped on it. Translucent parts of our entity will allow color from previously stamped entitys to leak through.</li>
-  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'source-in'</code> &mdash; here the entity gets stamped over existing entitys, but any areas of the canvas not already painted will be left transparent.</li>
-  <li class="mb-2"><code class="text-sm text-red-800 font-bold">'destination-over'</code> &mdash; this is the complement of the default; our entity stamps itself onto the canvas as if it is <i>underneath</i> already-stamped entitys. Translucent areas of the canvas will allow colors from our entity to leak through.</li>
+<ul class="disc">
+  <li><code><b><strong>'source-over'</strong></b></code> &ndash; this is the default setting. Our entity gets stamped onto the canvas, covering any other entitys already stamped on it. Translucent parts of our entity will allow color from previously stamped entitys to leak through.</li>
+  <li><code><b><strong>'source-in'</strong></b></code> &ndash; here the entity gets stamped over existing entitys, but any areas of the canvas not already painted will be left transparent.</li>
+  <li><code><b><strong>'destination-over'</strong></b></code> &ndash; this is the complement of the default; our entity stamps itself onto the canvas as if it is <i>underneath</i> already-stamped entitys. Translucent areas of the canvas will allow colors from our entity to leak through.</li>
 </ul>
 
-<h3>Cell Group objects</h3>
+<h3 tabindex="0">Cell Group objects</h3>
 
 <p>Before we get on with some more coding, one additional thing.</p>
 
@@ -444,14 +426,14 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
 <p>We met Group objects in the "Tower of Hanoi" lesson. We built those Groups to gather together peg and disc entitys, and used them for checking which disc had been selected for dragging, and which peg the disc had been dragged over.</p>
 
-<p>What we didn't learn in that lesson was that every Cell wrapper (they wrap offscreen &lt;canvas> elements) includes a Group object. If we want to stamp an entity onto a displayed &lt;canvas> element then we need to add them to that &lt;canvas> element's base Cell wrapper's Group object.</p>
+<p>What we didn't learn in that lesson was that every Cell wrapper (they wrap offscreen ‹canvas› elements) includes a Group object. If we want to stamp an entity onto a displayed ‹canvas› element then we need to add them to that ‹canvas› element's base Cell wrapper's Group object.</p>
 
-<p class="italic font-bold">The good news is that, for the most part, we don't need to care about Groups.</p>
+<p><b><i>The good news is that, for the most part, we don't need to care about Groups.</i></b></p>
 
 <p>Making our canvas the <b>current canvas</b> before we define the entitys we want to display in that canvas will ensure that entity-Group associations can all take place in the background as we define our entitys:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
+<pre><code>‹script type="module"›
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';
 
   const canvas = scrawl.library.canvas.mycanvas;
   const namespace = 'canvas-identifier';
@@ -459,65 +441,65 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
   canvas.set({
     backgroundColor: 'honeydew',
-  }).<span class="heavycode">setAsCurrentCanvas();</span>
+  }).<b><strong>setAsCurrentCanvas();</strong></b>
 
   [...]
-&lt;/script>
+‹/script›
 </code></pre>
 
-<p>In the "Tower of Hanoi" game we explicitly assigned entitys to Group objects using each Group's <code class="text-sm text-red-800">addArtefacts</code> and <code class="text-sm text-red-800">clearArtefacts</code> functions. But the Groups we created were not associated with the canvas's base Cell &mdash; and an entity needs to belong to a Cell's Group if it wants to take part in the Display cycle.</p>
+<p>In the "Tower of Hanoi" game we explicitly assigned entitys to Group objects using each Group's <code><b>addArtefacts</b></code> and <code><b>clearArtefacts</b></code> functions. But the Groups we created were not associated with the canvas's base Cell &ndash; and an entity needs to belong to a Cell's Group if it wants to take part in the Display cycle.</p>
 
 <p>So how could those entitys get themselves stamped onto the canvas?</p>
 
-<p>The answer is simple: <b>an entity can be associated with more than one Group object</b>. When we created our peg and disc entitys they were all assigned to the base Cell's Group, as normal. Then they were <i><b>also assigned</b></i> to the peg and disc Group objects we created using Scrawl-canvas's <code class="text-sm text-red-800">makeGroup</code> factory function.</p>
+<p>The answer is simple: <b>an entity can be associated with more than one Group object</b>. When we created our peg and disc entitys they were all assigned to the base Cell's Group, as normal. Then they were <i><b>also assigned</b></i> to the peg and disc Group objects we created using Scrawl-canvas's <code><b>makeGroup</b></code> factory function.</p>
 
 <p>... All this background information might be interesting. But why are we discussing it now?</p>
 
-<p>Here's the news. <span class="font-bold">A Cell wrapper can have more than one Group associated with it.</span></p>
+<p>Here's the key point: <b>a Cell wrapper can have more than one Group associated with it.</b></p>
 
-<p>These Groups can be ordered; they can have filters applied to them. And an entity associated with any of these Groups will be included in the Cell's Display cycle &mdash; as long as the Group's <code class="text-sm text-red-800">visibility</code> flag has been set to true (which it is, by default).</p>
+<p>These Groups can be ordered; they can have filters applied to them. And an entity associated with any of these Groups will be included in the Cell's Display cycle &ndash; as long as the Group's <code><b>visibility</b></code> flag has been set to true (which it is, by default).</p>
 
 <p>Enough talk; more code! Let's create some Groups and assign our entitys to them as we define them:</p>
 
-<pre class="code-block"><code>&lt;script type="module">
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.9.10';
+<pre><code>‹script type="module"›
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.0';
 
   const canvas = scrawl.library.canvas.mycanvas,
   const namespace = 'lesson-7';
   const name = (n) => `${namespace}-${n}`;
 
-  <i class="comment">// Note that we are NOT setting the canvas as the current canvas here</i>
-  <i class="comment">// - instead we shall deal with Group assignments as we define our entitys</i>
+  <ins>// Note that we are NOT setting the canvas as the current canvas here
+   // - instead we shall deal with Group assignments as we define our entitys</ins>
   canvas.set({
     backgroundColor: 'honeydew',
   });
 
-  <i class="comment">// We'll create two Groups:</i>
-  <i class="comment">// - one for the magnifier entitys, the other for the background</i>
-  <span class="redcode">const magnifier = scrawl.makeGroup({
+  <ins>// We'll create two Groups:
+   // - one for the magnifier entitys, the other for the background</ins>
+  <sb>const magnifier = scrawl.makeGroup({
 
     name: name('magnifier-group'),
-    <b>host: canvas.base.name,
-    order: 1,</b>
+    <strong>host: canvas.base.name,
+    order: 1,</strong>
   });
 
-  <i class="comment">// We'll give our background Group a higher order</i>
-  <i class="comment">// - to make sure the background gets stamped last</i>
+  <ins>// We'll give our background Group a higher order
+   // - to make sure the background gets stamped last</ins>
   scrawl.makeGroup({
 
     name: name('background-group'),
-    <b>host: canvas.base.name,
-    order: 2,</b>
-  });</span>
+    <strong>host: canvas.base.name,
+    order: 2,</strong>
+  });</b>
 
-  <i class="comment">// While we're refactoring ... </i>
-  <i class="comment">// - let's get rid of the "magic numbers" scattered through the code</i>
-  <span class="redcode">const myradius = 80;</span>
+  <ins>// While we're refactoring ... 
+   // - let's get rid of the "magic numbers" scattered through the code</ins>
+  <b>const myradius = 80;</b>
 
   const mybackground = scrawl.makePicture({
 
     name: name('background'),
-    <span class="heavycode">group: name('background-group'),</span>
+    <b><strong>group: name('background-group'),</strong></b>
 
     asset: 'small-angels',
 
@@ -527,15 +509,15 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
     copyWidth: '100%',
     copyHeight: '100%',
 
-    <span class="heavycode">globalCompositeOperation: 'destination-over',</span>
+    <b><strong>globalCompositeOperation: 'destination-over',</strong></b>
   });
 
   const myMagnifierImage = mybackground.clone({
 
     name: name('enlarged'),
-    <span class="heavycode">group: name('magnifier-group'),
+    <b><strong>group: name('magnifier-group'),
 
-    order: 2,</span>
+    order: 2,</strong></b>
 
     asset: 'big-angels',
 
@@ -550,15 +532,15 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
     lockTo: 'mouse',
 
-    <span class="heavycode">globalCompositeOperation: 'source-in',</span>
+    <b><strong>globalCompositeOperation: 'source-in',</strong></b>
   });
 
   scrawl.makeWheel({
 
     name: name('magnifier'),
-    <span class="heavycode">group: name('magnifier-group'),
+    <b><strong>group: name('magnifier-group'),
 
-    order: 1,</span>
+    order: 1,</strong></b>
 
     radius: myradius,
 
@@ -573,7 +555,7 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
     name: name('magnifier-rim'),
 
-    <span class="heavycode">order: 3,</span>
+    <b><strong>order: 3,</strong></b>
 
     lineWidth: 5,
     strokeStyle: 'gold',
@@ -593,11 +575,11 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
 
       const active = display.active;
 
-      <i class="comment">// Rather than set all three of our magnifier entitys' visibility flags</i>
-      <i class="comment">// - we can now do this at the Group level</i>
-      <span class="heavycode">magnifier.set({
+      <ins>// Rather than set all three of our magnifier entitys' visibility flags
+       // - we can now do this at the Group level</ins>
+      <b><strong>magnifier.set({
         visibility: (active) ? true : false,
-      });</span>
+      });</strong></b>
 
       if (active) {
 
@@ -611,19 +593,19 @@ Base canvas mouse - x: ${<b>hidden.x</b>}, y: ${<b>hidden.y</b>}`;
   }();
 
   [...]
-&lt;/script>
+‹/script›
 </code></pre>
 
 <p>... Objectives achieved!</p>
 
-<p><img class="mx-auto" src="/assets/lesson-07/01.png" /></p>
+<p><img src="/assets/lesson-07/01.png" alt="Canvas showing final user-interactive magnifier effect - the magnifier is now round" /></p>
 
-<h2>Over to you ...</h2>
+<h3 tabindex="0">Over to you ...</h3>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2">This code is "good enough" (a technical term) for a user visiting a website when they're using a desktop computer with a monitor. What changes would we have to make to the code so that they could get an equally "good enough" experience when visiting the site on a mobile device?</li>
-  <li class="mb-2">We've used static images (with known dimensions) in this code. How could we adapt the code to use properly responsive images instead?</li>
-  <li class="mb-2">What information would we need to supply to users who, for whatever reason, cannot view the images or magnifier effect? How could we add that information to the code so they can easily access it?</li>
+<ul class="disc">
+  <li>This code is "good enough" (a technical term) for a user visiting a website when they're using a desktop computer with a monitor. What changes would we have to make to the code so that they could get an equally "good enough" experience when visiting the site on a mobile device?</li>
+  <li>We've used static images (with known dimensions) in this code. How could we adapt the code to use properly responsive images instead?</li>
+  <li>What information would we need to supply to users who, for whatever reason, cannot view the images or magnifier effect? How could we add that information to the code so they can easily access it?</li>
 </ul>
 
 <p>In the next lesson we'll spend some time learning how to break Scrawl-canvas code into Javascript modules.</p>

@@ -8,14 +8,14 @@
 
 <p>The following example creates a Block entity on a Scrawl-canvas canvas. When the user hovers over the Block, and when they click it, the tracker sends details of the interaction to the GA command queue:
 
-<pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;!DOCTYPE html>
-&lt;html>
+<pre><code>‹!DOCTYPE html›
+‹html›
 
-  &lt;head>
-    <span class="italic text-xs text-gray-700">&lt;!-- metatags, title, links, etc --></span>
+  ‹head›
+    <ins>‹!-- metatags, title, links, etc --›</ins>
 
-    <span class="text-red-800">&lt;!-- Google Analytics tracking code -->
-    &lt;script>
+    <b>‹!-- Google Analytics tracking code --›
+    ‹script›
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -23,38 +23,38 @@
 
       ga('create', 'UA-XXXXX-Y', 'auto');
       ga('send', 'pageview');
-    &lt;/script>
-    &lt;!-- End Google Analytics --></span>
-  &lt;/head>
+    ‹/script›
+    ‹!-- End Google Analytics --›</b>
+  ‹/head›
 
-  &lt;body>
+  ‹body›
 
-    <span class="italic text-xs text-gray-700">[... other content]</span>
+    <ins>[... other content]</ins>
 
-    &lt;canvas id="mycanvas">&lt;/canvas>
+    ‹canvas id="mycanvas" data-scrawl-canvas›‹/canvas›
 
-    &lt;script type="module">
+    ‹script type="module"›
 
       import * as scrawl from [... wherever ...];
 
       let canvas = scrawl.library.canvas.mycanvas;
 
-      <span class="italic font-bold text-xs text-gray-700">// NOTE: I am not a GA expert - some of the following code is probably redundant.</span>
+      <ins>// NOTE: I am not a GA expert - some of the following code is probably redundant.</ins>
 
-      <span class="italic text-xs text-gray-700">// We load GA code in the normal way through markup html, and get a handle on the ga object</span>
-      <span class="text-red-800">let ga = window[window['GoogleAnalyticsObject'] || 'ga'],
-          myTracker;</span>
+      <ins>// We load GA code in the normal way through markup html, and get a handle on the ga object</ins>
+      <b>let ga = window[window['GoogleAnalyticsObject'] || 'ga'],
+          myTracker;</b>
 
-      <span class="italic text-xs text-gray-700">// Create a new tracker to monitor user interactions, and set some attributes on it. </span>
-      <span class="text-red-800">ga('create', 'UA-XXXXX-Y', 'auto', 'demoCanvasTracker');</span>
+      <ins>// Create a new tracker to monitor user interactions, and set some attributes on it. </ins>
+      <b>ga('create', 'UA-XXXXX-Y', 'auto', 'demoCanvasTracker');</b>
 
-      <span class="italic text-xs text-gray-700">// Now we can incorporate the tracker's functionality into our Scrawl-canvas code below</span>
-      <span class="text-red-800">ga(function() {
+      <ins>// Now we can incorporate the tracker's functionality into our Scrawl-canvas code below</ins>
+      <b>ga(function() {
         let ga = window[window['GoogleAnalyticsObject'] || 'ga'];
         myTracker = ga.getByName('demoCanvasTracker');
         myTracker.set('transport', 'beacon');
         myTracker.set('campaignKeyword', 'Scrawl-canvas demo');
-      });</span>
+      });</b>
 
       scrawl.makeBlock({
 
@@ -82,11 +82,11 @@
           href: 'https://en.wikipedia.org/wiki/Water',
           description: 'Link to the Wikipedia article on water (opens in new tab)',
 
-          <span class="italic text-xs text-gray-700">// Track the user click action in Google Analytics</span>
-          <span class="italic text-xs text-gray-700">// - different to the click action below - also captures keyboard-initiated navigation</span>
-          <span class="text-red-800">clickAction: function () {
+          <ins>// Track the user click action in Google Analytics
+          // - different to the click action below - also captures keyboard-initiated navigation</ins>
+          <b>clickAction: function () {
             return `ga('demoCanvasTracker.send', 'event', 'Outbound link', 'click', '${this.href}')`;
-          },</span>
+          },</b>
 
           focusAction: true,
           blurAction: true,
@@ -97,8 +97,8 @@
             lineWidth: 30,
           });
 
-          <span class="italic text-xs text-gray-700">// Track the hover started action in Google Analytics</span>
-          <span class="text-red-800">myTracker.send('event', 'Canvas Entity', 'hover start', `${this.name} ${this.type}`);</span>
+          <ins>// Track the hover started action in Google Analytics</ins>
+          <b>myTracker.send('event', 'Canvas Entity', 'hover start', `${this.name} ${this.type}`);</b>
         },
 
         onLeave: function () {
@@ -106,26 +106,26 @@
             lineWidth: 20,
           });
 
-          <span class="italic text-xs text-gray-700">// Track the hover end action in Google Analytics</span>
-          <span class="text-red-800">myTracker.send('event', 'Canvas Entity', 'hover end', `${this.name} ${this.type}`);</span>
+          <ins>// Track the hover end action in Google Analytics</ins>
+          <b>myTracker.send('event', 'Canvas Entity', 'hover end', `${this.name} ${this.type}`);</b>
         },
 
         onUp: function () {
-          <span class="italic text-xs text-gray-700">// Track the click action in Google Analytics</span>
-          <span class="italic text-xs text-gray-700">// - only captures mouse/touch initiated navigation</span>
-          <span class="text-red-800">myTracker.send('event', 'Canvas Entity Link', 'click', `${this.name} ${this.type} ${this.anchor.href}`);</span>
+          <ins>// Track the click action in Google Analytics
+          // - only captures mouse/touch initiated navigation</ins>
+          <b>myTracker.send('event', 'Canvas Entity Link', 'click', `${this.name} ${this.type} ${this.anchor.href}`);</b>
 
           this.clickAnchor();
         },
       });
 
-      <span class="italic text-xs text-gray-700">// For the hover actions</span>
+      <ins>// For the hover actions</ins>
       let interactions = function () {
         if (canvas.here.active) canvas.cascadeEventAction('move');
       };
       scrawl.addListener('move', interactions, canvas.domElement);
 
-      <span class="italic text-xs text-gray-700">// For the click (navigation) action</span>
+      <ins>// For the click (navigation) action</ins>
       let mylinks = function () {
         if (canvas.here.active) canvas.cascadeEventAction('up');
       };
@@ -135,9 +135,10 @@
         name: 'demo-animation',
         target: canvas,
       });
-    &lt;/script>
-  &lt;/body>
-&lt;/html></code></pre>
+    ‹/script›
+  ‹/body›
+‹/html›
+</code></pre>
 
 <h2>Discussion</h2>
 
@@ -145,8 +146,8 @@
 
 <p>For further examples, see:</p>
 
-<ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><a href="../demo/canvas-009.html" target="_blank">Demo Canvas-009</a> - Pattern styles; Entity web link anchors; Dynamic accessibility</li>
-  <li class="mb-2"><a href="../demo/dom-006.html" target="_blank">Demo DOM-006</a> - Tween actions on a DOM element; tracking tween and ticker activity</li>
+<ul class="disc">
+  <li>Demo Canvas-009 - Pattern styles; Entity web link anchors; Dynamic accessibility</li>
+  <li>Demo DOM-006 - Tween actions on a DOM element; tracking tween and ticker activity</li>
 </ul>
 
