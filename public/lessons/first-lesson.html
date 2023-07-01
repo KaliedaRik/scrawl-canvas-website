@@ -83,7 +83,7 @@
 <pre><code>[... canvas setup]
 
 ‹script type="module"›
-  <b>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.3';</b>
+  <b>import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.4';</b>
 ‹/script›
 </code></pre>
 
@@ -94,7 +94,7 @@
 <p>We defined one canvas element in our HTML and gave it an id of <code>"my-canvas"</code>. We can use that id value to get a handle on the canvas wrapper object in our code:</p>
 
 <pre><code>‹script type="module"›
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.3';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.4';
 
   <ins>// Get a handle to our canvas element's wrapper object</ins>
   <b>const canvas = scrawl.library.canvas['my-canvas'];</b>
@@ -106,7 +106,7 @@
 <p>Also, if there's more than one canvas present in the page, we need to make the canvas we are about to work on the <b>current canvas</b> &ndash; it's not essential, but it saves us having to worry about assigning our artefacts to the correct groups when we create them.</p>
 
 <pre><code>‹script type="module"›
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.3';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.4';
 
   const canvas = scrawl.library.canvas['my-canvas'];
 
@@ -123,7 +123,7 @@
 <p>Set functions always return the object, which means we can dot-chain an additional function call onto the set call:</p>
 
 <pre><code>‹script type="module"›
-  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.3';
+  import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.10.4';
 
   const canvas = scrawl.library.canvas['my-canvas'];
 
