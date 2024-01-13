@@ -1,3 +1,8 @@
+<!-- 
+ACCESSIBILITY
+For hidden <a>, remember to add "(opens in new tab)" to the end of the Anchor's description attribute
+-->
+
 <h3 tabindex="0">Previously...</h3>
 
 <p>In the previous lesson we have:</p>
@@ -226,23 +231,27 @@ scrawl.makePicture({
   },</b>
 
   <ins>// Use the onUp function to trigger a DOM click event
-  // - event will originate from the ‹a› element, not our ‹canvas› element</ins>
+  // + event will originate from the ‹a› element, not our ‹canvas› element</ins>
   <b>onUp: function () {
 
     this.clickAnchor();
   },</b>
 
-  <ins>// Define our anchor
-  // - name: used as the ‹a› element's id attribute value
-  // - href: the web page we are linking to
-  // - description: text placed between ‹a› element's opening/closing tags</ins>
   <b>anchor: {
-    name: name('wikipedia-swan-link'),
-    href: 'https://en.wikipedia.org/wiki/Swan',
-    description: 'Link to the Wikipedia article on swans',
 
-    focusAction: true,
-    blurAction: true,
+    <ins>// <b>name:</b> used as the ‹a› element's id attribute value</ins>
+    name: name('wikipedia-swan-link'),
+
+    <ins>// <b>href:</b> the web page URL we are linking to</ins>
+    href: 'https://en.wikipedia.org/wiki/Swan',
+
+    <ins>// <b>description:</b> text placed between ‹a› element's opening/closing tags
+    // + important for accessibility/screen readers!</ins>
+    description: 'Link to the Wikipedia article on swans (opens in new tab)',
+
+    <ins>// <b>tabOrder:</b> For keyboard users navigation via tab key</ins>
+    tabOrder: 2,
+
   },</b>
 });
 </code></pre>

@@ -228,12 +228,11 @@
   onUp: function () { this.clickAnchor() },
 
   anchor: {
-    name: name('wikipedia-goose-link'),
-    href: 'https://en.wikipedia.org/wiki/Goose',
-    description: 'Link to the Wikipedia article on geese',
 
-    focusAction: true,
-    blurAction: true,
+    name: name('wikipedia-goose-link-1'),
+    href: 'https://en.wikipedia.org/wiki/Goose',
+    description: 'First link to the Wikipedia article on geese (opens in new tab)',
+    tabOrder: 3,
   },
 });</b>
 </code></pre>
@@ -351,21 +350,60 @@ const mygoose = scrawl.makeBlock({
 
   [...]
 
-  <ins>// Our gathered positions data at 0, 3 and 6 seconds</ins>
-  // 0.00s
-  // startX: '27%',
-  // startY: '73%',
-
-  // 3.00s
-  // startX: '12%',
-  // startY: '66%',
-
-  // 6.00s
-  // startX: '-3%',
-  // startY: '68%',
-
-  [...]
 });
+
+<ins><s>scrawl.makeTween({
+
+  name: name('goose1-tween1'),
+  ticker: name('ticker'),
+  targets: [name('goose1-hitzone')],
+  time: 0,
+  duration: '3s',
+
+  definitions: [
+    {
+      attribute: 'startX',
+      start: '27%',
+      end: '12%',
+    },
+    {
+      attribute: 'startY',
+      start: '73%',
+      end: '66%',
+    },
+  ],
+
+}).clone({
+
+  name: name('goose1-tween2'),
+  time: '3s',
+
+  definitions: [
+    {
+      attribute: 'startX',
+      start: '12%',
+      end: '-3%',
+    },
+    {
+      attribute: 'startY',
+      start: '66%',
+      end: '68%',
+    },
+  ],
+});</s>
+
+// Our gathered positions data at 0, 3 and 6 seconds
+// 0.00s
+// startX: '27%'
+// startY: '73%'
+
+// 3.00s
+// startX: '12%'
+// startY: '66%'
+
+// 6.00s
+// startX: '-3%'
+// startY: '68%'</ins>
 
 <b><strong>myLocalTweenFactory</strong> ({
   name: name('goose1-tween'),
@@ -406,7 +444,14 @@ const mygoose = scrawl.makeBlock({
 
   action: function () { 
 
-    this.targets.forEach(t => t.set({ visibility: true }));
+    this.targets.forEach(t => t.set({ 
+
+      <ins>// Show the Block entity</ins> 
+      visibility: true,
+
+      <ins>// Add the associated anchor element to the ‹canvas› element (for accessibility)</ins>
+      anchorDisabled: false,
+    }));
   },
 
 }).clone({
@@ -416,7 +461,14 @@ const mygoose = scrawl.makeBlock({
 
   action: function () { 
 
-    this.targets.forEach(t => t.set({ visibility: false }));
+    this.targets.forEach(t => t.set({
+
+      <ins>// Hide the Block entity</ins> 
+      visibility: false,
+
+      <ins>// Remove the associated anchor element from the ‹canvas› element (for accessibility)</ins>
+      anchorDisabled: true,
+    }));
   },
 });</b>
 </code></pre>
@@ -442,43 +494,43 @@ const mygoose = scrawl.makeBlock({
   width: '22%',
   height: '16%',
 
-  <ins>// 0.00
-  // startX: '89%',
-  // startY: '89%',
-
-  // 4.00
-  // startX: '77%',
-  // startY: '80%',
-
-  // 8.00
-  // startX: '65%',
-  // startY: '80%',
-
-  // 10.50
-  // startX: '63%',
-  // startY: '74%',
-
-  // 16.50
-  // startX: '43%',
-  // startY: '68%',
-
-  // 19.50
-  // startX: '33%',
-  // startY: '66%',
-
-  // 22.50
-  // startX: '31%',
-  // startY: '64%',
-
-  // We've already got an Anchor to the Wikipedia article on geese
-  // - so we'll use that one instead of creating another anchor for this entity</ins>
-  onUp: function () {
-
-    mygoose.clickAnchor();
+  anchor: {
+    name: name('wikipedia-goose-link-2'),
+    href: 'https://en.wikipedia.org/wiki/Goose',
+    description: 'Second link to the Wikipedia article on geese (opens in new tab)',
+    tabOrder: 4,
   },
-
-  anchor: null,
 });
+
+<ins>// Measurements:
+
+// 0.00
+// startX: '89%',
+// startY: '89%',
+
+// 4.00
+// startX: '77%',
+// startY: '80%',
+
+// 8.00
+// startX: '65%',
+// startY: '80%',
+
+// 10.50
+// startX: '63%',
+// startY: '74%',
+
+// 16.50
+// startX: '43%',
+// startY: '68%',
+
+// 19.50
+// startX: '33%',
+// startY: '66%',
+
+// 22.50
+// startX: '31%',
+// startY: '64%',</ins>
 
 myLocalTweenFactory ({
   name: name('goose2-tween'),
