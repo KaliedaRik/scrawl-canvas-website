@@ -4,9 +4,10 @@
     const scrawl = getContext('scrawl');
 
     let canvas, animation, observer, loom,
-        group = scrawl.library.group,
-        checkE, startAnimation, stopAnimation, startButton, stopButton,
-        namespace = 'loom-canvas';
+        checkE, startAnimation, stopAnimation, startButton, stopButton;
+    
+    let namespace = 'loom-canvas',
+        name = (n) => `${namespace}-${n}`;
 
     onMount(() => {
 
@@ -19,7 +20,7 @@
 
         scrawl.makeShape({
 
-            name: `${namespace}-left-track`,
+            name: name('left-track'),
 
             startX: 0,
             startY: 0,
@@ -32,14 +33,14 @@
 
         }).clone({
 
-            name: `${namespace}-right-track`,
+            name: name('right-track'),
             startX: 60,
             pathDefinition: 'm0.0,0.0c-16.0,238.0,-33.0,87.0,133.0,327.0',
         });
 
         scrawl.makePicture({
 
-            name: `${namespace}-asset`,
+            name: name('asset'),
 
             imageSource: './assets/scrawl-logo-dark.png',
 
@@ -54,15 +55,15 @@
 
         loom = scrawl.makeLoom({
 
-            name: `${namespace}-loom`,
+            name: name('loom'),
 
-            fromPath: `${namespace}-left-track`,
-            toPath: `${namespace}-right-track`,
+            fromPath: name('left-track'),
+            toPath: name('right-track'),
 
             fromPathStart: 0,
             fromPathEnd: 0.9,
 
-            source: `${namespace}-asset`,
+            source: name('asset'),
             isHorizontalCopy: false,
 
             delta: {
@@ -73,7 +74,7 @@
 
         animation = scrawl.makeRender({
 
-            name: `${namespace}-render`,
+            name: name('animation'),
             target: canvas,
         });
 
@@ -117,9 +118,7 @@
         observer();
         startButton();
         stopButton();
-        animation.kill();
-        group[canvas.base.name].kill(true);
-        canvas.kill();
+        scrawl.purge(namespace);
     });
 </script>
 

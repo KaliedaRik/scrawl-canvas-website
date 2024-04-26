@@ -3,24 +3,35 @@
 
     const scrawl = getContext('scrawl');
 
-    let canvas, animation, observer, hitGroup, pinGroup, labelGroup,
-        moveListener, upListener, backgroundAsset, updateOnResize,
-        namespace = 'anchors-canvas';
+    let canvas, observer, hitGroup, pinGroup, labelGroup, animation,
+        moveListener, upListener, backgroundAsset, updateOnResize;
 
-    let artefact = scrawl.library.artefact,
-        group = scrawl.library.group;
+    let namespace = 'anchors-canvas',
+        name = (n) => `${namespace}-${n}`;
 
     let pinRadius = 6,
         pinLineWidth = 3,
         focussedPinRadius = 10,
         focussedPinLineWidth = 5, 
-        fontSize = 2;
+        fontSize = '2rem';
+
+    let data = [
+        ['pans', '5%', '70%', 'https://en.wikipedia.org/wiki/Cookware_and_bakeware'],
+        ['plates', '25%', '45%', 'https://en.wikipedia.org/wiki/Plate_(dishware)'],
+        ['bread', '70%', '35%', 'https://en.wikipedia.org/wiki/Bread'],
+        ['chimney', '40%', '15%', 'https://en.wikipedia.org/wiki/Chimney'],
+        ['baskets', '40%', '80%', 'https://en.wikipedia.org/wiki/Basket'],
+        ['brooms', '58%', '60%', 'https://en.wikipedia.org/wiki/Broom'],
+        ['goblets', '90%', '60%', 'https://en.wikipedia.org/wiki/Chalice'],
+    ];
 
     onMount(() => {
 
+        scrawl.importDomImage(`.${name('asset')}`);
+
         canvas = scrawl.getCanvas(`${namespace}`);
 
-        backgroundAsset = scrawl.library.asset[`${namespace}-background-image`];
+        backgroundAsset = scrawl.findAsset(name('background-image'));
 
         backgroundAsset.set({
             intrinsicDimensions: {
@@ -30,12 +41,6 @@
                 'kitchenLarge-1600.webp': [1600, 800], 
                 'kitchenLarge-2400.webp': [2400, 1200], 
                 'kitchenLarge-3600.webp': [3600, 1800],
-                'kitchenLarge-400.png': [400, 200], 
-                'kitchenLarge-800.png': [800, 400], 
-                'kitchenLarge-1200.png': [1200, 600], 
-                'kitchenLarge-1600.png': [1600, 800], 
-                'kitchenLarge-2400.png': [2400, 1200], 
-                'kitchenLarge-3600.png': [3600, 1800],
             },
         });
 
@@ -46,25 +51,25 @@
 
         hitGroup = scrawl.makeGroup({
 
-            name: `${namespace}-hit-group`,
-            host: canvas.base.name,
+            name: name('hit-group'),
+            host: canvas.getBase(),
         });
 
         pinGroup = scrawl.makeGroup({
 
-            name: `${namespace}-pin-group`,
-            host: canvas.base.name,
+            name: name('pin-group'),
+            host: canvas.getBase(),
         });
 
         labelGroup = scrawl.makeGroup({
 
-            name: `${namespace}-label-group`,
-            host: canvas.base.name,
+            name: name('label-group'),
+            host: canvas.getBase(),
         });
 
         scrawl.makePicture({
 
-            name: `${namespace}-background`,
+            name: name('background'),
 
             width: "100%",
             height: "100%",
@@ -75,263 +80,117 @@
             asset: backgroundAsset,
         });
 
-        scrawl.makeWheel({
-
-            name: `${namespace}-pans`,
-            group: hitGroup,
-
-            startX: '5%',
-            startY: '70%',
-
-            handleX: 'center',
-            handleY: 'center',
-
-            radius: 40,
-
-            method: 'none',
-
-            onEnter: function () {
-
-                artefact[`${this.name}-pin`].set({
-                    radius: focussedPinRadius,
-                    lineWidth: focussedPinLineWidth,
-                });
-
-                artefact[`${this.name}-label`].set({
-                    visibility: true,
-                });
-
-                canvas.set({
-                    title: `${this.get('anchorDescription')} - ${this.get('anchorHref')}`,
-                    css: {
-                        cursor: 'pointer',
-                    },
-                });
-            },
-
-            onLeave: function () {
-                artefact[`${this.name}-pin`].set({
-                    radius: pinRadius,
-                    lineWidth: pinLineWidth,
-                });
-
-                artefact[`${this.name}-label`].set({
-                    visibility: false,
-                });
-
-                canvas.set({
-                    title: `${canvas.name} canvas element`,
-                    css: {
-                        cursor: 'default',
-                    }
-                });
-            },
-
-            onUp: function () {
-                this.clickAnchor();
-            },
-
-            anchor: {
-                name: 'wikipedia-pans-link',
-                href: 'https://en.wikipedia.org/wiki/Cookware_and_bakeware',
-                description: 'Link to the Wikipedia article on pans (opens in new tab)',
-                focusAction: true,
-                blurAction: true,
-            },
-        }).clone({
-
-            name: `${namespace}-plates`,
-            startX: '25%',
-            startY: '45%',
-
-            anchor: {
-                name: 'wikipedia-plates-link',
-                href: 'https://en.wikipedia.org/wiki/Plate_(dishware)',
-                description: 'Link to the Wikipedia article on plates (opens in new tab)',
-                focusAction: true,
-                blurAction: true,
-            },
-
-        }).clone({
-
-            name: `${namespace}-bread`,
-            startX: '70%',
-            startY: '35%',
-
-            anchor: {
-                name: 'wikipedia-bread-link',
-                href: 'https://en.wikipedia.org/wiki/Bread',
-                description: 'Link to the Wikipedia article on bread (opens in new tab)',
-                focusAction: true,
-                blurAction: true,
-            },
 
-        }).clone({
+        // Mini factory to create entitys
+        // [pin-name, x, y, link]
+        data.forEach(d => {
 
-            name: `${namespace}-chimney`,
-            startX: '40%',
-            startY: '15%',
+            const [item, x, y, url] = d;
 
-            anchor: {
-                name: 'wikipedia-chimney-link',
-                href: 'https://en.wikipedia.org/wiki/Chimney',
-                description: 'Link to the Wikipedia article on chimney (opens in new tab)',
-                focusAction: true,
-                blurAction: true,
-            },
+            scrawl.makeWheel({
 
-        }).clone({
+                name: name(item),
+                group: hitGroup,
 
-            name: `${namespace}-baskets`,
-            startX: '40%',
-            startY: '80%',
+                start: [x, y],
+                handle: ['center', 'center'],
 
-            anchor: {
-                name: 'wikipedia-baskets-link',
-                href: 'https://en.wikipedia.org/wiki/Basket',
-                description: 'Link to the Wikipedia article on baskets (opens in new tab)',
-                focusAction: true,
-                blurAction: true,
-            },
+                radius: 40,
 
-        }).clone({
+                method: 'none',
 
-            name: `${namespace}-brooms`,
-            startX: '58%',
-            startY: '60%',
+                onEnter: function () {
 
-            anchor: {
-                name: 'wikipedia-brooms-link',
-                href: 'https://en.wikipedia.org/wiki/Broom',
-                description: 'Link to the Wikipedia article on brooms (opens in new tab)',
-                focusAction: true,
-                blurAction: true,
-            },
+                    scrawl.findEntity(`${name(item)}-pin`).set({
+                        radius: focussedPinRadius,
+                        lineWidth: focussedPinLineWidth,
+                    });
 
-        }).clone({
+                    scrawl.findEntity(`${name(item)}-label`).set({
+                        visibility: true,
+                    });
 
-            name: `${namespace}-goblets`,
-            startX: '90%',
-            startY: '60%',
+                    canvas.set({
+                        title: `${this.get('anchorDescription')} - ${this.get('anchorHref')}`,
+                        css: {
+                            cursor: 'pointer',
+                        },
+                    });
+                },
 
-            anchor: {
-                name: 'wikipedia-goblets-link',
-                href: 'https://en.wikipedia.org/wiki/Chalice',
-                description: 'Link to the Wikipedia article on goblets (opens in new tab)',
-                focusAction: true,
-                blurAction: true,
-            },
-        });
+                onLeave: function () {
+                    scrawl.findEntity(`${name(item)}-pin`).set({
+                        radius: pinRadius,
+                        lineWidth: pinLineWidth,
+                    });
 
-        scrawl.makeWheel({
+                    scrawl.findEntity(`${name(item)}-label`).set({
+                        visibility: false,
+                    });
 
-            name: `${namespace}-pans-pin`,
-            group: pinGroup,
+                    canvas.set({
+                        title: `${canvas.name} canvas element`,
+                        css: {
+                            cursor: 'default',
+                        }
+                    });
+                },
 
-            pivot: `${namespace}-pans`,
-            lockTo: 'pivot',
+                onUp: function () {
+                    this.clickAnchor();
+                },
 
-            handleX: 'center',
-            handleY: 'center',
+                anchor: {
+                    name: `wikipedia-${item}-link`,
+                    href: url,
+                    description: `Link to the Wikipedia article on ${item} (opens in new tab)`,
+                    focusAction: true,
+                    blurAction: true,
+                },
+            });
 
-            fillStyle: 'rgba(255, 0, 0, 0.6)',
-            strokeStyle: 'pink',
+            scrawl.makeWheel({
 
-            lineWidth: 3,
-            radius: 6,
+                name: `${name(item)}-pin`,
+                group: pinGroup,
 
-            method: 'drawThenFill',
+                pivot: name(item),
+                lockTo: 'pivot',
 
-        }).clone({
+                handleX: 'center',
+                handleY: 'center',
 
-            name: `${namespace}-plates-pin`,
-            pivot: `${namespace}-plates`,
+                fillStyle: 'rgb(255 0 0 / 0.6)',
+                strokeStyle: 'pink',
 
-        }).clone({
+                lineWidth: 3,
+                radius: 6,
 
-            name: `${namespace}-bread-pin`,
-            pivot: `${namespace}-bread`,
+                method: 'drawThenFill',
 
-        }).clone({
+            });
 
-            name: `${namespace}-chimney-pin`,
-            pivot: `${namespace}-chimney`,
+            scrawl.makeLabel({
 
-        }).clone({
+                name: `${name(item)}-label`,
+                group: labelGroup,
 
-            name: `${namespace}-baskets-pin`,
-            pivot: `${namespace}-baskets`,
+                text: `${item[0].toUpperCase()}${item.substring(1)}`,
 
-        }).clone({
+                pivot: name(item),
+                lockTo: 'pivot',
 
-            name: `${namespace}-brooms-pin`,
-            pivot: `${namespace}-brooms`,
+                handle: ['center', '-50%'],
 
-        }).clone({
+                fontString: '1rem sans-serif',
+                shadowColor: 'black',
+                fillStyle: 'white',
+                shadowBlur: 2,
 
-            name: `${namespace}-goblets-pin`,
-            pivot: `${namespace}-goblets`,
-        });
+                exposeText: false,
+                visibility: false,
 
-        scrawl.makePhrase({
-
-            name: `${namespace}-pans-label`,
-            group: labelGroup,
-
-            text: 'Pans',
-
-            width: 50,
-            justify: 'center',
-
-            pivot: `${namespace}-pans`,
-            lockTo: 'pivot',
-
-            handleX: 'center',
-            handleY: '-50%',
-
-            font: '1rem Arial, sans-serif',
-            shadowColor: 'black',
-            fillStyle: 'white',
-            shadowBlur: 2,
-
-            exposeText: false,
-            visibility: false,
-
-        }).clone({
-
-            name: `${namespace}-plates-label`,
-            text: 'Plates',
-            pivot: `${namespace}-plates`,
-
-        }).clone({
-
-            name: `${namespace}-bread-label`,
-            text: 'Bread',
-            pivot: `${namespace}-bread`,
-
-        }).clone({
-
-            name: `${namespace}-chimney-label`,
-            text: 'Chimney',
-            pivot: `${namespace}-chimney`,
-
-        }).clone({
-
-            name: `${namespace}-baskets-label`,
-            text: 'Baskets',
-            pivot: `${namespace}-baskets`,
-
-        }).clone({
-
-            name: `${namespace}-brooms-label`,
-            text: 'Brooms',
-            pivot: `${namespace}-brooms`,
-
-        }).clone({
-
-            name: `${namespace}-goblets-label`,
-            text: 'Goblets',
-            pivot: `${namespace}-goblets`,
+            });
         });
 
 
@@ -361,7 +220,7 @@
                 focussedPinRadius = 18,
                 focussedPinLineWidth = 9; 
 
-                fontSize = 3.25;
+                fontSize = '3.25rem';
 
                 updateOnResize();
             },
@@ -373,7 +232,7 @@
                 focussedPinRadius = 16;
                 focussedPinLineWidth = 8; 
 
-                fontSize = 2.75;
+                fontSize = '2.75rem';
 
                 updateOnResize();
             },
@@ -385,7 +244,7 @@
                 focussedPinRadius = 14,
                 focussedPinLineWidth = 7; 
 
-                fontSize = 2.25;
+                fontSize = '2.25rem';
 
                 updateOnResize();
             },
@@ -397,7 +256,7 @@
                 focussedPinRadius = 12;
                 focussedPinLineWidth = 6; 
 
-                fontSize = 1.75;
+                fontSize = '1.75rem';
 
                 updateOnResize();
             },
@@ -409,7 +268,7 @@
                 focussedPinRadius = 10;
                 focussedPinLineWidth = 5; 
 
-                fontSize = 1.25;
+                fontSize = '1.25rem';
 
                 updateOnResize();
             },
@@ -423,13 +282,13 @@
             });
 
             labelGroup.setArtefacts({
-                sizeValue: fontSize,
+                fontSize,
             });
         };
 
         animation = scrawl.makeRender({
 
-            name: `${namespace}-render`,
+            name: name('animation'),
             target: canvas,
         });
 
@@ -442,13 +301,7 @@
         observer();
         moveListener();
         upListener();
-
-        animation.kill();
-        pinGroup.kill(true);
-        labelGroup.kill(true);
-        hitGroup.kill(true);
-        group[canvas.base.name].kill(true);
-        canvas.kill();
+        scrawl.purge(namespace);
     });
 </script>
 
@@ -458,30 +311,60 @@
         max-width: 1200px;
     }
 
+    canvas .placeholder {
+        text-align: center;
+        width: 100%;
+    }
+
+    canvas .placeholder img {
+        width: 100%;
+    }
+
+    canvas .assets {
+        width: 0;
+        height: 0;
+        overflow: hidden;
+    }
+
     p {
         @apply text-sm text-center italic;
     }
-
-    img {
-        height: 0;
-    }
 </style>
 
-<canvas id={namespace} data-is-responsive="true" data-base-width="1200" data-base-height="600" data-fit="fill">
-    <img id="{namespace}-background-image" class="myimage" alt="Kitchen scene - background image"
-        src="assets/kitchenLarge-800.webp"
-        srcset="assets/kitchenLarge-400.webp 400w,
-            assets/kitchenLarge-800.webp 800w,
-            assets/kitchenLarge-1200.webp 1200w,
-            assets/kitchenLarge-1600.webp 1600w,
-            assets/kitchenLarge-2400.webp 2400w,
-            assets/kitchenLarge-3600.webp 3600w,
-            assets/kitchenLarge-400.png 400w,
-            assets/kitchenLarge-800.png 800w,
-            assets/kitchenLarge-1200.png 1200w,
-            assets/kitchenLarge-1600.png 1600w,
-            assets/kitchenLarge-2400.png 2400w,
-            assets/kitchenLarge-3600.png 3600w" />    
+<canvas 
+    id={namespace} 
+    data-is-responsive="true" 
+    data-base-width="1200" 
+    data-base-height="600" 
+    data-fit="fill"
+>
+
+    <div class="placeholder">
+        <img
+            src="assets/website-anchors-canvas-placeholder-1200.webp"
+            alt="A placeholder image of the 'Anchors' canvas. Image shows a kitchen scene with items of interest highlighted by pins. Click on a pin to navigate to that item's Wikipedia page."
+            srcset="assets/website-anchors-canvas-placeholder-400.webp 400w,
+                assets/website-anchors-canvas-placeholder-800.webp 800w,
+                assets/website-anchors-canvas-placeholder-1200.webp 1200w,
+                assets/website-anchors-canvas-placeholder-1600.webp 1600w,
+                assets/website-anchors-canvas-placeholder-2400.webp 2400w"
+        />    
+    </div>
+
+    <div class="assets" aria-hidden="true">
+        <img 
+            id="{namespace}-background-image"
+            class="{namespace}-asset"
+            alt=""
+            src="assets/kitchenLarge-800.webp"
+            srcset="assets/kitchenLarge-400.webp 400w,
+                assets/kitchenLarge-800.webp 800w,
+                assets/kitchenLarge-1200.webp 1200w,
+                assets/kitchenLarge-1600.webp 1600w,
+                assets/kitchenLarge-2400.webp 2400w,
+                assets/kitchenLarge-3600.webp 3600w"
+        />
+    </div>
 </canvas>
 
 <p>Hover over pins to reveal labels; click to visit relevant wikipedia page. Can also use the tab and enter keys to navigate links</p>

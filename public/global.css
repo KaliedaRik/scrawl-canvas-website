@@ -271,6 +271,11 @@
     url('./fonts/roboto-slab-latin-900.woff') format('woff'); /* Modern Browsers */
 }
 
+@font-face {
+  font-family: "Noto Chinese Simple Serif";
+  src: url("./fonts/NotoSerifSC-Regular.otf") format("opentype");
+}
+
 html, body {
 	position: relative;
 	width: 100%;
@@ -286,12 +291,7 @@ body {
 }
 
 a {
-	color: rgb(0 100 200);
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
+	color: blue;
 }
 
 a:visited {
@@ -337,3 +337,9 @@ button:not(:disabled):active {
 button:focus {
 	border-color: #666;
 }
+
+#preload-fonts {
+  height: 0;
+  overflow: hidden;
+}
+

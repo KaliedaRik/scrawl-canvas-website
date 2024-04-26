@@ -3,16 +3,16 @@
 
     const scrawl = getContext('scrawl');
 
-    let canvas, animation, gradient, observer, ball, mouseCheck,
-        animateGradient = true,
-        group = scrawl.library.group;
+    let canvas, animation, gradient, observer, ball, mouseCheck;
 
     export let namespace;
     export let fit;
 
     onMount(() => {
 
-        canvas = scrawl.getCanvas(`${namespace}`);
+        const name = (n) => `${namespace}-${n}`;
+
+        canvas = scrawl.getCanvas(namespace);
 
         canvas.set({
             fit: fit,
@@ -22,7 +22,7 @@
 
         gradient = scrawl.makeRadialGradient({
 
-            name: `${namespace}-gradient`,
+            name: name('gradient'),
 
             startX: '30%',
             startY: '30%',
@@ -40,22 +40,26 @@
             },
 
             cyclePalette: true,
-        })
-        .updateColor(0, 'black')
-        .updateColor(99, 'red')
-        .updateColor(199, 'black')
-        .updateColor(299, 'blue')
-        .updateColor(399, 'black')
-        .updateColor(499, 'gold')
-        .updateColor(599, 'black')
-        .updateColor(699, 'green')
-        .updateColor(799, 'black')
-        .updateColor(899, 'lavender')
-        .updateColor(999, 'black');
+            animateByDelta: true,
+
+            colors: [
+                [0, 'black'],
+                [99, 'red'],
+                [199, 'black'],
+                [299, 'blue'],
+                [399, 'black'],
+                [499, 'gold'],
+                [599, 'black'],
+                [699, 'green'],
+                [799, 'black'],
+                [899, 'lavender'],
+                [999, 'black']
+            ],
+        });
 
         scrawl.makeBlock({
 
-            name: `${namespace}-box`,
+            name: name('box'),
 
             width: "90%",
             height: "80%",
@@ -76,7 +80,7 @@
 
         ball = scrawl.makeWheel({
 
-            name: `${namespace}-ball`,
+            name: name('ball'),
 
             startX: 'center',
             startY: 'center',
@@ -86,7 +90,7 @@
 
             radius: 80,
 
-            fillStyle: `${namespace}-gradient`,
+            fillStyle: name('gradient'),
             lockFillStyleToEntity: true,
 
             lineWidth: 6,
@@ -101,22 +105,16 @@
             method: 'fillAndDraw',
         });
 
-        scrawl.makePhrase({
+        scrawl.makeLabel({
 
-            name: `${namespace}-phrase`,
+            name: name('label'),
 
             text: `Fit: ${fit}`,
 
-            width: "80%",
-            justify: 'center',
+            start: ['center', 'center'],
+            handle: ['center', 'center'],
 
-            startX: 'center',
-            startY: '60%',
-
-            handleX: 'center',
-            handleY: 'center',
-
-            font: '4rem Garamond, sans-serif',
+            fontString: '4rem sans-serif',
         });
 
 
@@ -134,28 +132,25 @@
                         lockTo: (active) ? 'mouse' : 'start'
                     });
                 }
-                if (animateGradient) gradient.updateByDelta();
             };
         }();
 
 
         animation = scrawl.makeRender({
 
-            name: `${namespace}-render`,
+            name: name('animation'),
             target: canvas,
             commence: mouseCheck,
         });
 
         canvas.setReduceMotionAction(() => {
 
-            ball.set({ noDeltaUpdates: true });
-            animateGradient = false;
+            gradient.set({ animateByDelta: false });
         });
 
         canvas.setNoPreferenceMotionAction(() => {
 
-            ball.set({ noDeltaUpdates: false });
-            animateGradient = true;
+            gradient.set({ animateByDelta: true });
         });
 
         observer = scrawl.makeAnimationObserver(animation, canvas);
@@ -164,10 +159,7 @@
     onDestroy(() => {
 
         observer();
-        animation.kill();
-        group[canvas.base.name].kill(true);
-        gradient.kill();
-        canvas.kill();
+        scrawl.purge(namespace);
     });
 </script>
 
@@ -180,12 +172,33 @@
         border: 1px solid red;
     }
 
+    canvas .placeholder {
+        text-align: center;
+        width: 100%;
+    }
+
+    canvas .placeholder img {
+        width: 100%;
+    }
+
     div {
         margin: 0;
     }
-
 </style>
 
 <div>
-    <canvas id={namespace} data-is-responsive="true" data-base-width="600" data-base-height="300" data-base-background-color="honeydew"></canvas>
+    <canvas 
+        id={namespace} 
+        data-is-responsive="true" 
+        data-base-width="600" 
+        data-base-height="300" 
+        data-base-background-color="honeydew"
+    >
+        <div class="placeholder">
+            <img
+                src="assets/website-grid-canvas-{fit}.webp"
+                alt="A placeholder image of the 'Grid canvas' canvas. Text shows the canvas wrapper's 'fit' property - {fit}; a ball with an animated gradient tracks the mouse cursor behind the text."
+            />
+        </div>
+    </canvas>
 </div>

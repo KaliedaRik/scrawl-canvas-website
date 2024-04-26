@@ -43,11 +43,11 @@
         @apply mb-4;
     }
     a {
-        @apply text-blue-700;
+        @apply underline text-blue-700;
         transition: color 0.5s;
     }
     a:hover {
-        @apply underline text-red-600;
+        @apply text-red-600;
     }
 
     @media (min-width: 768px) {

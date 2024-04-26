@@ -111,7 +111,7 @@
     b {
         color: #0f807c;
     }
-    h4 {
+    h3 {
         @apply text-lg font-medium font-serif italic mb-2 mt-4;
     }
     .main-message {
@@ -126,8 +126,6 @@
 
 <main>
 
-    <HelloWorldCanvas />
-
     <section>
         <h1>Welcome to the Scrawl-canvas Library</h1>
 
@@ -135,7 +133,7 @@
 
         <ul>
             <li>Defines a set of factory functions for creating a wide range of graphic artefacts and effects, which can be drawn on a canvas.</li>
-            <li>Includes an adaptable - yet easy to use - protocol for positioning, displaying and animating artefacts and effects across the canvas.</li>
+            <li>Includes an easy-to-use protocol for positioning, displaying and animating artefacts and effects across the canvas.</li>
             <li>Adds functionality to make &lt;canvas> elements <strong>responsive</strong>, adapting their size to their surrounding environment while remaining fully <strong>interactive</strong>.</li>
             <li>Helps make &lt;canvas> elements more <strong>accessible</strong> for both keyboard and AT users.</li>
         </ul>
@@ -146,11 +144,13 @@
             &rarr; <a href="https://discord.com/channels/906541519509536829/906541519996080149">Discuss Scrawl-canvas on Discord.</a></p>
     </section>
 
+    <HelloWorldCanvas />
+
     <section>
         <h2>Why use Scrawl-canvas?</h2>
         <div class="text-grid">
             <div>
-                <h4>Working with the native Canvas API is hard work</h4>
+                <h3>Working with the native Canvas API is hard work</h3>
 
                 <p>Particularly when the desired result is more complex than a couple of coloured boxes in a static display.</p>
                 <ul>
@@ -163,7 +163,7 @@
                 </ul>
             </div>
             <div>
-                <h4>But the benefits of using canvases for graphical displays and animations are also great</h4> 
+                <h3>But the benefits of using canvases for graphical displays and animations are also great</h3> 
 
                 <ul>
                     <li>Canvases are part of the DOM (unlike Flash).</li>
@@ -234,7 +234,7 @@
 
         <p>More importantly, Scrawl-canvas does a lot of heavy lifting to make those features <b>accessible</b> to users who cannot - for whatever reason - view the canvas display. Links can be made accessible via the keyboard; graphical text is (by default) copied into the DOM so it can be accessed by screen readers. Every Scrawl-canvas canvas comes with <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA">ARIA attributes</a>.</p>
 
-        <h4>Tracking user journeys</h4>
+        <h3>Tracking user journeys</h3>
 
         <p>Once we've built the canvas, we can add third-party tracker functionality to help record user journeys through its display, record click convertions - whatever the client needs to monitor the effectiveness of their site or campaign.</p>
     </section>
@@ -248,7 +248,7 @@
 
         <p>But if a site design calls for a responsive, accessible and interactive &lt;canvas> display, Scrawl-canvas should be able to deliver the goods.</p>
 
-        <h4>Resources</h4>
+        <h3>Resources</h3>
 
         <p><b>Documentation</b> is supplied as inline comments in the code base, and can be viewed as web pages from the <a href="/documentation">Docs</a> link. Most module files include links to test examples which demonstrate the code functionality.</p>
 
