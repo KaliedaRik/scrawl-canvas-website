@@ -131,6 +131,15 @@
         @apply mr-4;
     }
 
+    canvas .placeholder {
+        text-align: center;
+        width: 100%;
+    }
+
+    canvas .placeholder img {
+        width: 100%;
+    }
+
     .animation-controls {
       position: absolute;
       top: 0;
@@ -159,13 +168,24 @@
 </style>
 
 <div class="canvas-container">
-  <canvas id={namespace} width="200" height="330"></canvas>
-  <div class="animation-controls">
-    <button id="play" title="Play animation">
-      <span class="material-icons">play_circle</span>
-    </button>
-    <button id="pause" title="Pause animation">
-      <span class="material-icons">pause_circle</span>
-    </button>
-  </div>
+    <canvas id={namespace} width="200" height="330">
+        <div class="placeholder">
+            <img
+                src="assets/website-loom-canvas-placeholder.webp"
+                alt="A placeholder image of the 'Loom canvas' canvas, which shows an animated Scrawl-canvas logo twisting as it moves over the canvas."
+            />
+        </div>
+    </canvas>
+
+    <div class="animation-controls">
+
+        <button id="play" title="Play animation">
+            <span class="material-icons">play_circle</span>
+        </button>
+
+        <button id="pause" title="Pause animation">
+            <span class="material-icons">pause_circle</span>
+        </button>
+
+    </div>
 </div>
