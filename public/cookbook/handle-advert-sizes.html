@@ -12,9 +12,9 @@
 
   <ins>// Namespacing boilerplate</ins>
   const namespace = 'sizing-demo';
-  const name = n => `${namespace}-${n}`
+  const name = (n) => `${namespace}-${n}`;
 
-  let canvas = scrawl.library.canvas['canvas-id-value'];
+  const canvas = scrawl.findCanvas('canvas-id-value');
 
   canvas.set({
 
@@ -31,8 +31,8 @@
     breakToLargest: 300000,</b>
   });
 
-  // Create a Phrase entity
-  const mytext = scrawl.makePhrase({
+  // Create a Label entity
+  const mytext = scrawl.makeLabel({
 
     name: name('my-text'),
 
@@ -40,10 +40,7 @@
     handle: ['center', 'center'],
 
     text: `Canvas display shape: undetermined`,
-    size: '40px',
-    justify: 'center',
-
-    fillStyle: 'black',
+    fontString: '40px sans-serif',
   });
 
   <ins>// Set and/or update shape and area functions via the set() function:</ins>
@@ -70,11 +67,11 @@
       });
     },
 
-    actionLargestArea: () =>  mytext.set({ size: '40px' }),
+    actionLargestArea: () =>  mytext.set({ fontSize: '40px' }),
 
-    actionRegularArea: () =>  mytext.set({ size: '28px' }),
+    actionRegularArea: () =>  mytext.set({ fontSize: '28px' }),
 
-    actionSmallestArea: () =>  mytext.set({ size: '16px' }),</b>
+    actionSmallestArea: () =>  mytext.set({ fontSize: '16px' }),</b>
   });
 
   <ins>// We can also set them using dedicated functions:</ins>
@@ -92,9 +89,9 @@
     });
   });
 
-  canvas.setActionLargerArea(() => mytext.set({ size: '34px' }));
+  canvas.setActionLargerArea(() => mytext.set({ fontSize: '34px' }));
 
-  canvas.setActionSmallerArea(() => mytext.set({ size: '22px' }));</b>
+  canvas.setActionSmallerArea(() => mytext.set({ fontSize: '22px' }));</b>
 
   <ins>// Create the Display cycle animation</ins>
   const demoAnimation = scrawl.makeRender({
@@ -123,7 +120,7 @@
 <ul class="disc">
   <li>moving entitys into new positions</li>
   <li>loading different image assets to be used by Picture entitys</li>
-  <li>changing entity attributes, such as increasing or decreasing Phrase entity font sizes</li>
+  <li>changing entity attributes, such as increasing or decreasing Label entity font sizes</li>
   <li>replacing one set of entitys with another set</li>
   <li>setting up and/or running different ticker/tween animations</li>
 </ul>
@@ -131,7 +128,7 @@
 <h3>Live demos</h3>
 
 <ul class="disc">
-  <li>Demo Canvas-034 - Determine the displayed shape of the visible canvas; react to changes in the displayed shape</li>
-  <li>Demo DOM-016 - Determine the displayed shape of the visible stack; react to changes in the displayed shape</li>
-  <li>Demo Modules-006 - Animation observer; Scrollytelling</li>
+  <li><a target="_BLANK" href="../demo/canvas-034.html">Demo Canvas-034</a> - Determine the displayed shape of the visible canvas; react to changes in the displayed shape</li>
+  <li><a target="_BLANK" href="../demo/dom-016.html">Demo DOM-016</a> - Determine the displayed shape of the visible stack; react to changes in the displayed shape</li>
+  <li><a target="_BLANK" href="../demo/modules-006.html">Demo Modules-006</a> - Animation observer; Scrollytelling</li>
 </ul>

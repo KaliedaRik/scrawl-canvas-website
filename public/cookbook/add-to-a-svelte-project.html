@@ -15,27 +15,22 @@ $> <span class="text-red-800">npm install scrawl-canvas</span>
 <span class="italic text-xs text-gray-700">... Then in any component which defines a Scrawl-canvas canvas:</span>
 
 &lt;script>
-    import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
 
-    <span class="text-red-800">import * as scrawl from 'scrawl-canvas';</span>
+  <span class="text-red-800">import * as scrawl from 'scrawl-canvas';</span>
 
-    let canvas;
+  let canvas;
 
-    export let namespace;
+  export let namespace;
 
-    <span class="text-red-800">onMount(() => {
+  <span class="text-red-800">onMount(() => {
 
-        canvas = scrawl.getCanvas(`#${namespace}`);
+    canvas = scrawl.getCanvas(namespace);
 
-        <i>[other setup code here]</i>
-    });
+    <i>[other setup code here]</i>
+  });
 
-    onDestroy(() => {
-
-        <i>[other takedown code here]</i>
-
-        canvas.kill();
-    });</span>
+  onDestroy(() => scrawl.purge(namespace));</span>
 &lt;/script>
 
 &lt;canvas id={namespace}>&lt;/canvas>
@@ -55,7 +50,7 @@ $> <span class="text-red-800">npm install scrawl-canvas</span>
 <h3>Common questions</h3>
 
 <p><b>My Svelte project doesn't use Rollup - can I still use Scrawl-canvas?</b>
-    <br />Scrawl-canvas has been tested against the <a href="https://webpack.js.org/">Webpack</a> and Rollup bundlers. Use with other bundlers (<a href="https://github.com/google/closure-compiler/wiki">Google Closure</a>, <a href="https://parceljs.org/">Parcel</a>, <a href="http://browserify.org/">Browserify</a>, <a href="https://fuse-box.org/">FuseBox</a>, etc) is a country still waiting to be explored.</p>
+<br />Scrawl-canvas has been tested against the <a href="https://webpack.js.org/">Webpack</a> and Rollup bundlers. Use with other bundlers (<a href="https://github.com/google/closure-compiler/wiki">Google Closure</a>, <a href="https://parceljs.org/">Parcel</a>, <a href="http://browserify.org/">Browserify</a>, <a href="https://fuse-box.org/">FuseBox</a>, etc) is a country still waiting to be explored.</p>
 
 <h3>Example</h3>
 
@@ -63,7 +58,7 @@ $> <span class="text-red-800">npm install scrawl-canvas</span>
 <pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">import App from './App.svelte';
 
 const app = new App({
-    target: document.body,
+  target: document.body,
 });
 
 export default app;
@@ -75,124 +70,116 @@ export default app;
 &lt;/script>
 
 &lt;style>
-    div {
-        display: grid;
+  div {
+    display: grid;
 
-        grid-template-columns: 1fr 1fr;      
-        grid-column-gap: 1rem;
+    grid-template-columns: 1fr 1fr;      
+    grid-column-gap: 1rem;
 
-        grid-template-rows: auto;
-        grid-row-gap: 1rem;
+    grid-template-rows: auto;
+    grid-row-gap: 1rem;
 
-        justify-items: stretch;
-        align-items: stretch;
+    justify-items: stretch;
+    align-items: stretch;
 
-        padding: 0.5rem;
+    padding: 0.5rem;
 
-        border: 1px solid black;
+    border: 1px solid black;
 
-        background-color: lemonchiffon;
-        overflow: hidden;
-        resize: horizontal;
+    background-color: lemonchiffon;
+    overflow: hidden;
+    resize: horizontal;
 
-        width: 60%;
-        height: 440px;
-        min-width: 300px;
-    }
+    width: 60%;
+    height: 440px;
+    min-width: 300px;
+  }
 &lt;/style>
 
 &lt;div>
-    &lt;HelloWorldCanvas namespace="canvas-1" fit="none" />
-    &lt;HelloWorldCanvas namespace="canvas-2" fit="fill" />
-    &lt;HelloWorldCanvas namespace="canvas-3" fit="cover" />
-    &lt;HelloWorldCanvas namespace="canvas-4" fit="contain" />
+  &lt;HelloWorldCanvas namespace="canvas-1" fit="none" />
+  &lt;HelloWorldCanvas namespace="canvas-2" fit="fill" />
+  &lt;HelloWorldCanvas namespace="canvas-3" fit="cover" />
+  &lt;HelloWorldCanvas namespace="canvas-4" fit="contain" />
 &lt;/div>
 </code></pre>
 
 <p>HelloWorldCanvas.svelte</p>
 <pre class="border p-4 rounded-lg bg-gray-100 mb-4 overflow-x-auto"><code class="text-sm">&lt;script>
-    import { getContext, onMount, onDestroy } from 'svelte';
+  import { getContext, onMount, onDestroy } from 'svelte';
 
-    import * as scrawl from 'scrawl-canvas';
+  import * as scrawl from 'scrawl-canvas';
 
-    let canvas, animation, label;
+  let canvas, animation, label;
 
-    export let namespace;
-    export let fit;
+  export let namespace;
+  export let fit;
 
-    onMount(() => {
+  onMount(() => {
 
-        canvas = scrawl.getCanvas(`#${namespace}`);
+    canvas = scrawl.getCanvas(namespace);
 
-        canvas.set({
-            backgroundColor: 'honeydew',
-            fit: fit,
-            checkForResize: true,
-        });
-
-        canvas.setBase({
-            width: 600,
-            height: 300,
-        });
-
-        label = scrawl.makePhrase({
-
-            name: `${namespace}-label`,
-            text: `Hello - ${fit}`,
-
-            width: '100%',
-            justify: 'center',
-
-            font: '4.5em bold Garamond, sans-serif',
-
-            startX: 'center',
-            startY: 'center',
-
-            handleX: 'center',
-            handleY: 'center',
-
-            fillStyle: 'lightblue',
-
-            lineWidth: 2,
-            strokeStyle: 'blue',
-
-            method: 'fillThenDraw',
-        });
-
-        animation = scrawl.makeRender({
-
-            name: `${namespace}-render`,
-            target: canvas,
-        });
+    canvas.set({
+      backgroundColor: 'honeydew',
+      fit: fit,
+      checkForResize: true,
     });
 
-    onDestroy(() => {
-
-        animation.kill();
-        label.kill();
-        canvas.kill();
+    canvas.setBase({
+      width: 600,
+      height: 300,
     });
+
+    label = scrawl.makeLabel({
+
+      name: `${namespace}-label`,
+      text: `Hello - ${fit}`,
+
+      fontString: '4.5em bold Garamond, sans-serif',
+
+      startX: 'center',
+      startY: 'center',
+
+      handleX: 'center',
+      handleY: 'center',
+
+      fillStyle: 'lightblue',
+
+      lineWidth: 2,
+      strokeStyle: 'blue',
+
+      method: 'fillThenDraw',
+    });
+
+    animation = scrawl.makeRender({
+
+      name: `${namespace}-render`,
+      target: canvas,
+    });
+  });
+
+  onDestroy(() => scrawl.purge(namespace));
 &lt;/script>
 
 &lt;style>
-    canvas {
-        background-color: black;
-        border-radius: 0.5em;
-        width: 100%;
-        height: 100%;
-        max-height: 200px;
-        border: 1px solid red;
-        margin: 0;
-    }
+  canvas {
+    background-color: black;
+    border-radius: 0.5em;
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
+    border: 1px solid red;
+    margin: 0;
+  }
 
-    div {
-        margin: 0;
-        padding: 0;
-    }
+  div {
+    margin: 0;
+    padding: 0;
+  }
 
 &lt;/style>
 
 &lt;div>
-    &lt;canvas id={namespace}>&lt;/canvas>
+  &lt;canvas id={namespace}>&lt;/canvas>
 &lt;/div>
 </code></pre>

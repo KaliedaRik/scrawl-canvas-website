@@ -13,7 +13,7 @@
 
     &lt;style>
       <span class="italic text-xs text-gray-700">/* Use CSS to hide image assets defined in HTML - many methods are available */</span>
-      <span class="text-red-800">.canvas-assets {
+      <span class="text-red-800">canvas .assets {
         height: 0;
       }</span>
     &lt;/style>
@@ -23,25 +23,29 @@
 
     <span class="italic text-xs text-gray-700">&lt;!-- other content --></span>
 
-    &lt;canvas id="mycanvas">&lt;/canvas>
+    &lt;canvas id="mycanvas">
 
-    <span class="italic text-xs text-gray-700">&lt;!-- include a <b>srcset</b> attribute in the &lt;img> element --></span>
-    <span class="text-red-800">&lt;img 
-      id="river" 
-      class="canvas-assets" 
-      alt="Image used in canvas element"
-      src="img/river.jpg"
-      srcset="img/river-300.jpg 300w,
-              img/river-600.jpg 600w,
-              img/river-900.jpg 900w,
-              img/river-1200.jpg 1200w,
-              img/river-1600.jpg 1600w,
-              img/river-2000.jpg 2000w,
-              img/river-2400.jpg 2400w,
-              img/river-2800.jpg 2800w,
-              img/river-3200.jpg 3200w,
-              img/river-3600.jpg 3600w,
-              img/river-4000.jpg 4000w" /></span>
+      &lt;div class="assets" aria-hidden="true">
+
+        <span class="italic text-xs text-gray-700">&lt;!-- include a <b>srcset</b> attribute in the &lt;img> element --></span>
+        <span class="text-red-800">&lt;img 
+          id="river" 
+          class="canvas-assets" 
+          alt=""
+          src="img/river.jpg"
+          srcset="img/river-300.jpg 300w,
+                  img/river-600.jpg 600w,
+                  img/river-900.jpg 900w,
+                  img/river-1200.jpg 1200w,
+                  img/river-1600.jpg 1600w,
+                  img/river-2000.jpg 2000w,
+                  img/river-2400.jpg 2400w,
+                  img/river-2800.jpg 2800w,
+                  img/river-3200.jpg 3200w,
+                  img/river-3600.jpg 3600w,
+                  img/river-4000.jpg 4000w" /></span>
+      &lt;div>
+    &lt;/canvas>
 
     <span class="italic text-xs text-gray-700">&lt;!-- Canvas scene Javascript --></span>
     &lt;script type="module">
@@ -52,7 +56,7 @@
       <span class="text-red-800">scrawl.importDomImage('.canvas-assets');</span>
 
       <span class="italic text-xs text-gray-700">// Asset name will match the &lt;img> element's <b>id attribute</b> value</span>
-      <span class="text-red-800">let myRiver = scrawl.library.asset.river;</span>
+      <span class="text-red-800">const myRiver = scrawl.findAsset('river');</span>
 
       <span class="italic text-xs text-gray-700">// We need to add sizing data to our image asset - see <a href="/learn/second-lesson">Lesson 2</a> for more details</span>
       <span class="text-red-800">myRiver.set({
@@ -72,10 +76,16 @@
       });</span>
 
       <span class="italic text-xs text-gray-700">// ... Scene code ...</span>
+      const canvas = scrawl.findCanvas('canvas-id-value');
+
+      <span class="italic text-xs text-gray-700">// Namespacing boilerplate</span>
+      const namespace = canvas.name;
+      const name = (n) => `${namespace}-${n}`;
+
 
       scrawl.makePicture({
 
-        name: `river-scene`,
+        name: name('river-scene'),
         asset: 'river',
 
         <span class="italic text-xs text-gray-700">// Define the copy coordinates and dimensions in relative (String percent) values</span>
@@ -93,4 +103,4 @@
 
 <h2>Discussion</h2>
 
-<p>We discuss in greater depth the reasons why we should use responsive images in our scenes, and how to achieve this in Scrawl-canvas, in <a href="/learn/second-lesson">Lesson 2 (Using images with Scrawl-canvas)</a> on this site.</p>
+<p>We discuss in greater depth the reasons why we should use responsive images in our scenes, and how to achieve this in Scrawl-canvas, in <a href="../learn/second-lesson">Lesson 2 (Using images with Scrawl-canvas)</a> on this site.</p>

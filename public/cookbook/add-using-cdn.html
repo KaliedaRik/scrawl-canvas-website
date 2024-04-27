@@ -18,7 +18,7 @@
   ‹script type="module"›
 
     <b>import * as scrawl from "https://unpkg.com/scrawl-canvas@8.13.0";
-    const canvas = scrawl.library.canvas.mycanvas;</b>
+    const canvas = scrawl.findCanvas('mycanvas');</b>
 
     [...]
 
@@ -87,21 +87,18 @@
 
     import * as scrawl from 'https://unpkg.com/scrawl-canvas';
 
-    const canvas = scrawl.library.canvas.mycanvas;
+    const canvas = scrawl.findCanvas('mycanvas');
 
     <ins>// Namespacing boilerplate</ins>
     const namespace = canvas.name;
     const name = n => `${namespace}-${n}`
 
-    scrawl.makePhrase({
+    scrawl.makeLabel({
 
       name: name('label),
       text: 'Hello, world!',
 
-      width: '100%',
-      justify: 'center',
-
-      font: '4.5em bold Garamond, sans-serif',
+      fontString: '4.5em bold Garamond, sans-serif',
 
       startX: 'center',
       startY: 'center',

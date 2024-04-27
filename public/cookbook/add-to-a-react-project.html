@@ -84,13 +84,7 @@ export default App
 <pre><code><ins>/src/SimpleCanvases.tsx</ins>
 import { useEffect } from 'react';
 
-<b>import {
-  getCanvas,
-  library,
-  makeBlock,
-  makeWheel,
-  makeRender,
-} from 'scrawl-canvas';</b>
+<b>import * as scrawl from 'scrawl-canvas';</b>
 
 interface SimpleCanvasProps {
   namespace: string;
@@ -105,12 +99,12 @@ export const Square = (props: SimpleCanvasProps) => {
   useEffect(() => {
 
     <ins>// Retrieve our canvas element once it has rendered</ins>
-    <b>const canvas = getCanvas(namespace);</b>
+    <b>const canvas = scrawl.getCanvas(namespace);</b>
 
     <ins>// Prevent polluting the SC library by checking if objects already exist</ins>
-    if (canvas && !library.entity[name('block')]) {
+    if (canvas && !scrawl.findEntity(name('block'))) {
 
-      <b>makeBlock({
+      <b>scrawl.makeBlock({
         name: name('block'),
         start: ['center', 'center'],
         handle: ['center', 'center'],
@@ -120,7 +114,7 @@ export const Square = (props: SimpleCanvasProps) => {
         },
       });
 
-      makeRender({
+      scrawl.makeRender({
         name: name('animation'),
         target: canvas,
       });</b>
@@ -144,9 +138,9 @@ export const Circle = (props: SimpleCanvasProps) => {
 
   useEffect(() => {
 
-    const canvas = getCanvas(namespace);
+    const canvas = scrawl.getCanvas(namespace);
 
-    if (canvas && !library.animation[name('animation')]) {
+    if (canvas && !scrawl.findEntity(name('wheel'))) {
 
       makeWheel({
         name: name('wheel'),
@@ -179,7 +173,7 @@ export const Circle = (props: SimpleCanvasProps) => {
 };
 
 <ins>// To help us debug SC memory leaks, console.log the SC library</ins>
-<b>console.log(library);</b>
+<b>console.log(scrawl.library);</b>
 </code></pre>
 
 <p>Click on the <code>Swap canvas</code> button several times to check that the code is not causing memory leaks. The console output should look something like this:</p>

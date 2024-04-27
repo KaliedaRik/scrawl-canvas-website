@@ -10,15 +10,19 @@
 
   import * as scrawl from [... wherever ...];
 
-  const canvas = scrawl.library.canvas['example-canvas-id'];
+  const canvas = scrawl.findCanvas('canvas-id-value');
+
+  <ins>// Namespacing boilerplate</ins>
+  const namespace = canvas.name;
+  const name = (n) => `${namespace}-${n}`;
 
   <span class="italic text-xs text-gray-700">// This entity will rotate around its center while the canvas animation plays</span>
-  const text = scrawl.makePhrase({
+  const text = scrawl.makeLabel({
 
-    name: 'example-phrase',
+    name: name('label'),
 
     text: 'Lorem Ipsum etc',
-    font: '50px arial, sans-serif',
+    fontString: '50px sans-serif',
 
     start: ['center', 'center'],
     handle: ['center', 'center'],
@@ -30,20 +34,20 @@
   // - We need the Display Cycle to run at least once, to draw the initial scene</span>
   <span class="text-red-800">const demoAnimation = scrawl.makeRender</span>({
 
-    name: "demo-animation",
+    name: name('animation'),
     target: canvas,
 
     <span class="italic text-xs text-gray-700">// The afterCreated function runs once, after the first Display Cycle completes</span>
-    <span class="text-red-800">afterCreated: () => scrawl.reducedMotionActions(),</span>
+    <span class="text-red-800">afterCreated: () => canvas.reducedMotionActions(),</span>
   });
 
   <span class="italic text-xs text-gray-700">// Hook functions to start/stop the animation running</span>
-  <span class="text-red-800">scrawl.setReduceMotionAction(() => {
+  <span class="text-red-800">canvas.setReduceMotionAction(() => {
 
       if (demoAnimation.isRunning()) demoAnimation.halt();
   });
 
-  scrawl.setNoPreferenceMotionAction(() => {
+  canvas.setNoPreferenceMotionAction(() => {
 
       if (!demoAnimation.isRunning()) demoAnimation.run();
   });</span>
@@ -60,9 +64,9 @@
 <p>Scrawl-canvas uses the following hooks and functions to act on the user's preference, both when the page loads, and at any time after if the user updates their preference:</p>
 
 <ul class="list-disc list-outside ml-8 mb-4">
-  <li class="mb-2"><code class="text-sm text-red-800">scrawl.setReduceMotionAction()</code> &mdash; invoke the required actions to slow down, or halt, a Scrawl-canvas animation.</li>
-  <li class="mb-2"><code class="text-sm text-red-800">scrawl.setNoPreferenceMotionAction()</code> &mdash; invoke the required actions to (re)start a Scrawl-canvas animation.</li>
-  <li class="mb-2"><code class="text-sm text-red-800">scrawl.reducedMotionActions()</code> &mdash; trigger Scrawl-canvas to check the user's reduced motion choice and invoke the appropriate hook function.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">canvas.setReduceMotionAction()</code> &mdash; invoke the required actions to slow down, or halt, a Scrawl-canvas animation.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">canvas.setNoPreferenceMotionAction()</code> &mdash; invoke the required actions to (re)start a Scrawl-canvas animation.</li>
+  <li class="mb-2"><code class="text-sm text-red-800">canvas.reducedMotionActions()</code> &mdash; trigger Scrawl-canvas to check the user's reduced motion choice and invoke the appropriate hook function.</li>
 </ul>
 
 <h3>Alternative methods</h3>
@@ -78,21 +82,21 @@
   <span class="italic text-xs text-gray-700">// Create the Display Cycle animation, assigning it to a variable</span>
   <span class="text-red-800">const demoAnimation = scrawl.makeRender</span>({
 
-    name: "demo-animation",
+    name: name('animation'),
     target: canvas,
   });
 
   <span class="italic text-xs text-gray-700">// Hook functions to start/stop the animation running</span>
-  <span class="text-red-800">scrawl.setReduceMotionAction</span>(() => {
+  <span class="text-red-800">canvas.setReduceMotionAction</span>(() => {
 
       if (demoAnimation.isRunning()) demoAnimation.halt();
   });
 
-  <span class="text-red-800">scrawl.setNoPreferenceMotionAction</span>(() => {
+  <span class="text-red-800">canvas.setNoPreferenceMotionAction</span>(() => {
 
       if (!demoAnimation.isRunning()) demoAnimation.run();
   });
 
   <span class="italic text-xs text-gray-700">// Perform the reduced motion check five seconds after the animation starts</span>
-  <span class="text-red-800">setTimeout(() => scrawl.reducedMotionActions(), 5000);</span>
+  <span class="text-red-800">setTimeout(() => canvas.reducedMotionActions(), 5000);</span>
 &lt;/script></code></pre>

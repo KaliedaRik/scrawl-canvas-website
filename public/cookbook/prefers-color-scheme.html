@@ -10,14 +10,18 @@
 
   import * as scrawl from [... wherever ...];
 
-  const canvas = scrawl.library.canvas['example-canvas-id'];
+  const canvas = scrawl.findCanvas('canvas-id-value');
 
-  const text = scrawl.makePhrase({
+  <ins>// Namespacing boilerplate</ins>
+  const namespace = canvas.name;
+  const name = (n) => `${namespace}-${n}`;
 
-    name: 'example-phrase',
+  const text = scrawl.makeLabel({
+
+    name: name('label'),
 
     text: 'Lorem Ipsum etc',
-    font: '50px arial, sans-serif',
+    fontString: '50px arial, sans-serif',
 
     start: ['center', 'center'],
     handle: ['center', 'center'],
@@ -31,20 +35,20 @@
 
 
   <ins>// prefers-color-scheme actions</ins>
-  <b>scrawl.setColorSchemeDarkAction</b>(() => {
+  <b>canvas.setColorSchemeDarkAction</b>(() => {
 
       canvas.set({ backgroundColor: background_dark});
       text.set({ fillStyle: text_dark});
   });
 
-  <b>scrawl.setColorSchemeLightAction</b>(() => {
+  <b>canvas.setColorSchemeLightAction</b>(() => {
       
       canvas.set({ backgroundColor: background_light});
       text.set({ fillStyle: text_light});
   });
 
   <ins>// Invoke prefers-color-scheme actions test</ins>
-  <b>scrawl.colorSchemeActions();</b>
+  <b>canvas.colorSchemeActions();</b>
 
 ‹/script›
 </code></pre>
@@ -93,26 +97,26 @@
     <b>const rootStyles = getComputedStyle(document.documentElement);
     const getStyle = (style) => rootStyles.getPropertyValue(`--${style}`);
 
-    scrawl.setColorSchemeDarkAction(() => {
+    canvas.setColorSchemeDarkAction(() => {
 
-        canvas.set({
-          backgroundColor: getStyle('background-dark'),
-        });
+      canvas.set({
+        backgroundColor: getStyle('background-dark'),
+      });
 
-        text.set({ 
-          fillStyle: getStyle('text-dark'),
-        });
+      text.set({ 
+        fillStyle: getStyle('text-dark'),
+      });
     });
 
-    scrawl.setColorSchemeLightAction(() => {
+    canvas.setColorSchemeLightAction(() => {
         
-        canvas.set({ 
-          backgroundColor: getStyle('background-light'),
-        });
+      canvas.set({ 
+        backgroundColor: getStyle('background-light'),
+      });
 
-        text.set({ 
-          fillStyle: getStyle('text-light'),
-        });
+      text.set({ 
+        fillStyle: getStyle('text-light'),
+      });
     });</b>
 
     [...]

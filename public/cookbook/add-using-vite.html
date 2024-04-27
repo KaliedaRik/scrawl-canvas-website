@@ -37,16 +37,15 @@ $> yarn dev
     ›‹/canvas›
 
     ‹script type="module"›
-      import {
-        makeBlock,
-        render,
-      } from 'scrawl-canvas';
+      import * as scrawl from 'scrawl-canvas';
+
+      const canvas = scrawl.findCanvas('mycanvas');
 
       // Namespacing boilerplate
       const namespace = 'exp-1';
       const name = (n) => `${namespace}-${n}`;
 
-      makeBlock({
+      scrawl.makeBlock({
         name: name('block'),
         start: ['center', 'center'],
         handle: ['center', 'center'],
@@ -103,23 +102,22 @@ $> yarn dev
 <p>The root TS file can be found at <code><b>src/main.ts</b></code>. Amend it as follows:</p>
 
 <pre><code>
-import {
-  makeBlock,
-  render,
-} from 'scrawl-canvas';
+import * as scrawl from 'scrawl-canvas';
+
+const canvas = scrawl.findCanvas('mycanvas');
 
 // Namespacing boilerplate
 const namespace = 'exp-2';
 const name = (n: string) => `${namespace}-${n}`;
 
-makeBlock({
+scrawl.makeBlock({
   name: name('block'),
   start: ['center', 'center'],
   handle: ['center', 'center'],
   dimensions: ['50%', '50%'],
 });
 
-render();
+scrawl.render();
 </code></pre>
 
 <p>... and everything should work as expected &ndash; for instance, TS should warn us when we try to add an inappropriate attribute to our Block factory invocation:</p>

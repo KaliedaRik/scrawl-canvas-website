@@ -37,7 +37,11 @@
 
       import * as scrawl from [... wherever ...];
 
-      let canvas = scrawl.library.canvas.mycanvas;
+      const canvas = scrawl.findCanvas('mycanvas');
+
+      <ins>// Namespacing boilerplate</ins>
+      const namespace = canvas.name;
+      const name = (n) => `${namespace}-$[n}`;
 
       <ins>// NOTE: I am not a GA expert - some of the following code is probably redundant.</ins>
 
@@ -58,7 +62,7 @@
 
       scrawl.makeBlock({
 
-        name: 'test-block',
+        name: name('test-block'),
 
         width: '40%',
         height: '40%',
@@ -132,7 +136,8 @@
       scrawl.addListener('up', mylinks, canvas.domElement);
 
       scrawl.makeRender({
-        name: 'demo-animation',
+
+        name: name('animation'),
         target: canvas,
       });
     ‹/script›
@@ -147,7 +152,7 @@
 <p>For further examples, see:</p>
 
 <ul class="disc">
-  <li>Demo Canvas-009 - Pattern styles; Entity web link anchors; Dynamic accessibility</li>
-  <li>Demo DOM-006 - Tween actions on a DOM element; tracking tween and ticker activity</li>
+  <li><a target="_BLANK" href="../demo/canvas-009.html">Demo Canvas-009</a> - Pattern styles; Entity web link anchors; Dynamic accessibility</li>
+  <li><a target="_BLANK" href="../demo/dom-006.html">Demo DOM-006</a> - Tween actions on a DOM element; tracking tween and ticker activity</li>
 </ul>
 

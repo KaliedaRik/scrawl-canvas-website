@@ -42,20 +42,25 @@
 <pre class="code-block"><code>&lt;canvas width="400" height="200" id="my-canvas-id">&lt;/canvas>
 
 &lt;script type="module">
-    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.13.0";
+  import * as scrawl from "https://unpkg.com/scrawl-canvas@8.13.0";
 
-    const canvas = scrawl.library.canvas['my-canvas-id'];
+  const canvas = scrawl.findCanvas('canvas-id-value');
 
-    <span class="redcode">scrawl.makeBlock({</span>
-        name: 'my-layer-block',
-        <span class="redcode">group: canvas.base.name,</span>
-        dimensions: ['50%', '50%'],
-        start: ['center', 'center'],
-        handle: ['center', 'center'],
-        fillStyle: 'red',
-    });
+  <ins>// Namespacing boilerplate</ins>
+  const namespace = canvas.name;
+  const name = (n) => `${namespace}-${n}`;
 
-    <span class="redcode">canvas.render();</span>
+  <span class="redcode">scrawl.makeBlock({</span>
+
+    name: name('my-layer-block'),
+    <span class="redcode">group: canvas.get('baseName'),</span>
+    dimensions: ['50%', '50%'],
+    start: ['center', 'center'],
+    handle: ['center', 'center'],
+    fillStyle: 'red',
+  });
+
+  <span class="redcode">canvas.render();</span>
 &lt;/script></code></pre>
 
 <h2>Discussion</h2>
@@ -77,9 +82,9 @@
 <p>The Scrawl-canvas interpretation of a scene graph is flattened into just two or three layers:</p>
 
 <ul class="list-disc list-outside ml-8 mb-4">
-    <li class="mb-2">The &lt;canvas> element's <code class="text-sm text-red-800">Canvas</code> wrapper and its base <code class="text-sm text-red-800">Cell</code>.</li>
-    <li class="mb-2">Additional <code class="text-sm text-red-800">Cell</code>s (think: layers) which can (not: will) stamp their contents onto the <code class="text-sm text-red-800">Canvas</code> wrapper's base <code class="text-sm text-red-800">Cell</code>.</li>
-    <li class="mb-2">Individual entitys which stamp themselves onto <code class="text-sm text-red-800">Cell</code>s.</li>
+  <li class="mb-2">The &lt;canvas> element's <code class="text-sm text-red-800">Canvas</code> wrapper and its base <code class="text-sm text-red-800">Cell</code>.</li>
+  <li class="mb-2">Additional <code class="text-sm text-red-800">Cell</code>s (think: layers) which can (not: will) stamp their contents onto the <code class="text-sm text-red-800">Canvas</code> wrapper's base <code class="text-sm text-red-800">Cell</code>.</li>
+  <li class="mb-2">Individual entitys which stamp themselves onto <code class="text-sm text-red-800">Cell</code>s.</li>
 </ul>
 
 <p>Our entitys will stamp themselves onto the base <code class="text-sm text-red-800">Cell</code>, or onto a <code class="text-sm text-red-800">Cell</code> which then stamps itself onto the base <code class="text-sm text-red-800">Cell</code>. A non-base <code class="text-sm text-red-800">Cell</code> cannot stamp itself onto another non-base <code class="text-sm text-red-800">Cell</code> &mdash; we are not allowed to nest non-base <code class="text-sm text-red-800">Cell</code>s inside another non-base <code class="text-sm text-red-800">Cell</code>.</p>
@@ -99,16 +104,16 @@
 <h3>To summarise:</h3>
 
 <ul class="list-disc list-outside ml-8 mb-4">
-    <li class="mb-2">The <code class="text-sm text-red-800">Canvas</code> wrapper has a guaranteed one:one relationship with its base <code class="text-sm text-red-800">Cell</code>.</li>
-    <li class="mb-2">A base <code class="text-sm text-red-800">Cell</code> will have a guaranteed one:one relationship with its default <code class="text-sm text-red-800">Group</code>.</li>
-    <li class="mb-2">the <code class="text-sm text-red-800">Canvas</code> wrapper can manage additional non-base <code class="text-sm text-red-800">Cell</code>s, while non-base <code class="text-sm text-red-800">Cell</code>s can associate with more than one <code class="text-sm text-red-800">Canvas</code> wrapper.</li>
-    <li class="mb-2">Every non-base <code class="text-sm text-red-800">Cell</code> will have a guaranteed relationship with its own default <code class="text-sm text-red-800">Group</code>.</li>
-    <li class="mb-2">A default <code class="text-sm text-red-800">Group</code> must always have the same <code class="text-sm text-red-800">.name</code> attribute as its <code class="text-sm text-red-800">Cell</code>.</li>
-    <li class="mb-2">We can create additional <code class="text-sm text-red-800">Group</code>s, but those <code class="text-sm text-red-800">Group</code>s do not need to be associated with any <code class="text-sm text-red-800">Cell</code>.</li>
-    <li class="mb-2">When we create an entity we can associate it with a <code class="text-sm text-red-800">Cell</code> by setting its <code class="text-sm text-red-800">.group</code> attribute to a <code class="text-sm text-red-800">Group</code> object associated with that <code class="text-sm text-red-800">Cell</code></li>
-    <li class="mb-2">We can move entitys between <code class="text-sm text-red-800">Cell</code>s by updating their <code class="text-sm text-red-800">.group</code> attribute value.</li>
-    <li class="mb-2">We can add or delete entitys to/from <code class="text-sm text-red-800">Cell</code>s by invoking an associated <code class="text-sm text-red-800">Group</code>'s <code class="text-sm text-red-800">.addArtefacts()</code> and <code class="text-sm text-red-800">.removeArtefacts()</code> functions.</li>
-    <li class="mb-2">An entity doesn't need to be associated with a <code class="text-sm text-red-800">Group</code>; it can be stamped onto any <code class="text-sm text-red-800">Cell</code> at any time by invoking its <code class="text-sm text-red-800">.simpleStamp()</code> function.</li>
+  <li class="mb-2">The <code class="text-sm text-red-800">Canvas</code> wrapper has a guaranteed one:one relationship with its base <code class="text-sm text-red-800">Cell</code>.</li>
+  <li class="mb-2">A base <code class="text-sm text-red-800">Cell</code> will have a guaranteed one:one relationship with its default <code class="text-sm text-red-800">Group</code>.</li>
+  <li class="mb-2">the <code class="text-sm text-red-800">Canvas</code> wrapper can manage additional non-base <code class="text-sm text-red-800">Cell</code>s, while non-base <code class="text-sm text-red-800">Cell</code>s can associate with more than one <code class="text-sm text-red-800">Canvas</code> wrapper.</li>
+  <li class="mb-2">Every non-base <code class="text-sm text-red-800">Cell</code> will have a guaranteed relationship with its own default <code class="text-sm text-red-800">Group</code>.</li>
+  <li class="mb-2">A default <code class="text-sm text-red-800">Group</code> must always have the same <code class="text-sm text-red-800">.name</code> attribute as its <code class="text-sm text-red-800">Cell</code>.</li>
+  <li class="mb-2">We can create additional <code class="text-sm text-red-800">Group</code>s, but those <code class="text-sm text-red-800">Group</code>s do not need to be associated with any <code class="text-sm text-red-800">Cell</code>.</li>
+  <li class="mb-2">When we create an entity we can associate it with a <code class="text-sm text-red-800">Cell</code> by setting its <code class="text-sm text-red-800">.group</code> attribute to a <code class="text-sm text-red-800">Group</code> object associated with that <code class="text-sm text-red-800">Cell</code></li>
+  <li class="mb-2">We can move entitys between <code class="text-sm text-red-800">Cell</code>s by updating their <code class="text-sm text-red-800">.group</code> attribute value.</li>
+  <li class="mb-2">We can add or delete entitys to/from <code class="text-sm text-red-800">Cell</code>s by invoking an associated <code class="text-sm text-red-800">Group</code>'s <code class="text-sm text-red-800">.addArtefacts()</code> and <code class="text-sm text-red-800">.removeArtefacts()</code> functions.</li>
+  <li class="mb-2">An entity doesn't need to be associated with a <code class="text-sm text-red-800">Group</code>; it can be stamped onto any <code class="text-sm text-red-800">Cell</code> at any time by invoking its <code class="text-sm text-red-800">.simpleStamp()</code> function.</li>
 </ul>
 
 <p>&hellip; Or, in other words, Scrawl-canvas does not use a traditional scene graph. It is better to think in terms of entitys that want to stamp themselves onto <code class="text-sm text-red-800">Cell</code>s, and <code class="text-sm text-red-800">Cell</code>s that want to stamp themselves into the final display.</p>
@@ -120,79 +125,84 @@
 &lt;head>&lt;/head>
 &lt;body>
 
-    &lt;canvas id="my-canvas-id" width="600" height="600">&lt;/canvas>
+  &lt;canvas id="my-canvas-id" width="600" height="600">&lt;/canvas>
 
-    &lt;script type="module">
-        
-        <span class="redcode">import * as scrawl from "https://unpkg.com/scrawl-canvas@8.10.0";
+  &lt;script type="module">
+      
+    <span class="redcode">import * as scrawl from "https://unpkg.com/scrawl-canvas@8.10.0";
 
-        scrawl.setIgnorePixelRatio(false);
+    const canvas = scrawl.findCanvas('my-canvas-id');
 
-        const canvas = scrawl.library.canvas['my-canvas-id'];
+    <i class="comment">// Namespacing boilerplate</i>
+    const namespace = canvas.name;
+    const name = (n) => `${namespace}-${n}`;
 
-        <i class="comment">// This layer Cell will be half the dimensions of its host Canvas </i>
-        <i class="comment">// - we position it in the center of the canvas </i>
-        <i class="comment">// - so it covers the lower-right quadrant of the display</i>
-        const myLayer = canvas.buildCell({
-            name: 'my-layer-cell',
-            host: canvas.base.name,
-            dimensions: ['50%', '50%'],
-            start: ['center', 'center'],
-        });
+    <i class="comment">// This layer Cell will be half the dimensions of its host Canvas </i>
+    <i class="comment">// - we position it in the center of the canvas </i>
+    <i class="comment">// - so it covers the lower-right quadrant of the display</i>
+    const myLayer = canvas.buildCell({
 
-        <i class="comment">// This block stamps itself into the center of the layer Cell</i>
-        const layerBlock = scrawl.makeBlock({
-            name: 'my-layer-block',
-            group: 'my-layer-cell',
-            dimensions: ['50%', '50%'],
-            start: ['center', 'center'],
-            handle: ['center', 'center'],
-            fillStyle: 'red',
-        });
+      name: name('my-layer-cell'),
+      dimensions: ['50%', '50%'],
+      start: ['center', 'center'],
+    });
 
-        <i class="comment">// This block stamps itself across the &lt;canvas> element's base Cell</i>
-        <i class="comment">// - it will be twice the size of the previous block</i>
-        const baseBlock = scrawl.makeBlock({
-            name: 'my-base-block',
-            group: canvas.base.name,
-            dimensions: ['50%', '50%'],
-            start: ['center', 'center'],
-            handle: ['center', 'center'],
-            fillStyle: 'blue',
-        });
+    <i class="comment">// This block stamps itself into the center of the layer Cell</i>
+    const layerBlock = scrawl.makeBlock({
 
-        <i class="comment">// Display the scene</i>
-        canvas.render();
+      name: name('my-layer-block'),
+      group: name('my-layer-cell'),
+      dimensions: ['50%', '50%'],
+      start: ['center', 'center'],
+      handle: ['center', 'center'],
+      fillStyle: 'red',
+    });
 
-        <i class="comment">// Our layer Cell can act just like out Block entitys</i>
-        <i class="comment">// - we can scale, flip, rotate and animate it</i>
+    <i class="comment">// This block stamps itself across the &lt;canvas> element's base Cell</i>
+    <i class="comment">// - it will be twice the size of the previous block</i>
+    const baseBlock = scrawl.makeBlock({
 
-        <i class="comment">// We can reposition all the entitys displayed in the layer Cell</i>
-        <i class="comment">// - by repositioning the Cell itself</i>
+      name: name('my-base-block'),
+      group: canvas.get('baseName'),
+      dimensions: ['50%', '50%'],
+      start: ['center', 'center'],
+      handle: ['center', 'center'],
+      fillStyle: 'blue',
+    });
 
-        <i class="comment">// This update positions the layer Cell's Block exactly over the base Cell's Block</i>
-        myLayer.set({
-            handle: ['center', 'center'],
-            scale: 1.9,
-        });
+    <i class="comment">// Display the scene</i>
+    canvas.render();
 
-        <i class="comment">// Update the scene</i>
-        canvas.render();
+    <i class="comment">// Our layer Cell can act just like out Block entitys</i>
+    <i class="comment">// - we can scale, flip, rotate and animate it</i>
 
-        <i class="comment">// Let's get the our Block entitys to stamp themselves on each other's Cell</i>
-        layerBlock.simpleStamp(canvas.base, {
-            start: ['25%', '25%'],
-            dimensions: ['50%', '50%'],
-            fillStyle: 'green',
-        });
+    <i class="comment">// We can reposition all the entitys displayed in the layer Cell</i>
+    <i class="comment">// - by repositioning the Cell itself</i>
 
-        baseBlock.simpleStamp(myLayer, {
-            start: ['75%', '75%'],
-            dimensions: ['50%', '50%'],
-        });
+    <i class="comment">// This update positions the layer Cell's Block exactly over the base Cell's Block</i>
+    myLayer.set({
+      handle: ['center', 'center'],
+      scale: 1.9,
+    });
 
-        canvas.show();</span>
-    &lt;/script>
+    <i class="comment">// Update the scene</i>
+    canvas.render();
+
+    <i class="comment">// Let's get the our Block entitys to stamp themselves on each other's Cell</i>
+    layerBlock.simpleStamp(canvas.base, {
+      
+      start: ['25%', '25%'],
+      dimensions: ['50%', '50%'],
+      fillStyle: 'green',
+    });
+
+    baseBlock.simpleStamp(myLayer, {
+      start: ['75%', '75%'],
+      dimensions: ['50%', '50%'],
+    });
+
+    canvas.show();</span>
+  &lt;/script>
 
 &lt;/body>
 &lt;/html></code></pre>

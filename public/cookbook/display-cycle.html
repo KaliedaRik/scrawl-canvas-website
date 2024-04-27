@@ -40,11 +40,11 @@
 &lt;script type="module">
     import * as scrawl from "https://unpkg.com/scrawl-canvas@8.13.0";
 
-    const canvas = scrawl.library.canvas['my-canvas-id'];
+    const canvas = scrawl.findCanvas('my-canvas-id');
 
     scrawl.makeBlock({
         name: 'my-layer-block',
-        group: canvas.base.name,
+        group: canvas.get('baseName'),
         dimensions: ['50%', '50%'],
         start: ['center', 'center'],
         handle: ['center', 'center'],
@@ -187,37 +187,41 @@
         
     import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.13.0';
 
-    const canvas = scrawl.library.canvas.mycanvas;
+    const canvas = scrawl.findCanvas('mycanvas');
 
-    canvas.setBase({
-      compileOrder: 2,
-      backgroundColor: 'black',
-    });
+    canvas.setBase({ backgroundColor: 'black' });
+
+    <span class="italic text-xs text-gray-700">// Namespacing boilerplate</span>
+    const namespace = 'edge-weave';
+    const name = (n) => `${namespace}-${n}`;
 
     <span class="italic text-xs text-gray-700">// Utilities used by this pattern</span>
-    const namespace = 'edge-weave',
-      tweenDuration = 1000;
+    const tweenDuration = 1000;
 
     const colorFactory = scrawl.makeColor({
-      name: `${namespace}-colors`,
+
+      name: name('colors'),
       minimumColor: 'coral',
       maximumColor: 'azure',
     });
 
     const ticker = scrawl.makeTicker({
-      name: `${namespace}-ticker`,
+
+      name: name('ticker'),
       cycles: 0,
       duration: tweenDuration,
     });
 
     const colorTweenEngine = (start, change, position) => {
+
       return colorFactory.getRangeColor(start + (position * change));
     };
 
     <span class="italic text-xs text-gray-700">// We'll build the pattern in two stages </span>
     <span class="italic text-xs text-gray-700">// - a sub-pattern, four of which will make the final pattern</span>
     canvas.buildCell({
-      name: `${namespace}-sub-pattern`,
+
+      name: name'(sub-pattern'),
       width: 150,
       height: 150,
       shown: false,
@@ -226,27 +230,32 @@
 
     <span class="italic text-xs text-gray-700">// Guidelines for the effect</span>
     scrawl.makeLine({
-      name: `${namespace}-vertical`,
-      group: `${namespace}-sub-pattern`,
+
+      name: name('vertical'),
+      group: name'(sub-pattern'),
       start: ['right', 'top'],
       end: ['right', 'bottom'],
       method: 'none',
       useAsPath: true,
+
     }).clone({
-      name: `${namespace}-horizontal`,
+
+      name: name('horizontal'),
       start: ['right', 'bottom'],
       end: ['left', 'bottom'],
     });
 
     <span class="italic text-xs text-gray-700">// These are the visible colored lines</span>
     for (let i = 0; i < 10; i++) {
+
       scrawl.makeLine({
-        name: `${namespace}-line-${i}`,
-        group: `${namespace}-sub-pattern`,
-        path: `${namespace}-vertical`,
+
+        name: name(`line-${i}`),
+        group: name'(sub-pattern'),
+        path: name('vertical'),
         pathPosition: i / 10,
         lockTo: 'path',
-        endPath: `${namespace}-horizontal`,
+        endPath: name('horizontal'),
         endPathPosition: i / 10,
         endLockTo: 'path',
         method: 'draw',
@@ -258,11 +267,13 @@
       
       <span class="italic text-xs text-gray-700">// Animate the lines using tweens</span>
       scrawl.makeTween({
-        name: `tween-${i}`,
-        targets: `${namespace}-line-${i}`,
-        ticker: `${namespace}-ticker`,
+
+        name: name(`tween-${i}`),
+        targets: name(`line-${i}`),
+        ticker: name('ticker'),
         time: 0,
         duration: tweenDuration,
+
         definitions: [
           {
             attribute: 'pathPosition',
@@ -291,7 +302,8 @@
 
     <span class="italic text-xs text-gray-700">// Pull the sub-pattern into the main pattern cell</span>
     canvas.buildCell({
-      name: `${namespace}-pattern`,
+
+      name: name('pattern'),
       width: 300,
       height: 300,
       shown: false,
@@ -299,33 +311,42 @@
     });
 
     scrawl.makeBlock({
-      name: `${namespace}-block-tl`,
-      group: `${namespace}-pattern`,
+
+      name: name('block-tl'),
+      group: name('pattern'),
       dimensions: ['50%', '50%'],
       start: ['center', 'center'],
       handle: ['bottom', 'right'],
-      fillStyle: `${namespace}-sub-pattern`,
+      fillStyle: name'(sub-pattern'),
+
     }).clone({
-      name: `${namespace}-block-tr`,
+
+      name: name('block-tr'),
       flipReverse: true,
+
     }).clone({
-      name: `${namespace}-block-br`,
+
+      name: name('block-br'),
       flipUpend: true,
+
     }).clone({
-      name: `${namespace}-block-bl`,
+
+      name: name('block-bl'),
       flipReverse: false,
     });
 
     <span class="italic text-xs text-gray-700">// Display our pattern in a Block entity</span>
     scrawl.makeBlock({
-      name: 'test-block',
+
+      name: name('test-block'),
       dimensions: ['100%', '100%'],
-      fillStyle: `${namespace}-pattern`,
+      fillStyle: name('pattern'),
     });
 
     <span class="italic text-xs text-gray-700">// Scene animation</span>
     scrawl.makeRender({
-      name: "demo-animation",
+      
+      name: name('animation'),
       target: canvas,
     });
 

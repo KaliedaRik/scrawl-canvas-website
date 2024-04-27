@@ -32,21 +32,20 @@ $> yarn install
 ‹/html›
 
 <b><u>index.js</u></b>
-import {
-  makeBlock,
-  render,
-} from 'scrawl-canvas';
+import * as scrawl from 'scrawl-canvas';
+
+const canvas = scrawl.findCanvas('mycanvas');
 
 <ins>// Namespacing boilerplate</ins>
 const namespace = 'my-demo';
 const name = (n) => `${namespace}-${n}`;
 
-makeBlock({
+scrawl.makeBlock({
   name: name('block'),
   start: ['center', 'center'],
   handle: ['center', 'center'],
   dimensions: ['50%', '50%'],
 });
 
-render();
+scrawl.render();
 </code></pre>
