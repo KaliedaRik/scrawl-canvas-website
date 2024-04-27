@@ -59,7 +59,7 @@
   ‹script type="module"›
     import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.13.0';
 
-    const canvas = scrawl.library.canvas.mycanvas;
+    const canvas = scrawl.findCanvas('mycanvas');
     const namespace = 'video-example';
     const name = (n) => `${namespace}-${n}`;
 
@@ -173,23 +173,26 @@
 
   });
 
-  <b>const initialVideoStart = 
-    scrawl.addNativeListener(['mouseup', 'touchend', 'keyup'], () => {
+  <b>const initialVideoStart = scrawl.addNativeListener(
+    ['mouseup', 'touchend', 'keyup'],
+    () => {
 
-    myvideo.set({
+      myvideo.set({
 
-      <ins>// Mute and loop the video before we start playback</ins>
-      video_muted: true,
-      video_loop: true,
-      
-    })<b>.videoPlay()</b>;
+        <ins>// Mute and loop the video before we start playback</ins>
+        video_muted: true,
+        video_loop: true,
+        
+      })<b>.videoPlay()</b>;
 
-    <ins>// Get rid of the event listener after invocation - it's a one-time-only action
-     // - The addListener factory function returns a function, not an object
-     // - Invoking that function removes the event listener(s) from the ‹canvas› element</ins>
-    initialVideoStart();
+      <ins>// Get rid of the event listener after invocation - it's a one-time-only action
+       // - The addListener factory function returns a function, not an object
+       // - Invoking that function removes the event listener(s) from the ‹canvas› element</ins>
+      initialVideoStart();
 
-  }, canvas.domElement);</b>
+    },
+    canvas.domElement
+  );</b>
 
   [... render animation]
 ‹/script›
@@ -199,13 +202,13 @@
 
 <p>This deals with our initial problem &ndash; getting the video to display in the canvas as it plays &ndash; but it is not a good user experience. How does the user know that they need to click on the canvas to get things going?</p>
 
-<p>Native ‹video› elements can include controls. But switching on those controls for our video will do no good; the ‹canvas› element captures only the image data: it ignores all the <i>chrome</i> surrounding the video.</p>
+<p>Native ‹video› elements can include controls. But switching on those controls for our video will do no good; the ‹canvas› element captures only the image data: it ignores all the <i>furnishings</i> surrounding the video.</p>
 
-<p>We need to build some controls. We'll do this using Phrase entitys.</p>
+<p>We need to build some controls. We'll do this using Label entitys.</p>
 
 <h3 tabindex="0">Artefact event functions</h3>
 
-<p>We met the <b>Phrase entity</b> in the first lesson. We'll add two to our canvas: one to control video play/pause functionality; the other to switch the video's audio track on and off.</p>
+<p>We met the <b>Label entity</b> in the first lesson. We'll add two to our canvas: one to control video play/pause functionality; the other to switch the video's audio track on and off. For now we'll just code up the play button:</p>
 
 <pre><code>‹script type="module"›
   [... canvas setup]
@@ -214,22 +217,18 @@
 
   [... initialization event listener]
 
-  <b>const playPause = scrawl.makePhrase({
+  <b>const playPause = scrawl.makeLabel({
 
     name: name('button-play-pause'),
     order: 2,
 
-    text: 'PLAY',
-
-    <ins>// We can define our font by its parts, rather than using the <b>font</b> attribute</ins>
-    family: 'sans-serif',
-    size: '2rem',
-
     start: ['75%' 'bottom'],
     handle: ['center', 'bottom'],
 
-    letterSpacing: 2,
+    text: 'PLAY',
 
+    fontString: '2rem sans-serif',
+    letterSpacing: 2,
     fillStyle: 'yellow',
 
   });</b>
@@ -238,9 +237,9 @@
 ‹/script›
 </code></pre>
 
-<p><img src="/assets/lesson-04/04.png" alt="A canvas dispalying the first frame of a video, with play/pause phrase entity at the bottom" /></p>
+<p><img src="/assets/lesson-04/04.png" alt="A canvas dispalying the first frame of a video, with play/pause Label entity at the bottom" /></p>
 
-<p>As it currently stands, our Phrase entity is just pixels on the screen. The user cannot interact with it.</p>
+<p>As it currently stands, our Label entity is just pixels on the screen. The user cannot interact with it.</p>
 
 <p>For instance, how does the user know that clicking on PLAY will trigger an action?</p>
 
@@ -257,30 +256,29 @@
   <li><code><b>onLeave</b></code> &ndash; will trigger when the user moves the mouse cursor away from the artefact</li>
 </ul>
 
-<p>Let's change the mouse cursor to a pointer when the user hovers over our Phrase entitys, and add an underline to the text:</p>
+<p>Let's change the mouse cursor to a pointer when the user hovers over our Label entity, and add an underline to the text:</p>
 
-<pre><code>const playPause = scrawl.makePhrase({
+<pre><code>const playPause = scrawl.makeLabel({
 
   name: name('button-play-pause'),
   order: 2,
 
-  text: 'PLAY',
-
-  family: 'sans-serif',
-  size: '2rem',
-
   start: ['75%' 'bottom'],
   handle: ['center', 'bottom'],
 
-  letterSpacing: 2,
+  text: 'PLAY',
 
+  fontString: '2rem sans-serif',
+  letterSpacing: 2,
   fillStyle: 'yellow',
 
-  <b>underlineStyle: 'yellow',
-  underlineWidth: 4,
+  <ins>// Underlines are difficult - these values will often differ depending on the font</ins>
+  <b>underlineWidth: 4,
+  underlineOffset: 0.96,
+  underlineGap: 0,
 
-  <ins>// These changes get applied when user starts hovering over the Phrase entity</ins>
-  <strong>onEnter:</strong> function () {
+  <ins>// These changes get applied when user starts hovering over the Label entity</ins>
+  onEnter: function () {
 
     <ins>// We can change the ‹canvas› element's cursor style
      // - by updating its inline CSS cursor value</ins>
@@ -290,33 +288,30 @@
       }
     });
 
-    <ins>// We can add an underline to our Phrase entity text
-     // - By setting a <b>section style</b> on it
-     // - All Phrases have some pre-defined styles included, such as <b>&lt;u></b></ins>
     this.set({
-      text: `&lt;u>${this.text}`,
+      includeUnderline: true,
     });
   },
 
-  <ins>// When user stops hovering over the Phrase entity, we reverse the changes</ins>
-  <strong>onLeave:</strong> function () {
+  <ins>// When user stops hovering over the Label entity, we reverse the changes</ins>
+  onLeave: function () {
 
     canvas.set({
       css: {
-        cursor: 'auto',
+        cursor: 'auto'
       }
     });
 
     this.set({
-      text: this.text.replace('&lt;u>', ''),
+      includeUnderline: false,
     });
   },</b>
 });
 </code></pre>
 
-<p>The code above is, on its own, not enough to make the magic happen. This is because our Phrase entitys are not part of the DOM event management system. They're just a set of instructions for drawing graphical text onto a ‹canvas› element.</p>
+<p>The code above is, on its own, not enough to make the magic happen. This is because our Label entity is not part of the DOM event management system. It's just a set of instructions for drawing graphical text onto a ‹canvas› element.</p>
 
-<p>The ‹canvas› element is, however, part of the DOM event management system, because it is an element living in the web page document. To trigger our functionality, we can add an event listener to the ‹canvas› element which invokes a function that will then cascade the event down to our Phrase entitys:</p>
+<p>The ‹canvas› element is, however, part of the DOM event management system, because it is an element living in the web page document. To trigger our functionality, we can add an event listener to the ‹canvas› element which invokes a function that will then cascade the event down to our Label entity:</p>
 
 <pre><code>‹script type="module"›
   [... canvas setup]
@@ -325,7 +320,7 @@
 
   [... initialization event listener]
 
-  [... define Phrase entitys]
+  [... define Label entitys]
 
   <b>scrawl.addListener(
     'move', 
@@ -339,7 +334,7 @@
 
 <p><img src="/assets/lesson-04/05.png" alt="A canvas dispalying the first frame of a video - the play button is underlined" /></p>
 
-<p>All looks good so far. Let's make our Phrase entitys interactive. We do this using the <code><b>onUp</b></code> artefact event function:</p>
+<p>All looks good so far. Let's make our Label entity interactive. We do this using the <code><b>onUp</b></code> artefact event function:</p>
 
 <pre><code><b>const playPauseAction = function () {
 
@@ -355,7 +350,7 @@
   }
 };</b>
 
-const playPause = scrawl.makePhrase({
+const playPause = scrawl.makeLabel({
 
   [...]
 
@@ -370,33 +365,36 @@ const playPause = scrawl.makePhrase({
 
 <p>Scrawl-canvas allows us to capture native events, like click, using its <code><b>scrawl.addNativeListener</b></code> function &ndash; which follows the same usage pattern.</p>
 
-<p>While we're at it, we'll amend the <code><b>videoPlay</b></code> invocation we included in our initialization event, as play/pause functionality is handled by our Phrase entity:</p>
+<p>While we're at it, we'll amend the <code><b>videoPlay</b></code> invocation we included in our initialization event, as play/pause functionality is handled by our Label entity:</p>
 
 <pre><code>‹script type="module"›
   [... canvas setup]
 
   [... video Picture entity]
 
-  const initialVideoStart 
-    = scrawl.addNativeListener(['mouseup', 'touchend', 'keyup'], () => {
+  const initialVideoStart = scrawl.addNativeListener(
+    ['mouseup', 'touchend', 'keyup'],
+    () => {
 
-    myvideo.set({
-      video_muted: true,
-      video_loop: true,
+      myvideo.set({
+        video_muted: true,
+        video_loop: true,
 
-    })<b><s>.videoPlay();</s></b>
+      })<b><s>.videoPlay();</s></b>
 
-    initialVideoStart();
-  }, canvas.domElement);
+      initialVideoStart();
+    },
+    canvas.domElement,
+  );
 
-  [... define Phrase entitys]
+  [... define Label entitys]
 
   [... user interaction event listeners]
 
   <b>scrawl.addNativeListener(
     ['click', 'touchend'], 
     () => canvas.cascadeEventAction('up'), 
-    canvas.domElement 
+    canvas.domElement,
   );</b>
 
   [... render animation]
@@ -405,9 +403,9 @@ const playPause = scrawl.makePhrase({
 
 <p>There's one big issue we haven't addressed in the above work: <b>accessibility</b>. People navigating the web page using keyboards also need to start the video playing, and stopping it.</p>
 
-<p>Scrawl-canvas handles this sort of interactivity by adding hidden ‹button› elements to the ‹canvas› element. This happens in the background; all we need to do is include some code to the Phrase entity to define its hidden button:</p>
+<p>Scrawl-canvas handles this sort of interactivity by adding hidden ‹button› elements to the ‹canvas› element. This happens in the background; all we need to do is include some code to the Label entity to define its hidden button:</p>
 
-<pre><code>const playPause = scrawl.makePhrase({
+<pre><code>const playPause = scrawl.makeLabel({
 
   [...]
 
@@ -429,9 +427,9 @@ const playPause = scrawl.makePhrase({
 });
 </code></pre>
 
-<p>For the final step in this section, we'll add a second button to trigger LISTEN and MUTE for the video's audio output. We can do this by cloning the playPause Phrase entity:</p>
+<p>For the final step in this section, we'll add a second button to trigger LISTEN and MUTE for the video's audio output. We can do this by cloning the playPause Label entity:</p>
 
-<pre><code>const playPause = scrawl.makePhrase({
+<pre><code>const playPause = scrawl.makeLabel({
   [...]
 });
 
@@ -479,7 +477,7 @@ const listenMute = playPause.clone({
 
   [... initialization event listener]
 
-  [... define Phrase entitys]
+  [... define Label entitys]
 
   [... user interaction event listeners]
 
@@ -501,19 +499,19 @@ const listenMute = playPause.clone({
     fillStyle: 'red',
   });
 
-  const vtPhrase = scrawl.makePhrase({
+  const vtLabel = scrawl.makeLabel({
 
-    name: name('video-time-phrase'),
-
-    family: 'monospace',
-    size: '2em',
-    weight: '700',
-
-    startX: '2%',
-    startY: '5%',
-    width: '40%',
-
+    name: name('test-video-time-label'),
+    fontString: 'bold 1rem monospace',
+    start: [5, 20],
     fillStyle: 'yellow',
+
+    <ins>/* 
+Accesibility - this Label updates many times per second. 
+As such, we need to mark the DOM element holding the label text with the role of `timer`.
+It is up to the user's screen reader to decide how to announce updates to the user.
+    */</ins>
+    accessibleTextRole: 'timer',
   });
 
   <strong>const videoTimeBar</strong> = function () {
@@ -534,7 +532,7 @@ const listenMute = playPause.clone({
           width: `${(currentVideoTime * 100) / videoDuration}%`,
         });
 
-        vtPhrase.set({
+        vtLabel.set({
 
           text: `${currentVideoTime.toFixed(2)} / ${videoDuration.toFixed(2)}`,
         });

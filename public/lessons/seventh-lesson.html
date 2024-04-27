@@ -1,4 +1,4 @@
-<h3 tabindex="0">Compositing and blending</h3>
+<h3 id="top" tabindex="0">Compositing and blending</h3>
 
 <p>The ‹canvas› element's 2D rendering context's <a href="https://drafts.fxtf.org/compositing/">compositing and blending</a> attributes &ndash; <b><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalAlpha">globalAlpha</a></b> and <b><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation">globalCompositeOperation</a></b> &ndash; are seriously useful tools which we can use to build complex, interactive canvas displays.</p>
 
@@ -106,6 +106,7 @@
         <b>‹img 
           id="big-angels" 
           class="angels" 
+          alt=""
           src="assets/angelsOriginal-2400.webp" /›</b>
       ‹/div>
     ‹/canvas›
@@ -119,7 +120,7 @@
 
     <b>scrawl.importDomImage('.angels');</b>
 
-    const canvas = scrawl.library.canvas.mycanvas,
+    const canvas = scrawl.findCanvas('mycanvas'),
     const namespace = 'lesson-7';
     const name = (n) => `${namespace}-${n}`;
 
@@ -608,4 +609,4 @@ Base canvas mouse - x: ${<strong>hidden.x</strong>}, y: ${<strong>hidden.y</stro
   <li>What information would we need to supply to users who, for whatever reason, cannot view the images or magnifier effect? How could we add that information to the code so they can easily access it?</li>
 </ul>
 
-<p>In the next lesson we'll spend some time learning how to break Scrawl-canvas code into Javascript modules.</p>
+<p>In the next lesson we'll spend some quality time with displaying multiple hidden canvases in a single display canvas, and build a kaleidoscope clock.</p>

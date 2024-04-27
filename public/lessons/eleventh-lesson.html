@@ -127,7 +127,7 @@
     <ins>// Import the image assets</ins>
     scrawl.importDomImage(".demo-images");
 
-    const canvas = scrawl.library.canvas.mycanvas;
+    const canvas = scrawl.findCanvas('mycanvas');
 
     <ins>// Display our image asset in a Picture entity</ins>
     scrawl.makePicture({
@@ -275,14 +275,12 @@
     fillStyle: lightBackground,
   });
 
-  const testForeground = scrawl.makePhrase({
+  const testForeground = scrawl.makeLabel({
 
-    name: name('foreground-phrase'),
-    start: [0, '80%'],
-    width: '100%',
-    justify: 'center',
+    name: name('foreground-label'),
+    start: ['center', '80%'],
     text: 'prefers-color-scheme: light',
-    font: '2.4rem Arial, sans-serif',
+    fontString: '2.4rem Arial, sans-serif',
     fillStyle: lightForeground,
   });</b>
 
@@ -569,15 +567,15 @@
 
 <p>Just as the ‹canvas› element, in it's raw, unmodified state, hides itself from screen readers, so does any text that appears as part of the canvas scene. Where human eyes can read words, computers see nothing more than pixel data.</p>
 
-<p>Scrawl-canvas Phrase entitys overcome this issue by replicating their text attribute value into the web page DOM (in fact in a dedicated set of ‹div› child elements inside the <a href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/hh968259(v=vs.85)">‹canvas› shadow DOM</a>). This text is automatically exposed to screen readers by the browser.</p>
+<p>Scrawl-canvas Label entitys overcome this issue by replicating their text attribute value into the web page DOM (in fact in a dedicated set of ‹div› child elements inside the <a href="https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/hh968259(v=vs.85)">‹canvas› shadow DOM</a>). This text is automatically exposed to screen readers by the browser.</p>
 
 <p><img src="/assets/lesson-11/07.png" alt="Screen capture of the Chrome browser console displaying the canvas element's shadow DOM HTML code." /></p>
 
 <p>Situations can arise where this default behaviour is less than helpful. Decorative text which adds nothing to the information load of the web page, for instance, can prove to be distracting to people using screen readers &ndash; particularly if that text updates on a regular or rapid basis. It is also good practice to suppress the replication if we know the text information will be described elsewhere in the web page:</p>
 
 <ul class="disc">
-  <li><b>Static:</b> to prevent a Phrase entity's text being replicated into the DOM, we can set its <code><b>exposeText</b></code> attribute to <code><b>false</b></code>.</li>
-  <li><b>Dynamic:</b> if we need to remove the replicated text from the DOM for any reason, <code><b>kill()</b></code> the Phrase entity and recreate it with <code><b>exposeText: false</b></code>.</li>
+  <li><b>Static:</b> to prevent a Label entity's text being replicated into the DOM, we can set its <code><b>exposeText</b></code> attribute to <code><b>false</b></code>.</li>
+  <li><b>Dynamic:</b> if we need to remove the replicated text from the DOM for any reason, <code><b>kill()</b></code> the Label entity and recreate it with <code><b>exposeText: false</b></code>.</li>
 </ul>
 
 <p>Charts and infographics are also places where it is often a good idea to suppress text replication, as axis labels and values are often meaningless without some context to help give them meaning. One way to handle this situation is to inject a narrative about the data being displayed into the ‹canvas› shadow DOM using normal Javascript <code><b>createElement()</b></code> and <code><b>appendChild()</b></code> functionality.</p>
@@ -586,7 +584,7 @@
 
 <p>As has been investigated in previous lessons, we can add links to regions in our ‹canvas› element using Scrawl-canvas entitys with <code><b>anchor</b></code> attributes.</p>
 
-<p>From a visual perspective, it makes sense for these links to be Phrase entitys as they can describe what we are linking to. But we can also use graphical shapes and images for our hit regions.</p>
+<p>From a visual perspective, it makes sense for these links to be Label entitys as they can describe what we are linking to. But we can also use graphical shapes and images for our hit regions.</p>
 
 <p>Whatever we use, we need to make sure that our links are fully accessible. This means we should:</p>
 
@@ -595,7 +593,7 @@
   <li>Include descriptive text in the link anchor attribute so that people using screen readers know what the link is, and where it will take them, when clicked.</li>
   <li>Make sure people using keyboards can navigate to the links using the <code><b>[TAB]</b></code> key, and can invoke the navigation using various combinations of keys which include the <code><b>[ENTER]</b></code> key when the link entity is focussed (the exact choice of keys is, sadly, browser dependant).</li>
   <li>Again for keyboard users, make sure that when a user navigates to a link entity, it displays the same as if it was being hovered over. Note that the visual effect we use should meet the requirements for WCAG-compliant focus indicators &ndash; <a href="https://www.sarasoueidan.com/blog/focus-indicators/">as discussed by Sara Soueidan in her blog post</a>.</li>
-  <li>For Phrase-based links, suppress text replication as the anchor attribute will create a real anchor ‹a› element in the ‹canvas› shadow DOM, which in turn means the screen reader can end up unnecessarily repeating text to their users.</li>
+  <li>For Label-based links, suppress text replication as the anchor attribute will create a real anchor ‹a› element in the ‹canvas› shadow DOM, which in turn means the screen reader can end up unnecessarily repeating text to their users.</li>
 </ul>
 
 <p>Let's add some links to our demo to see how we can meet all these requirements:</p>
@@ -622,8 +620,9 @@
     linkHoverFill = '#dcdead',
     linkHoverStroke = '#bd1d08';</b>
 
-  <ins>// The Phrase entity link</ins>
-  <b>scrawl.makePhrase ({
+  <ins>// The Label entity link</ins>
+  <b>scrawl.makeLabel ({
+
     name: name('macbeth-link'),
     start: ['70%', '40%'],
     handle: ['center', 'center'],
@@ -633,9 +632,7 @@
     <ins>// Suppress Phrase text replication to DOM</ins>
     exposeText: false,
 
-    family: 'sans-serif',
-    size: '3em',
-    weight: 'bold',
+    fontString: 'bold 3em sans-serif',
     lineHeight: 1,
 
     fillStyle: linkFill,

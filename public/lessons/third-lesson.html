@@ -62,7 +62,7 @@
   ‹script type="module"›
     import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.13.0';
 
-    const canvas = scrawl.library.canvas.mycanvas;
+    const canvas = scrawl.findCanvas('mycanvas');
     const namespace = 'tower-of-hanoi';
     const name = (n) => `${namespace}-${n}`;
 
@@ -408,6 +408,9 @@
 
     radius: '12%',
 
+<s>    startX: '17%',
+    startY: 'center',</s>
+
     handleX: 'center',
     handleY: 'center',
 
@@ -503,7 +506,7 @@
       if (hit) peg = hit.artefact;
       else peg = false;
 
-      <ins>// Get the current drag status</ins>
+      <ins>// Get the current drag status by invoking the function returned by makeDragZone</ins>
       const checkDrag = dragActions();
 
       <ins>// We are currently dragging a disc
@@ -629,14 +632,13 @@
       <ins>// Enforce the game rules
        // - a disc can only move to a peg 
        // - if no smaller discs are already on that peg</ins>
-      const entity = scrawl.library.entity;
 
       const <strong>checkForLegalMove</strong> = function (mypeg, mydisc) {
 
         if (!pegState[mypeg.name].length) return true;
 
         return pegState[mypeg.name].every(d => {
-          entity[d].order < mydisc.order;
+          scrawl.findEntity(d).order < mydisc.order;
         });
       }</b>
 

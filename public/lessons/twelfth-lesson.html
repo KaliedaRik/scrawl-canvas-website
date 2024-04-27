@@ -145,7 +145,7 @@
     <ins>// Import the image assets</ins>
     scrawl.importDomImage(".demo-images");
 
-    const canvas = scrawl.library.canvas.mycanvas;
+    const canvas = scrawl.findCanvas('mycanvas');
 
     canvas.set({
       label: 'An animation celebrating William Shakespeare.',
@@ -340,11 +340,6 @@
 
 <pre><code>‹script type="module"›
   [...setup]
-
-  <ins>// We will need the base Cell to compile itself after the other Cells we will create</ins>
-  <b>canvas.setBase({
-    compileOrder: 2
-  });</b>
 
 <s>  const myGradient = scrawl.makeGradient({
     name: name('gradient'),
@@ -668,7 +663,7 @@
   });
 
   <ins>// We need to add code to allow the users to start and stop the star rotation animation</ins>
-  <b>const cellPatternGroup = scrawl.library.group[name('cell-pattern')];</b>
+  <b>const cellPatternGroup = scrawl.findGroup(name('cell-pattern'));</b>
 
   const startAnimation = (e) => {
     if (e === 'reduced-motion' || checkE(e)) {
@@ -736,223 +731,80 @@
       
     [...portrait]
 
-    <b>const quote = scrawl.makePhrase({
+    <b>const mygradient = scrawl.makeGradient({
+
+      name: name('text-gradient'),
+      endY: "100%",
+
+      paletteStart: 10,
+      paletteEnd: 990,
+
+      delta: {
+        paletteStart: -1,
+        paletteEnd: -1,
+      },
+
+      cyclePalette: true,
+      animateByDelta: true,
+
+      colors: [
+        [0, "white"],
+        [170, "red"],
+        [829, "gold"],
+        [999, "white"],
+      ],
+    });
+
+    const quote = scrawl.makeEnhancedLabel({
 
       name: name('moving-text'),
       group: name('land-scene'),
 
+      layoutTemplate: stencil,
+      useLayoutTemplateAsPath: true,
+      breakTextOnSpaces: false,
+
+      fontString: '46px "Mountains of Christmas"',
+      letterSpacing: 5,
+      
       text: "All the world’s a stage, and all the men and women merely players",
 
-      font: '46px "Mountains of Christmas"',
+      fillStyle: name('text-gradient'),
+      lockFillStyleToEntity: true,
 
-      start: ['center', 'center'],
-      handle: ['center', 'center'],
-      fillStyle: 'white',
+      handleY: -8,
+      constantSpeedAlongPath: true,
+
+      pathPosition: 0.1,
+      delta: {
+        pathPosition: -0.001,
+      },
     });</b>
 
     [...reflection]
 
     [...animation]
 
+    const startAnimation = (e) => {
+
+      if (e === "reduced-motion" || checkE(e)) {
+
+        <b>mygradient.set({ animateByDelta: true });</b>
+        cellPatternGroup.setArtefacts({ noDeltaUpdates: false });
+      }
+    };
+
+    const stopAnimation = (e) => {
+
+      if (e === "reduced-motion" || checkE(e)) {
+
+        <b>mygradient.set({ animateByDelta: false });</b>
+        cellPatternGroup.setArtefacts({ noDeltaUpdates: true });
+      }
+    };
   ‹/script›
 ‹/body›
 ‹/html›
-</code></pre>
-
-<p><img src="/assets/lesson-12/06.png" alt="Canvas showing the phrase entity text added to the scene" /></p>
-
-<p>While we're talking fonts and gradients, Scrawl-canvas can apply gradients (and patterns) to fonts in the same way as it applies them to any other entity. And yes, text gradients can be animated:</p>
-
-<pre><code>‹script type="module"›
-
-  [...]
-    
-  <b>const mygradient = scrawl.makeGradient({
-
-    name: name('text-gradient'),
-    endY: "100%",
-
-    paletteStart: 10,
-    paletteEnd: 990,
-
-    delta: {
-      paletteStart: -1,
-      paletteEnd: -1,
-    },
-
-    cyclePalette: true,
-    animateByDelta: true,
-
-    colors: [
-      [0, "white"],
-      [170, "red"],
-      [829, "gold"],
-      [999, "white"],
-    ],
-  });</b>
-
-  const quote = scrawl.makePhrase({
-
-    name: name('moving-text'),
-
-    [...]
-
-<s>    fillStyle: 'white',</s>
-    <b>fillStyle: mygradient,
-    lockFillStyleToEntity: true,</b>
-  });
-
-  [...]
-
-  const startAnimation = (e) => {
-
-    if (e === "reduced-motion" || checkE(e)) {
-
-      <b>mygradient.set({ animateByDelta: true });</b>
-      cellPatternGroup.setArtefacts({ noDeltaUpdates: false });
-    }
-  };
-
-  const stopAnimation = (e) => {
-
-    if (e === "reduced-motion" || checkE(e)) {
-
-      <b>mygradient.set({ animateByDelta: false });</b>
-      cellPatternGroup.setArtefacts({ noDeltaUpdates: true });
-    }
-  };
-‹/script›
-</code></pre>
-
-<p><img src="/assets/lesson-12/07.png" alt="Canvas showing the phrase entity text, with gradient, added to the scene" /></p>
-
-<h3 tabindex="0">How to animate our text along a Scrawl-canvas path</h3>
-
-<p>Moving something along a path is an awesome example of computer graphics animation. For a long time coding up such an animation was a complex task involving much in the way of trigonometry and hope. Moving text along a path, and making it look convincing, was a job left to the expert animators.</p>
-
-<p>Thankfully technology has improved massively over the past decade. Animation tricks such as text path motion is now within the reach of any competent coder &ndash; not only with the help of programs such as the <a href="https://greensock.com/motionpath">GSAP MotionPath plugin</a>, <a href="https://gfxhacks.com/animate-objects-along-paths-in-ae/">Adobe After Effects</a> or <a href="https://docs.blender.org/manual/en/latest/animation/constraints/relationship/follow_path.html">Blender</a>. SVG has had its <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateMotion">‹animateMotion> element</a> for a while now (not supported by Internet Explorer), while the experimental <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Motion_Path">CSS Motion Path module</a> can be used in many browsers (sadly not yet supported by Safari).</p>
-
-<p>Scrawl-canvas supports both moving any artefact along a path, and animating text along a path. It performs this magic using <b><i>shape-based entitys</i></b> and the <code><b>lockTo</b></code> attribute.</p>
-
-<p>We've met the <code><b>lockTo</b></code> attribute already, in lesson 7. <code><b>lockTo</b></code> controls how an artefact/entity will position itself on the canvas. It accepts one of five different String values:</p>
-
-<ul class="disc">
-  <li><code><b>'start'</b></code> &ndash; this is the default value. Artefacts will position themselves &ndash; either <i>absolutely</i> or <i>relatively</i> &ndash; in line with the values given in their <code><b>startX, startY, handleX, handleY</b></code> attributes.</li>
-  <li><code><b>'pivot'</b></code> &ndash; this is where we tell our artefact to position itself with reference to another artefact's start values.</li>
-  <li><code><b>'mimic'</b></code> &ndash; is a more nuanced form of the <code><b>pivot</b></code> concept.</li>
-  <li><strong><code><b>'path'</b></code> &ndash; use a shape-based entity's path to determine our artefact's position on the canvas.</strong></li>
-  <li><code><b>'mouse'</b></code> &ndash; make the artefact position itself with reference to the mouse cursor's position over the canvas.</li>
-</ul>
-
-<p>So ... what is a shape-based entity?</p>
-
-<p>The <b>Shape entity</b> is Scrawl-canvas's classic shape-based entity. It uses an <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d">SVG 'path commands' string</a> to define its shape.</p>
-
-<p>Path commands, however, are not easy to work with &ndash; most people use thrid party software such as <a href="https://www.adobe.com/uk/products/illustrator.html">Adobe Illustrator</a> or <a href="https://inkscape.org/">Inkscape</a> to generate these cryptic strings from easy-to-use graphical interfaces.</p>
-
-<p>Which is why Scrawl-canvas also provides some pre-defined shape-based entitys: <b>Bezier, Cog, Line, LineSpiral, Oval, Polygon, Polyline, Quadratic, Rectangle</b> (for those ever-popular rounded corners), <b>Spiral, Star, Tetragon.</b> Together with the <b>Shape</b> entity, these can all be used as paths along which we can animate other artefacts/entitys.</p>
-
-<p>We're already using an Oval entity in our tribute scene. Let's animate our text along that:</p>
-
-<pre><code>‹script type="module"›
-  [...]
-
-  stencil.clone({
-
-    name: name('border'),
-    [...]
-
-    <ins>// Enable our Oval entity to act as a path ...</ins>
-    <b>useAsPath: true,
-    constantPathSpeed: true,</b>
-  });
-
-  [...]
-
-  const quote = scrawl.makePhrase({
-
-    name: name('moving-text'),
-    [...]
-
-    <ins>// ... and setup our phrase to move itself along the path</ins>
-    <b>path: name('border'),
-    lockTo: 'path',
-    constantSpeedAlongPath: true,
-    addPathRotation: true,
-    delta: {
-      pathPosition: -0.001,
-    },</b>
-  });
-
-  [...]
-
-  const startAnimation = (e) => {
-
-    if (e === "reduced-motion" || checkE(e)) {
-
-      mygradient.set({ animateByDelta: true });
-      cellPatternGroup.setArtefacts({ noDeltaUpdates: false });
-      <b>quote.set({ noDeltaUpdates: false });</b>
-    }
-  };
-
-  const stopAnimation = (e) => {
-
-    if (e === "reduced-motion" || checkE(e)) {
-
-      mygradient.set({ animateByDelta: false });
-      cellPatternGroup.setArtefacts({ noDeltaUpdates: true });
-      <b>quote.set({ noDeltaUpdates: true });</b>
-    }
-  };
-‹/script›
-</code></pre>
-
-<p>The results of the above code are ... not quite what we were expecting:</p>
-
-<p><img src="/assets/lesson-12/08.png" alt="Canvas showing the phrase entity text animated along the oval shape" /></p>
-
-<p>There's no errors in our code; the Phrase entity is animating itself along the Oval entity's path quite happily.</p>
-
-<p>The problem is that the Phrase is acting as a single block of rigid text as it moves along the path. Our aim is to have the phrase text animate along the path, with <b><i>each letter of the text following the path's course</i></b>.</p>
-
-<p>Because Phrase entitys have this dual requirement &ndash; to sometimes move along the path as a single block, while at other times move each letter of their text along the path &ndash; they have some additional attributes which we need to set up:</p>
-
-<pre><code>‹script type="module"›
-  const quote = scrawl.makePhrase({
-
-    name: name('moving-text'),
-    group: name('land-scene'),
-
-    text: "All the world’s a stage, and all the men and women merely players",
-
-    font: '46px "Mountains of Christmas"',
-
-    start: ['center', 'center'],
-<s>    handle: ['center', 'center'],</s>
-    fillStyle: name('text-gradient'),
-    lockFillStyleToEntity: true,
-
-<s>    path: name('border'),
-    lockTo: 'path',
-    constantSpeedAlongPath: true,
-    addPathRotation: true,
-    delta: {
-      pathPosition: -0.001,
-    },</s>
-
-    <b>textPath: name('border'),
-    handleY: -8,
-    constantSpeedAlongPath: true,
-    delta: {
-      textPathPosition: -0.001,
-    },
-
-    letterSpacing: 5,
-    lineHeight: 0.5,
-    justify: 'center',</b>
-  };
-‹/script›
 </code></pre>
 
 <p><img src="/assets/lesson-12/09.png" alt="Canvas showing the individual letters of the phrase entity text animated along the oval shape" /></p>
@@ -1101,15 +953,13 @@
 <p>We've covered a lot of ground in this lesson, and yet we've barely scratched the surface of the effects and animations we can create using gradients, patterns and noise. For more examples of what is possible, check out the <a href="https://codepen.io/collection/RzzMjw">Scrawl-canvas collection on CodePen</a>. For further details on how to build and use these tools look at the <a href="../demonstrations">Demos on this site</a> - in particular:</p>
 
 <ul class="disc">
-  <li>Canvas-003: Linear gradients</li>
-  <li>Canvas-004: Radial gradients</li>
-  <li>Canvas-049: Conic gradients (only in browsers that support this functionality)</li>
-  <li>Canvas-005: Cell-locked, and Entity-locked, gradients; animating gradients by delta, and by tween</li>
-  <li>Canvas-009: Pattern styles; Entity web link anchors; Dynamic accessibility</li>
-  <li>Canvas-029: Phrase entitys and gradients</li>
-  <li>Canvas-035: Pattern style functionality</li>
-  <li>Canvas-044: Building more complex patterns</li>
-  <li>Canvas-054: Animated contour lines; map a complex gradient to NoiseAsset output</li>
-  <li>Filters-017: Parameters for displace filter</li>
-  <li>Filters-019: Using a Noise asset with a displace filter</li>
+  <li><a target="_BLANK" href="../demo/canvas-003.html">Canvas-003:</a> Linear gradients</li>
+  <li><a target="_BLANK" href="../demo/canvas-004.html">Canvas-004:</a> Radial gradients</li>
+  <li><a target="_BLANK" href="../demo/canvas-049.html">Canvas-049:</a> Conic gradients</li>
+  <li><a target="_BLANK" href="../demo/canvas-005.html">Canvas-005:</a> Cell-locked, and Entity-locked, gradients; animating gradients by delta, and by tween</li>
+  <li><a target="_BLANK" href="../demo/canvas-009.html">Canvas-009:</a> Pattern styles; Entity web link anchors; Dynamic accessibility</li>
+  <li><a target="_BLANK" href="../demo/canvas-035.html">Canvas-035:</a> Pattern style functionality</li>
+  <li><a target="_BLANK" href="../demo/canvas-044.html">Canvas-044:</a> Building more complex patterns</li>
+  <li><a target="_BLANK" href="../demo/canvas-054.html">Canvas-054:</a> Animated contour lines; map a complex gradient to NoiseAsset output</li>
+  <li><a target="_BLANK" href="../demo/filters-017.html">Filters-017</a>: Parameters for displace filter</li>
 </ul>

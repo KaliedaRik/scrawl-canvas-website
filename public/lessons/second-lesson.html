@@ -68,20 +68,18 @@
     import * as scrawl from "https://unpkg.com/scrawl-canvas@8.13.0";
 
     <ins>// Setup scene</ins>
-    const canvas = scrawl.library.canvas["my-canvas"];
+    const canvas = scrawl.findCanvas('my-canvas');
     const namespace = 'lesson-2';
     const name = (n) => `${namespace}-${n}`;
 
-    scrawl.makePhrase({
+    scrawl.makeLabel({
       name: name('label'),
 
       start: ['center', 'center'],
       handle: ['center', 'center'],
-      width: '100%',
 
-      font: '2em bold Garamond, sans-serif',
+      fontString: '2em bold sans-serif',
       text: 'Hello, world!',
-      justify: 'center',
 
       fillStyle: 'lightblue',
       lineWidth: 2,
@@ -106,7 +104,7 @@
 
 <p>If we resize the canvas container, we can see that the canvas sticks firmly to the top-left corner of the container. What we need to do is get the canvas element to resize alongside the container.</p>
 
-<p><ins><b>Known issue:</b> we're using a user-resizable ‹div› element as our canvas container in this code, for demonstration purposes. While Chrome and Firefox browsers are happy with this trick, Safari (currently) refuses to allow the user to resize the container, for reasons unknown and unknowable.</ins></p>
+<p><ins><b>Known issue:</b> we're using a user-resizable ‹div› element as our canvas container in this code, for demonstration purposes. While Chrome and Firefox browsers are happy with this trick, Safari (currently) cannot resize a container which includes a ‹canvas› element.</ins></p>
 
 <p>Let's try to do this using CSS:</p>
 
@@ -226,12 +224,10 @@
 
       start: ['center', 'center'],
       handle: ['center', 'center'],
-      width: '100%',
 
-<s>      font: '2em bold Garamond, sans-serif',</s>
-      <b>font: '4.5em bold Garamond, sans-serif',</b>
+<s>      fontString: '2em bold sans-serif',</s>
+      <b>fontString: '4.5em bold sans-serif',</b>
       text: 'Hello, world!',
-      justify: 'center',
 
       fillStyle: 'lightblue',
 <s>      lineWidth: 1,</s>
@@ -327,7 +323,7 @@
     [...]
 
     <ins>/* To hide the ‹img› element on the page */</ins>
-    <b>.image-hold {
+    <b>canvas .assets {
       height: 0;
       overflow: hidden;
     }</b>
@@ -336,16 +332,30 @@
 
 ‹body›
 
-  [... canvas]
-
-  <b>‹div class="image-hold"›
-    <ins>‹!-- Each image should be given its own unique ID value --></ins>
-    ‹img 
-      <b>id="river" 
-      class="my-demo-images" </b>
-      alt="Image used in canvas element" 
-      src="path/to/river.webp" /›
-  ‹/div›</b>
+  ‹div class="canvas-host"›
+    ‹canvas 
+      id="my-canvas"
+      data-scrawl-canvas
+      data-is-responsive="true"
+      data-base-width="600" 
+      data-base-height="300" 
+      data-fit="contain"
+    ›
+<ins>‹!-- 
+We can 'hide' assets between the ‹canvas› element tags
+This way the assets will not show up on the page, because browsers don't display this content
+- except to screen readers, or when user has disabled Javascript
+--›</ins>
+      <b>‹div class="assets" aria-hidden="true"›
+        ‹img 
+          <ins>‹!-- Each image should be given its own unique ID value --›</ins>
+          <b>id="river" 
+          class="my-demo-images" </b>
+          alt="" 
+          src="path/to/river.webp" /›
+      ‹/div›</b>
+    ‹/canvas›
+  ‹/div›
 
   ‹script type="module"›
     [...]
@@ -376,9 +386,7 @@
 
 <p>One advantage of using <code><b>scrawl.importDomImage</b></code> is that it allows us to import many images at once. The function's argument is a normal <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">CSS selector string</a>.</p>
 
-<p>When the function completes, each of the images captured by the selector string will be wrapped in a Scrawl-canvas <b>ImageAsset</b> object, and stored in the Scrawl-canvas library in the <code><b>scrawl.library.asset</b></code> section, keyed by either the ‹img› element's id value, or its name value, or the file's name if no id or name attribute was supplied for the element.</p>
-
-<p>We can now assign the image data to our Picture entity using the <code><b>asset</b></code> attribute, which will accept the ImageAsset object's name String (or the object itself).</p>
+<p>When the function completes, each of the images captured by the selector string will be wrapped in a Scrawl-canvas <b>ImageAsset</b> object. As such, we can now assign the image data to our Picture entity using the <code><b>asset</b></code> attribute, which will accept the ImageAsset object's name String (or the object itself).</p>
 
 <h3 tabindex="0">How big is that image in the window?</h3>
 
@@ -465,7 +473,7 @@
 
 <p>For our purposes, we want people to see/know <i>something</i> when they encounter a ‹canvas› element. Thus it makes sense that we include at least an ‹img› or ‹figure› element in the Canvas Shadow DOM to handle these situations. People with Javascript enabled in their browsers will never see the contents of the Canvas Shadow DOM displayed. This is the essence of <a href="https://en.wikipedia.org/wiki/Progressive_enhancement">progressive enhancement</a>.</p>
 
-<p>We can make this happen in our code simply by moving the ‹img› element into the ‹canvas› element:</p>
+<p>We can make this happen in our code simply adding a placeholder image inside the ‹canvas› element:</p>
 
 <pre><code>‹!DOCTYPE html›
 ‹html lang="en"›
@@ -475,10 +483,14 @@
   ‹style›
     [...]
 
-<s>    .image-hold {
+    canvas .assets {
       height: 0;
       overflow: hidden;
-    }</s>
+    }
+
+    <b>canvas .placeholder {
+      [... CSS to display the placeholder image in a non-Javascript environment]
+    }</b>
   ‹/style›
 ‹/head›
 
@@ -493,20 +505,22 @@
       data-base-height="300" 
       data-fit="contain"
     ›
-      <b>‹img 
-        id="river" 
-        class="my-demo-images" 
-        alt="Image used in canvas element" 
-        src="path/to/river.webp"
-        srcset=" [...] "
-        data-dimensions=' [...] '
-      /›</b>
+      <b>‹div class="placeholder"›
+        ‹img 
+          src="path/to/placeholder-image.webp"
+          alt="A brief description of the image"
+        /›
+      ‹/div›</b>
+      ‹div class="assets" aria-hidden="true"›
+        ‹img 
+          id="river" 
+          class="my-demo-images"
+          src="path/to/river.webp"
+          alt="" 
+        /›
+      ‹/div›
     ‹/canvas›
   ‹/div›
-
-<s>  ‹div class="image-hold"›
-    ‹img [...] /›
-  ‹/div›</s>
 
   ‹script type="module"›
     [...]
