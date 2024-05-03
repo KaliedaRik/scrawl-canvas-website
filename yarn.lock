@@ -3144,7 +3144,7 @@ __metadata:
     rollup-plugin-livereload: ^1.0.0
     rollup-plugin-svelte: ^5.0.3
     rollup-plugin-terser: ^5.1.2
-    scrawl-canvas: ^8.13.0
+    scrawl-canvas: ^8.13.1
     sirv-cli: ^2.0.2
     svelte: ^3.0.0
     svelte-preprocess: ^3.7.1
@@ -3154,10 +3154,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"scrawl-canvas@npm:^8.13.0":
-  version: 8.13.0
-  resolution: "scrawl-canvas@npm:8.13.0"
-  checksum: feb18eecb265faa0904dfc4794328b4ddf0173f9f337f99fb5b7d8a1f2fd76f8e136f43393717a187ba38d0833bd91020effe3bb4c0457a5246af64112de1fbe
+"scrawl-canvas@npm:^8.13.1":
+  version: 8.13.1
+  resolution: "scrawl-canvas@npm:8.13.1"
+  checksum: bfb1f9637cc6f501326ffd48e3f00ea3392f4cfbbb0d93e3401fdb0ae795bd4c0bbce6645a3df87e22a683bb3db1efcf70d4e2ad9e61d7641e8082572e3b82a8
   languageName: node
   linkType: hard
 

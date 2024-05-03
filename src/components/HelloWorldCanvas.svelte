@@ -91,7 +91,6 @@
             method: 'none',
             useAsPath: true,
             precision: 0.05,
-            constantPathSpeed: true,
         });
 
         text = scrawl.makeEnhancedLabel({
