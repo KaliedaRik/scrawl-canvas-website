@@ -3,7 +3,7 @@
 
     const scrawl = getContext('scrawl');
 
-    let canvas, animation, gradient, observer, ball, mouseCheck;
+    let canvas, animation, gradient, observer, ball, mouseCheck, noTouchMove;
 
     export let namespace;
     export let fit;
@@ -154,11 +154,20 @@
         });
 
         observer = scrawl.makeAnimationObserver(animation, canvas);
+
+        noTouchMove = scrawl.addNativeListener('touchmove', (e) => {
+
+            e.preventDefault();
+            e.returnValue = false;
+
+        }, canvas.domElement);
+
     });
 
     onDestroy(() => {
 
         observer();
+        noTouchMove();
         scrawl.purge(namespace);
     });
 </script>

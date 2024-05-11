@@ -196,12 +196,13 @@
 
         moveListener = scrawl.addListener('move', () => canvas.cascadeEventAction('move'), canvas.domElement);
 
-        upListener = scrawl.addListener('up', function (e) { 
+        upListener = scrawl.addNativeListener(['click', 'touchstart'], function (e) { 
 
-            if (e && e.button === 0) {
+            if (e && (e.button === 0 || e.touches.length)) {
 
                 canvas.cascadeEventAction('up');
             }
+
         }, canvas.domElement);
 
 
