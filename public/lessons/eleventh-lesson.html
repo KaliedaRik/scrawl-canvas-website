@@ -118,7 +118,7 @@
   ‹/div›
 
   <b>‹script type="module"›
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.13.2';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.14.0';
 
     <ins>// Namespace boilerplate</ins>
     const namespace = 'lesson-eleven';
@@ -360,19 +360,18 @@
 
   ‹div class="canvas-host"›
     ‹canvas id="mycanvas" [...] ›
-
       [... image code]
-
-      <b>‹div class="animation-controls"›
-        ‹span id="play" class="animation-controls-button material-icons"›
-          play_circle
-        ‹/span›
-        ‹span id="pause" class="animation-controls-button material-icons"›
-          pause_circle
-        ‹/span›
-      ‹/div›</b>
-
     ‹/canvas›
+
+    <b>‹div class="animation-controls"›
+      ‹span id="play" class="animation-controls-button material-icons"›
+        play_circle
+      ‹/span›
+      ‹span id="pause" class="animation-controls-button material-icons"›
+        pause_circle
+      ‹/span›
+    ‹/div›</b>
+
   ‹/div›
 
   [...]
@@ -463,26 +462,25 @@
 
   ‹div class="canvas-host"›
     ‹canvas id="mycanvas" [...] ›
-
       [... image code]
-
-      ‹div class="animation-controls"›
-<s>        ‹span id="play" class="animation-controls-button material-icons"›
-          play_circle
-        ‹/span›
-        ‹span id="pause" class="animation-controls-button material-icons"›
-          pause_circle
-        ‹/span›</s>
-
-        <b>‹button id="play" title="Play animation"›
-          ‹span class="material-icons"›play_circle‹/span›
-        ‹/button›
-        ‹button id="pause" title="Pause animation"›
-          ‹span class="material-icons"›pause_circle‹/span›
-        ‹/button›</b>
-      ‹/div›
-
     ‹/canvas›
+
+    ‹div class="animation-controls"›
+<s>      ‹span id="play" class="animation-controls-button material-icons"›
+        play_circle
+      ‹/span›
+      ‹span id="pause" class="animation-controls-button material-icons"›
+        pause_circle
+      ‹/span›</s>
+
+      <b>‹button id="play" title="Play animation"›
+        ‹span class="material-icons"›play_circle‹/span›
+      ‹/button›
+      ‹button id="pause" title="Pause animation"›
+        ‹span class="material-icons"›pause_circle‹/span›
+      ‹/button›</b>
+    ‹/div›
+
   ‹/div›
 
   [...]

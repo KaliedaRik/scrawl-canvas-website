@@ -51,7 +51,7 @@
 
 <p>When modularizing code, we need to consider how that code gets rendered onto the ‹canvas› element. It will often make sense to decouple the display code as much as possible. We can do this by rendering entitys into their own <code><b>Cell object</b></code>, which we can then export as a Scrawl-canvas artefact.</p>
 
-<p>Like any other artefact, Scrawl-canvas Cells can be positioned in all the ways we have discussed in previous lessons (absolute and relative coordinates, pivoting, etc). Additionally, we can rotate and scale the Cell, and animate it in various ways &ndash; including using tweens. We can also add filters to the Cell as well as using them on the Groups and Entitys assiciated with that Cell.</p>
+<p>Like any other artefact, Scrawl-canvas Cells can be positioned in all the ways we have discussed in previous lessons (absolute and relative coordinates, pivoting, etc). Additionally, we can rotate and scale the Cell, and animate it in various ways &ndash; including using tweens. We can also add filters to the Cell as well as using them on the Groups and Entitys associated with that Cell.</p>
 
 <h3 tabindex="0">Planning the clock background</h3>
 
@@ -132,7 +132,7 @@
   ‹/div›
 
   <b>‹script type="module"›
-    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.13.2";
+    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.14.0";
 
     <ins>// Our code will go here</ins>
   ‹/script›</b>
@@ -492,12 +492,5 @@
 <h3 tabindex="0">Next steps</h3>
 
 <p>Scrawl-canvas Cells are very versatile; using them efficiently, we can create a wide range of more complex scenes and infographics. They also lend themselves well to more modular code.</p>
-
-<p>Try adapting the CodePen below to use different sorts of entitys. What happens when you use a picture entity as part of the background? Can you come up with a way for the user to drag an image file from their local device onto the clock, so that that image will be used as the clock's background?</p>
-
-<iframe height="600" style="width: 100%;" scrolling="no" title="Scrawl-canvas v8 - Kaleidoscope clock " src="https://codepen.io/kaliedarik/embed/vYLaOxK?height=600&theme-id=26779&default-tab=result&editable=true" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy" class="mb-4">
-  See the Pen <a href='https://codepen.io/kaliedarik/pen/vYLaOxK'>Scrawl-canvas v8 - Kaleidoscope clock</a> by Rik Roots
-  (<a href='https://codepen.io/kaliedarik'>@kaliedarik</a>) on <a href='https://codepen.io'>CodePen</a>.
-</iframe>
 
 <p>In the next lesson (which will be Lesson 11, as Lessons 9 and 10 are currently being rewritten) we'll investigate the issues surrounding accessibility and the canvas element, and how Scrawl-canvas addresses them.</p>

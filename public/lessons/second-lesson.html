@@ -65,7 +65,7 @@
   ‹/div›
 
   ‹script type="module"›
-    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.13.2";
+    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.14.0";
 
     <ins>// Setup scene</ins>
     const canvas = scrawl.findCanvas('my-canvas');
@@ -473,7 +473,7 @@ This way the assets will not show up on the page, because browsers don't display
 
 <p>For our purposes, we want people to see/know <i>something</i> when they encounter a ‹canvas› element. Thus it makes sense that we include at least an ‹img› or ‹figure› element in the Canvas Shadow DOM to handle these situations. People with Javascript enabled in their browsers will never see the contents of the Canvas Shadow DOM displayed. This is the essence of <a href="https://en.wikipedia.org/wiki/Progressive_enhancement">progressive enhancement</a>.</p>
 
-<p>We can make this happen in our code simply adding a placeholder image inside the ‹canvas› element:</p>
+<p>We can make this happen in our code simply by adding a placeholder image inside the ‹canvas› element:</p>
 
 <pre><code>‹!DOCTYPE html›
 ‹html lang="en"›
