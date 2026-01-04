@@ -1,5 +1,5 @@
 <h2>Issue</h2>
-<p>We need to add Scrawl-canvas ‹canvas› components to a <a href="https://reactjs.org/">React</a> project.</p>
+<p>We need to add Scrawl-canvas &lt;canvas> components to a <a href="https://reactjs.org/">React</a> project.</p>
 
 <h2>Solution</h2>
 
@@ -22,18 +22,18 @@ $> yarn dev
 <p>To create the demo, we will update a couple of files. This is not necessary in your React application:</p>
 
 <pre><code><ins>/index.html</ins>
-‹!DOCTYPE html›
-‹html lang="en"›
-  ‹head›
-    ‹meta charset="UTF-8" /›
-    ‹meta name="viewport" content="width=device-width, initial-scale=1.0" /›
-    ‹title›React + Scrawl-canvas‹/title›
-  ‹/head›
-  ‹body›
-    ‹div id="root"›‹/div›
-    ‹script type="module" src="/src/main.tsx"›‹/script›
-  ‹/body›
-‹/html›
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+  &lt;head>
+    &lt;meta charset="UTF-8" />
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    &lt;title>React + Scrawl-canvas&lt;/title>
+  &lt;/head>
+  &lt;body>
+    &lt;div id="root">&lt;/div>
+    &lt;script type="module" src="/src/main.tsx">&lt;/script>
+  &lt;/body>
+&lt;/html>
 
 <ins>/src/main.tsx</ins>
 import React from 'react'
@@ -41,9 +41,9 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  ‹React.StrictMode›
-    ‹App /›
-  ‹/React.StrictMode›,
+  &lt;React.StrictMode>
+    &lt;App />
+  &lt;/React.StrictMode>,
 )
 
 <ins>/src/App.tsx</ins>
@@ -57,25 +57,25 @@ const App = () => {
   const changeCanvas = () => setShowSquare(!showSquare);
 
   return (
-    ‹div className="App"›
+    &lt;div className="App">
 
-      ‹div style={{width: '100%', marginBottom: '1em'}}›
-        ‹button onClick={changeCanvas}›Swap canvas‹/button›
-      ‹/div›
+      &lt;div style={{width: '100%', marginBottom: '1em'}}>
+        &lt;button onClick={changeCanvas}>Swap canvas&lt;/button>
+      &lt;/div>
 
       {showSquare ? (
-        <b>‹Square namespace="square-canvas" /›</b>
+        <b>&lt;Square namespace="square-canvas" /></b>
       ) : (
-        <b>‹Circle namespace="circle-canvas" /›</b>
+        <b>&lt;Circle namespace="circle-canvas" /></b>
       )}
-    ‹/div›
+    &lt;/div>
   )
 }
 
 export default App
 </code></pre>
 
-<p>For the purposes of this demo, we will create two ‹canvas› components. It is important that each component has a unique namespace &ndash; <b>failure to properly namespace Scrawl-canvas components can lead to memory leaks!</b></p>
+<p>For the purposes of this demo, we will create two &lt;canvas> components. It is important that each component has a unique namespace &ndash; <b>failure to properly namespace Scrawl-canvas components can lead to memory leaks!</b></p>
 
 <p>Note also that React will, by intention, remount components during development. This, too, can lead to (apparent) memory leaks &ndash; by generating multiple copies of SC objects and storing them in the SC library &ndash; which we have to guard against. For more information on this behaviour see this <a href="https://stackoverflow.com/questions/72238175/why-useeffect-running-twice-and-how-to-handle-it-well-in-react">StackOverflow answer</a> and this explanation in the <a href="https://beta.reactjs.org/learn/synchronizing-with-effects">React documentation</a>.</p>
 
@@ -119,15 +119,28 @@ export const Square = (props: SimpleCanvasProps) => {
         target: canvas,
       });</b>
     }
-  }, []);
+
+    <ins>// Cleanup</ins>
+    return () => {
+      <ins>
+      // NOTE: This cleanup function is only required if you add
+      // global listeners (e.g., scrawl.addListener('move', ...))
+      // that return a cleanup function.
+      
+      // For this simple demo (Square/Circle), no cleanup code is technically
+      // required in the return function because SC handles the memory/RAF
+      // cleanup on the next component's mount via scrawl.getCanvas().</ins>
+
+    };
+  }, [namespace]);
 
   <b>return (
-    ‹canvas 
+    &lt;canvas 
       id={namespace}
       width="400"
       height="400"
       data-base-background-color="aliceblue"
-    ›‹/canvas›
+    >&lt;/canvas>
   );</b>
 };
 
@@ -142,7 +155,7 @@ export const Circle = (props: SimpleCanvasProps) => {
 
     if (canvas && !scrawl.findEntity(name('wheel'))) {
 
-      makeWheel({
+      scrawl.makeWheel({
         name: name('wheel'),
         start: ['center', 'center'],
         handle: ['center', 'center'],
@@ -155,20 +168,20 @@ export const Circle = (props: SimpleCanvasProps) => {
         includeCenter: true,
       });
 
-      makeRender({
+      scrawl.makeRender({
         name: name('animation'),
         target: canvas,
       });
     }
-  }, []);
+  }, [namespace]);
 
   return (
-    ‹canvas 
+    &lt;canvas 
       id={namespace}
       width="400"
       height="400"
       data-base-background-color="aliceblue"
-    ›‹/canvas›
+    >&lt;/canvas>
   );
 };
 

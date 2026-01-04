@@ -38,7 +38,7 @@
 <pre class="code-block"><code>&lt;canvas width="400" height="200" id="my-canvas-id">&lt;/canvas>
 
 &lt;script type="module">
-    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.14.0";
+    import * as scrawl from "https://unpkg.com/scrawl-canvas@8.17.0";
 
     const canvas = scrawl.findCanvas('my-canvas-id');
 
@@ -153,7 +153,7 @@
 
 <ul class="list-disc list-outside ml-8 mb-4">
     <li class="mb-2"><code class="text-sm text-red-800">host</code> is a Cell wrapper's name, or the Cell wrapper object itself; and</li>
-    <li class="mb-2"><code class="text-sm text-red-800">changeObject</code> is a normal key:value object defining the attributes to be applied to the entity for the stamping action &mdash; these attributes can be any attribute applicable to that entity (as used in the <code class="text-sm text-red-800">.set</code> method.</li>
+    <li class="mb-2"><code class="text-sm text-red-800">changeObject</code> is a normal key:value object defining the attributes to be applied to the entity for the stamping action &mdash; these attributes can be any attribute applicable to that entity (as used in the <code class="text-sm text-red-800">.set</code> method).</li>
 </ul>
 
 <h4>Show action</h4>
@@ -185,9 +185,9 @@
 
   &lt;script type="module">
         
-    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.14.0';
+    import * as scrawl from 'https://unpkg.com/scrawl-canvas@8.17.0';
 
-    const canvas = scrawl.findCanvas('mycanvas');
+    const canvas = scrawl.findCanvas('my-canvas-id');
 
     canvas.setBase({ backgroundColor: 'black' });
 
@@ -221,7 +221,7 @@
     <span class="italic text-xs text-gray-700">// - a sub-pattern, four of which will make the final pattern</span>
     canvas.buildCell({
 
-      name: name'(sub-pattern'),
+      name: name('sub-pattern'),
       width: 150,
       height: 150,
       shown: false,
@@ -232,7 +232,7 @@
     scrawl.makeLine({
 
       name: name('vertical'),
-      group: name'(sub-pattern'),
+      group: name('sub-pattern'),
       start: ['right', 'top'],
       end: ['right', 'bottom'],
       method: 'none',
@@ -251,7 +251,7 @@
       scrawl.makeLine({
 
         name: name(`line-${i}`),
-        group: name'(sub-pattern'),
+        group: name('sub-pattern'),
         path: name('vertical'),
         pathPosition: i / 10,
         lockTo: 'path',
@@ -317,7 +317,7 @@
       dimensions: ['50%', '50%'],
       start: ['center', 'center'],
       handle: ['bottom', 'right'],
-      fillStyle: name'(sub-pattern'),
+      fillStyle: name('sub-pattern'),
 
     }).clone({
 

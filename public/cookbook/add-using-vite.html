@@ -52,7 +52,7 @@ $> yarn dev
         dimensions: ['50%', '50%'],
       });
 
-      render();
+      canvas.render();
 
     ‹/script›
 
@@ -117,7 +117,7 @@ scrawl.makeBlock({
   dimensions: ['50%', '50%'],
 });
 
-scrawl.render();
+canvas.render();
 </code></pre>
 
 <p>... and everything should work as expected &ndash; for instance, TS should warn us when we try to add an inappropriate attribute to our Block factory invocation:</p>

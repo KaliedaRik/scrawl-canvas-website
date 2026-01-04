@@ -40,5 +40,5 @@
 </svelte:head>
 
 <main>
-    <iframe title="{pageData.title}" src="{location.origin}/docs/index.html"></iframe>
+    <iframe title="{pageData.title}" src="{location.origin}/docs/reference/index.html"></iframe>
 </main>
